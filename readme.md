@@ -6,7 +6,7 @@ This is a Laravel 5.6 adminpanel starter project with roles-permissions based on
 
 ## Usage
 
-This is not a package - it's a full Laravel project that you should use as a starter boilerplate, and then add your own custom functionality.
+This is not a package - it's a full Laravel project that you should use as a starter boilerplate, and then add your own custom functionalities.
 
 - Clone the repository with `git clone`
 - Copy `.env.example` file to `.env` and edit database credentials there
