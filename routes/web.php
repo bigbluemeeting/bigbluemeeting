@@ -40,8 +40,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
 
-    Route::resource('/categories', 'Admin\CategoryController');
-
 });
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
