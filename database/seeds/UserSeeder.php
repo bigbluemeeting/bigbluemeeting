@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
             'username' => 'xqsit94',
             'email' => 'admin@admin.com',
             'password' => bcrypt('password'),
-            'api_token' => $this->_random_str(60),
+            'admin_unique_key' => $this->_random_str(60),
         ]);
         $user->assignRole('administrator');
     }
