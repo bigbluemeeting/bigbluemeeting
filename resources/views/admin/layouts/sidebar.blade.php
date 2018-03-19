@@ -17,21 +17,66 @@
                         <i class="fa fa-home"></i> Dashboard </a>
                 </li>
                 @can('master_manage')
-                <li>
+                <li class="{{ (Request::is('admin/categories*') || Request::is('admin/place*') || Request::is('admin/profile*') || Request::is('admin/profiletype*') || Request::is('admin/profiletype_shop*') || Request::is('admin/taglist*') || Request::is('admin/blood*')) ? 'active open' : '' }}">
                     <a href="">
                         <i class="fa fa-th-large"></i> Master
                         <i class="fa arrow"></i>
                     </a>
                     <ul class="sidebar-nav">
-                        <li>
-                            <a href="#"> Items List </a>
+                        <li class="{{ (Request::is('admin/categories*')) ? 'active' : '' }}">
+                            <a href="{{ route('admin::categories.index') }}"> Category </a>
                         </li>
-                        <li>
-                            <a href="#"> Item Editor </a>
+                        <li class="{{ (Request::is('admin/place*')) ? 'active' : '' }}">
+                            <a href="#"> Place </a>
+                        </li>
+                        <li class="{{ (Request::is('admin/profile*')) ? 'active' : '' }}">
+                            <a href="#"> Profile </a>
+                        </li>
+                        <li class="{{ (Request::is('admin/profiletype*')) ? 'active' : '' }}">
+                            <a href="#"> Profile Type </a>
+                        </li>
+                        <li class="{{ (Request::is('admin/profiletype_shop*')) ? 'active' : '' }}">
+                            <a href="#"> Profile Type Shop </a>
+                        </li>
+                        <li class="{{ (Request::is('admin/taglist*')) ? 'active' : '' }}">
+                            <a href="#"> Taglist </a>
+                        </li>
+                        <li class="{{ (Request::is('admin/blood*')) ? 'active' : '' }}">
+                            <a href="#"> Blood Table </a>
                         </li>
                     </ul>
                 </li>
                 @endcan
+                <li class="{{ (Request::is('admin/ads_banner*')) ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="fa fa-caret-square-o-right"></i> Advertisement Banner
+                    </a>
+                </li>
+                <li class="{{ (Request::is('admin/news*')) ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="fa fa-newspaper-o"></i> News
+                    </a>
+                </li>
+                <li class="{{ (Request::is('admin/feedback*')) ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="fa fa-comments"></i> Feedback
+                    </a>
+                </li>
+                <li class="{{ (Request::is('admin/profile_request*')) ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="fa fa-address-book"></i> Profile Request
+                    </a>
+                </li>
+                <li class="{{ (Request::is('admin/emergency_contact*')) ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="fa fa-ambulance"></i> Emergency Contact
+                    </a>
+                </li>
+                <li class="{{ (Request::is('admin/settings*')) ? 'active' : '' }}">
+                    <a href="#">
+                        <i class="fa fa-gear"></i> Settings
+                    </a>
+                </li>
                 @can('users_manage')
                 <li class="{{ (Request::is('admin/users*') || Request::is('admin/roles*')) ? 'active open' : '' }}">
                     <a href="">
@@ -48,7 +93,7 @@
                     </ul>
                 </li>
                 @endcan
-                <li>
+                <li class="{{ (Request::is('admin/change_password*')) ? 'active' : '' }}">
                     <a href="{{ route('admin::change_password') }}">
                         <i class="fa fa-key"></i> Change Password </a>
                 </li>
