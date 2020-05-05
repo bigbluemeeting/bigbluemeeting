@@ -69,12 +69,12 @@
 
         <footer class="footer">
             <div class="footer-block buttons">
-                &copy; {{ env('APP_NAME') }}
+                &copy; 2013-2020 {{ env('APP_NAME') }}
             </div>
             <div class="footer-block author">
                 <ul>
-                    <li> Developed by
-                        <a href="https://manikandan.me" target="_blank">xQsit94</a>
+                    <li> Created by
+                        <a href="https://etopian.com" target="_blank">Etopian Inc.</a>
                     </li>
                 </ul>
             </div>

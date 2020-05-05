@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
     {
         $user = User::create([
             'name' => 'Admin',
-            'username' => 'xqsit94',
+            'username' => 'admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('password'),
             'admin_unique_key' => $this->_random_str(60),
