@@ -12,7 +12,12 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
+
         $role = Role::create(['name' => 'administrator']);
+        $moderatorRole = Role::create(['name'=>'moderator']);
+        $attendeeRole  = Role::create(['name'=>'attendee']);
+        $moderatorRole->givePermissionTo('moderate');
+        $attendeeRole->givePermissionTo('None');
         $role->givePermissionTo('users_manage');
         $role->givePermissionTo('master_manage');
     }

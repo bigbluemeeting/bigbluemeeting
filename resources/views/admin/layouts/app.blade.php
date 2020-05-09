@@ -10,6 +10,8 @@
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
 
+
+
     @yield('css')
 
     <!-- Theme initialization -->
@@ -89,8 +91,11 @@
         <div class="color-secondary"></div>
     </div>
 </div>
+@yield('script')
 <script src="{{ asset('js/vendor.js') }}"></script>
 <script src="{{ asset('js/app.js') }}"></script>
 @yield('js')
+
+
 </body>
 </html>

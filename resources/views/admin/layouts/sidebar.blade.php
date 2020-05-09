@@ -47,7 +47,54 @@
                         </li>
                     </ul>
                 </li>
+
+
                 @endcan
+
+                <li>
+                    <a href="">
+
+                        <i class="fa fa-meetup"></i> Meetings
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li>
+                            <a href="{{ route('admin::meetings.index') }}"> Meetings List </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+                    <li>
+                        <a href="">
+
+                            <i class="fa fa-user"></i> Attendees
+                            <i class="fa arrow"></i>
+                        </a>
+                        <ul class="sidebar-nav">
+                            <li>
+                                <a href="{{ route('admin::attendees.index') }}"> Create Attended </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                @endif
+
+
+                <li>
+                    <a href="">
+
+                        <i class="fa fa-file-audio-o"></i> Recording
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li>
+                            <a href="{{ route('admin::recordings.index') }}"> Recordings List </a>
+                        </li>
+
+                    </ul>
+                </li>
                 <li>
                     <a href="{{ route('admin::change_password') }}">
                         <i class="fa fa-key"></i> Change Password </a>

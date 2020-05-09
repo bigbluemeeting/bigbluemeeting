@@ -14,5 +14,7 @@ class PermissionSeeder extends Seeder
     {
         Permission::create(['name' => 'users_manage']);
         Permission::create(['name' => 'master_manage']);
+        Permission::create(['name' => 'moderate']);
+        Permission::create(['name' => 'None']);
     }
 }

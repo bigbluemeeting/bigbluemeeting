@@ -65,6 +65,9 @@
                     <div class="form-group">
                         <button type="submit" class="btn btn-block btn-primary">Login</button>
                     </div>
+                    <div class="text-center">If you have an account ?
+                        <a class="large text-success"  style="text-decoration: none" href="{{route('signup')}}">Sign Up</a>
+                    </div>
 
                 </form>
             </div>

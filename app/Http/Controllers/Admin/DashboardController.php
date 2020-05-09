@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Auth;
+use App\User;
+
 class DashboardController extends Controller
 {
     public function __construct()
@@ -16,6 +19,10 @@ class DashboardController extends Controller
         $data = [
             'pageName' => 'Dashboard',
         ];
+//
+//
+//
+
         return view('admin.dashboard.index', $data);
     }
 }

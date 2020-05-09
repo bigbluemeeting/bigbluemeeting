@@ -12,6 +12,7 @@
 */
 
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
@@ -39,10 +40,16 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
     Route::patch('/change_password', 'Admin\ChangePasswordController@changePassword')->name('change_password');
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
+    Route::get('/meeting-attendees/{meeting}','Admin\MeetingController@meetingAttendees')->name('meetingAttendees');
+    Route::resource('/meetings','Admin\MeetingController');
+    Route::resource('/recordings','Admin\RecordingsController');
+    Route::resource('/attendees','Admin\AttendeeController');
 
 });
 
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::get('signup/{meeting?}/{email?}', 'Auth\SignupController@create')->name('signup');
+Route::post('register', 'Auth\SignupController@store')->name('register');
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 

@@ -27,7 +27,8 @@ class UsersController extends Controller
             return abort(401);
         }
 
-        $users = User::all();
+        $users = User::paginate(10);
+
         $pageName = 'Users';
 
         return view('admin.users.index', compact('users','pageName'));
@@ -73,12 +74,16 @@ class UsersController extends Controller
         $user->email = $request->input('email');
         $user->password = Hash::make($request->input('password'));
         $user->admin_unique_key = $this->_random_str(60);
+
+//        dd($user);
         $user->save();
 
-        $roles = $request->input('roles') ? $request->input('roles') : [];
+        $roles = $request->input('roles') ? $request->input('roles') : ['attendee'];
         $user->assignRole($roles);
 
+
         return redirect()->route('admin::users.index')->with(['success' => 'User created successfully']);
+
     }
 
 

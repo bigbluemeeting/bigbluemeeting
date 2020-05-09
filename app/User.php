@@ -28,4 +28,13 @@ class User extends Authenticatable
     protected $hidden = [
         'remember_token',
     ];
+
+    public function meetings()
+    {
+        return $this->hasMany(Meeting::class);
+    }
+    public function attendees()
+    {
+        return $this->hasMany(Attendee::class);
+    }
 }
