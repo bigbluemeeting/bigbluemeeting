@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
+
     <title> @yield('pagename') | {{ env('APP_NAME') }} </title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,23 +11,21 @@
     <!-- Place favicon.ico in the root directory -->
     <link rel="stylesheet" href="{{ asset('css/vendor.css') }}">
 
-
-
-    @yield('css')
+@yield('css')
 
     <!-- Theme initialization -->
     <script>
-        var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
-            {};
-        var themeName = themeSettings.themeName || '';
-        if (themeName)
-        {
-            document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('') }}css/app-' + themeName + '.css">');
-        }
-        else
-        {
-            document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('css/app.css') }}">');
-        }
+    var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
+    {};
+    var themeName = themeSettings.themeName || '';
+    if (themeName)
+    {
+    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('') }}css/app-' + themeName + '.css">');
+    }
+    else
+    {
+    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('css/app.css') }}">');
+    }
     </script>
 </head>
 <body>

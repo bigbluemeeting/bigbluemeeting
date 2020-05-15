@@ -1,8 +1,53 @@
 @extends('admin.layouts.app')
 
 @section('pagename', $pageName)
-
+@section('css')
+    <style>
+        #overlay{
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            width: 80%;
+            height:100%;
+            display: none;
+            background: rgba(0,0,0,0.6);
+            margin-left: -6px;
+        }
+        .cv-spinner {
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .newspinner {
+            width: 100px;
+            height: 100px;
+            border: 4px #ddd solid;
+            border-top: 4px #2e93e6 solid;
+            border-radius: 50%;
+            animation: sp-anime 0.8s infinite linear;
+        }
+        @keyframes sp-anime {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        .is-hide{
+            display:none;
+        }
+    </style>
+@stop
 @section('content')
+
+    <div id="overlay">
+
+
+        <div class="cv-spinner">
+
+            <span class="newspinner">
+            </span>
+        </div>
+    </div>
 
     <div class="title-block">
         <h3 class="title"> {{ $pageName }} </h3>
@@ -13,9 +58,11 @@
         <div class="row" id="error">
             <div class="col-md-12">
                 @if($errors->has('name'))
-                    <p class="alert alert-danger text-center">
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         There was an error creating the room
-                    </p>
+                    </div>
+
 
                 @endif
             </div>
@@ -25,7 +72,7 @@
             <div class="col-md-3">
                 <button type="submit" name="commit" class="create-only btn btn-info btn-block" data-disable-with="Create Room" data-toggle="modal" data-target="#myModal">
                     <i class="fa fa-plus"></i>
-                    Create a Room
+                    Create a Meeting
                 </button>
 
             </div>
@@ -43,7 +90,7 @@
                 <div class="modal-body">
                     <div class="card-body p-sm-6">
                         <div class="card-title">
-                            <h3 class="text-center">Create New Room</h3>
+                            <h3 class="text-center">Create New Meeting</h3>
                             <h3 class="update-only" style="display:none !important">Room Settings</h3>
                         </div>
                         {!! Form::open(['method' => 'POST', 'route' => ['admin::meetings.store'], 'class'=>'form-horizontal']) !!}
@@ -52,7 +99,7 @@
                             <span class="input-icon-addon">
                                 <i class="fas fa-chalkboard-teacher"></i>
                             </span>
-                            <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a room name..." autocomplete="off" type="text" name=" name">
+                            <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Meeting name..." autocomplete="off" type="text" name=" name">
 
                         </div>
 
@@ -103,7 +150,7 @@
                         </label>
 
                         <div class="mt-4">
-                            <input type="submit" value="Create Room" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
+                            <input type="submit" value="Create Meeting" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
                             <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
                         </div>
                         {!! Form::close() !!}
@@ -142,10 +189,11 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    {{--                        <th>#</th>--}}
+
                                     <th>Room Name</th>
                                     <th>Create Date</th>
                                     <th>Created By</th>
+                                    <th>Action</th>
 
 
                                 </tr>
@@ -159,6 +207,15 @@
                                         <td><a href="{{route('admin::meetingAttendees',$list->id)}}">{{$list->name}}</a></td>
                                         <td>{{$list->created_at->diffForHumans()}}</td>
                                         <td>{{$list->user->name}}</td>
+                                        <td>
+                                            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+                                            <a href="{{ route('admin::JoinMeetings',[$list->url]) }}" class="btn btn-sm btn-info">Start</a>
+                                            @else
+{{--                                                {{ route('admin::JoinAttendee',[$list->url]) }}--}}
+                                                <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-sm btn-info attendeeJoin" id="">Join</a>
+                                            @endif
+                                        </td>
+
 
 
                                     </tr>
@@ -187,12 +244,45 @@
 @endsection
 
 @section('script')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script>
-$(document).ready(function () {
-    $("#error").show().delay(5000).fadeOut();
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
 
-});
-</script>
-    @stop
+            $('.attendeeJoin').on('click',function () {
+                // e.preventDefault();
+                let meeting = $(this).data('id');
+
+                setInterval(function () {
+                    $.ajax({
+                        type:'POST',
+                        url:'{{route("JoinAuthAttendee")}}',
+                        datatype:'json',
+                        data:{
+                            meeting:meeting,
+                            "_token":"{{csrf_token()}}"
+                        },success:function (data) {
+
+                            if (data.notStart)
+                            {
+                                // console.log(data.notStart)
+                                $("#overlay").fadeIn(300);
+                            }
+                            if (data.url)
+                            {
+                                // console.log(data.url)
+                                window.location =data.url;
+                            }
+
+                        },
+
+                    });
+                },2000);
+
+            });
+
+        });
+
+
+    </script>
+@stop
 

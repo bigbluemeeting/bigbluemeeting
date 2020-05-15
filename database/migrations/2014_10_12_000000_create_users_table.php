@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('admin_unique_key', 60);
             $table->rememberToken();
             $table->timestamps();
+
         });
     }
 

@@ -103,7 +103,9 @@ class SignupController extends Controller
         {
 
             $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
-            $attendee->meetings()->attach($meeting_id);
+            $meeting = Meeting::where('url',$meeting_id)->firstOrFail();
+//            dd($me)
+            $attendee->meetings()->attach($meeting->id);
 
         }
 

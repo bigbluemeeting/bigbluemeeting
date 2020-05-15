@@ -9,17 +9,7 @@ class Meeting extends Model
 {
     //
 
-//    protected $fillable= [
-//        'name',
-//        'attendee_password',
-//        'moderator_password',
-//        'user_id'
-//
-//    ];
-//    protected $hidden = [
-//        'attendee_password',
-//        'moderator_password'
-//    ];
+
         protected $guarded = [];
         protected $hidden = [
           'pivot'

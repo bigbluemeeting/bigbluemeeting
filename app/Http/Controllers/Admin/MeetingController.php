@@ -8,18 +8,26 @@ use App\Meeting;
 use App\User;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\CreateMeetingParameters;
+use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class MeetingController extends Controller
 {
     protected $meetingList = [];
+
+    protected $logoutUrl = '/admin/meetings';
+    protected $meetingsParams = [];
+    protected $meetingUrl,$meetingName,$attendeePassword,$moderatorPassword;
     public function __construct()
     {
         $this->middleware('auth');
+
 
     }
 
@@ -31,7 +39,7 @@ class MeetingController extends Controller
 
 
 
-        $pageName ='Rooms List';
+        $pageName ='Meetings List';
 
         $user =User::FindOrFail(Auth::id());
         $per = $user->getAllPermissions()->pluck('name')->toArray();
@@ -130,41 +138,68 @@ class MeetingController extends Controller
         }
 
         $data['user_id'] = Auth::id();
+        $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
 
 
         $meeting = Meeting::create($data);
-
-        $msg = ['success'=>'Meeting created successfully'];
-        return $this->index();
-//        return redirect()->route('admin::meetings.index')->with(['success' => 'Meeting created successfully']);
-//
-
-//        $data['user_id'] = Auth::id();
-//        $meeting = Meeting::create($data);
-//        $meeting_id = $meeting->id;
-//
-//        $bbb = new BigBlueButton();
-//
-//        $createMeetingParams = new CreateMeetingParameters($meeting_id, $request->input('name'));
-//        $createMeetingParams->setAttendeePassword($request->input('attendee_password'));
-//        $createMeetingParams->setModeratorPassword($request->input('moderator_password'));
-//
-//        $response = $bbb->createMeeting($createMeetingParams);
-//        if ($response->getReturnCode() == 'FAILED') {
-//            return 'Can\'t create room! please contact our administrator.';
-//        } else {
-//            // process after room created
-//
-//            return redirect()->route('admin::meetings.index')->with(['success' => 'Meeting created successfully']);
-//
-//        }
+        $user = User::findOrFail(Auth::id());
+        $meeting->url =strtolower($user->name).'-'.Str::random(4).'-'.$meeting->id.Str::random(2);
+        $meeting->save();
 
 
+        $this->logoutUrl = url($this->logoutUrl);
 
 
+        $this->meetingsParams = [
+            'meetingUrl' => $meeting->url,
+            'meetingName' =>  $request->input('name'),
+            'attendeePassword' => decrypt($data['attendee_password']),
+            'moderatorPassword' => $user->password,
+        ];
+
+        return $this->createMeeting('create');
 
 
     }
+
+   private function createMeeting($name=null)
+   {
+
+
+       $bbb = new BigBlueButton();
+       $createMeetingParams = new CreateMeetingParameters($this->meetingsParams['meetingUrl'] , $this->meetingsParams['meetingName']);
+       $createMeetingParams->setLogoutUrl($this->logoutUrl);
+       $createMeetingParams->setRecord(true);
+       $createMeetingParams->setAttendeePassword($this->meetingsParams['attendeePassword']);
+       $createMeetingParams->setModeratorPassword($this->meetingsParams['moderatorPassword']);
+       $response = $bbb->createMeeting($createMeetingParams);
+
+       if ($response->getReturnCode() == 'FAILED') {
+           return 'Can\'t create room! please contact our administrator.';
+
+       } else {
+
+           $getMeetingInfoParams = new GetMeetingInfoParameters($this->meetingsParams['meetingUrl'],$this->meetingsParams['moderatorPassword']);
+           $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+
+
+           if ($name== 'create')
+           {
+               return $this->index();
+           }
+           else
+           {
+
+               $joinMeetingParams = new JoinMeetingParameters($this->meetingsParams['meetingUrl'], $this->meetingsParams['username'], $this->meetingsParams['moderatorPassword']);
+               $joinMeetingParams->setRedirect(true);
+               $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
+               return redirect()->to($apiUrl);
+           }
+
+       }
+
+
+   }
 
     /**
      * Display the specified resource.
@@ -211,14 +246,42 @@ class MeetingController extends Controller
         //
     }
 
-    public function joinMeeting()
+    public function joinMeeting($url)
     {
-        $bbb = new BigBlueButton();
-        $joinMeetingParams = new JoinMeetingParameters('Demo Meeting', 'Demo Meeting', 'Demo Meeting');
-        $joinMeetingParams->setRedirect(true);
-        $url = $bbb->getJoinMeetingURL($joinMeetingParams);
 
-            return redirect($url);
+
+        $meeting  = Meeting::where('url',$url)->firstOrFail();
+        $bbb = new BigBlueButton();
+        $user = User::findOrFail(Auth::id());
+        $getMeetingInfoParams = new GetMeetingInfoParameters($url,$user->password);
+        $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+
+
+
+        if ($response->getReturnCode() == 'FAILED') {
+
+
+//            dd('creat');
+            $this->logoutUrl = url($this->logoutUrl);
+            $this->meetingsParams = [
+                'meetingUrl' => $meeting->url,
+                'meetingName' =>  $meeting->name,
+                'attendeePassword' => decrypt(decrypt($meeting->attendee_password)),
+                'moderatorPassword' => $user->password,
+                'username' => $user->name
+            ];
+
+            return $this->createMeeting();
+
+        } else {
+
+
+
+            $joinMeetingParams = new JoinMeetingParameters($url, $user->name, $user->password);
+            $joinMeetingParams->setRedirect(true);
+            $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
+            return redirect()->to($apiUrl);
+        }
     }
 
     public function meetingAttendees(Meeting $meeting)

@@ -43,26 +43,22 @@
                     <li class="profile dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                             <div class="img" style="background-image: url('https://avatars3.githubusercontent.com/u/9919?s=40&v=4')"> </div>
-                            <span class="name"> {{ Auth::user()->name }} </span>
+
                         </a>
                         <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
-                            <a class="dropdown-item" href="#">
-                                <i class="fa fa-user icon"></i> Profile </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fa fa-gear icon"></i> Settings </a>
+                            <a class="dropdown-item" href="{{route('login')}}">
+                                <i class="fa fa-user icon"></i> Sign In </a>
+                            <a class="dropdown-item" href="{{route('signup')}}">
+                                <i class="fa fa-gear icon"></i> Sign Up </a>
                             <div class="dropdown-divider"></div>
-                            <form id="frm-logout" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                {{ csrf_field() }}
-                            </form>
-                            <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('frm-logout').submit();">
-                                <i class="fa fa-power-off icon"></i> Logout </a>
+
                         </div>
                     </li>
                 </ul>
             </div>
         </header>
 
-        @include('admin.layouts.sidebar')
+        @include('public.layouts.sidebar')
 
         <article class="content">
             @yield('content')

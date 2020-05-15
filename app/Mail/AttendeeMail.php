@@ -36,6 +36,7 @@ class AttendeeMail extends Mailable
     public function build()
     {
 
+
         return $this->from($this->formEmail)->view('attendee.email.welcome')->with([
             'meeting'=>$this->meeting_name,
             'meeting_id'=>$this->meeting_id,

@@ -20,41 +20,27 @@
 
         <div class="card card-block sameheight-item">
 
-            {!! Form::open(['method' => 'POST', 'route' => ['admin::attendees.store'], 'class'=>'form-horizontal']) !!}
-
-
+            {!! Form::open(['method' => 'POST', 'route' => ['join'], 'class'=>'form-horizontal']) !!}
             <div class="form-group {{ ($errors->has('email'))?'has-error':'' }}">
-                {!! Form::label('email', 'Email *', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-sm-12">
-                    {!! Form::email('email', old('email'), ['class' => 'form-control', 'placeholder' => '']) !!}
+                {!! Form::label('url', 'Invite Participants', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="col-sm-6">
+                    {!! Form::text('url', value(url()->current()), ['class' => 'form-control', 'placeholder' => '']) !!}
                     @if($errors->has('email'))
                         <span class="text-danger">
                             {{ $errors->first('email') }}
                         </span>
                     @endif
                 </div>
-            </div>
-
-            <div class="form-group">
-
-                {!! Form::label('meetings', 'Meetings *', ['class' => 'col-sm-2 control-label']) !!}
-                <div class="col-sm-12">
-                {!!Form::select('meeting_id',[''=>'Choose Option']+$meetingsList,null, ['class'=>'form-control'])!!}
-                    @if($errors->has('meeting_id'))
-                        <span class="has-error text-danger">
-                            {{ $errors->first('meeting_id') }}
-                        </span>
-                    @endif
-                </div>
-
-
 
             </div>
+            <input type="hidden" value="{{encrypt($room->url)}}" name="room">
+            <input type="hidden" name="username" value="{{encrypt($room->user->username)}}">
+
 
             <div class="hr-line-dashed"></div>
             <div class="form-group">
-                <div class="col-sm-12 text-center">
-                    {!! Form::submit('Save', ['class' => 'btn btn-primary btn-large']) !!}
+                <div class="col-sm-6 text-center">
+                    {!! Form::submit('Start Meeting', ['class' => 'btn btn-info btn-large']) !!}
                 </div>
             </div>
 

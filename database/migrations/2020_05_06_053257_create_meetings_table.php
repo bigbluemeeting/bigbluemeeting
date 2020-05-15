@@ -22,10 +22,14 @@ class CreateMeetingsTable extends Migration
             $table->tinyInteger('anyone_can_start')->default();
             $table->tinyInteger('all_join_moderator')->default();
             $table->tinyInteger('auto_join')->default();
-//            $table->string('attendee_password');
-//            $table->string('moderator_password');
+            $table->string('url')->nullable();
+            $table->text('attendee_password')->nullable();
             $table->unsignedBigInteger('user_id');
+
             $table->timestamps();
+
+            // $table->string('attendee_password');
+            //$table->string('moderator_password');
         });
     }
 

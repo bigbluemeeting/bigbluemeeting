@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <!-- Place favicon.ico in the root directory -->
-    <link rel="stylesheet" href="css/vendor.css">
+    <link rel="stylesheet" href="{{asset('css/vendor.css')}}">
     <!-- Theme initialization -->
     <script>
         var themeSettings = (localStorage.getItem('themeSettings')) ? JSON.parse(localStorage.getItem('themeSettings')) :
