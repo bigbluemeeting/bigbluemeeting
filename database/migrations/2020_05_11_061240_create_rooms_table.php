@@ -20,9 +20,14 @@ class CreateRoomsTable extends Migration
             $table->string('url')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->integer('start')->default(0);
+            $table->timestamp('start_date')->nullable();
+            $table->timestamp('end_date')->nullable();
+            $table->string('meeting_description')->nullable();
+            $table->string('welcome_message')->nullable();
+            $table->string('meeting_record')->nullable();
+            $table->text('attendee_password')->nullable();
             $table->timestamps();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+
         });
     }
 

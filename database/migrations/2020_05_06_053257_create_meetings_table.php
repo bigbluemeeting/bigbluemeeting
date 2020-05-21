@@ -14,6 +14,8 @@ class CreateMeetingsTable extends Migration
     public function up()
     {
         Schema::create('meetings', function (Blueprint $table) {
+
+
             $table->id();
             $table->string('name');
             $table->string('access_code')->nullable();

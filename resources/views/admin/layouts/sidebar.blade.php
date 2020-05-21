@@ -53,22 +53,22 @@
 
                 <li>
                     <a href="">
-
-                        <i class="fa fa-meetup"></i> Meetings
+                        <i class="fa fa-reddit"></i> Rooms
                         <i class="fa arrow"></i>
                     </a>
                     <ul class="sidebar-nav">
                         <li>
-                            <a href="{{ route('admin::meetings.index') }}"> Meetings List </a>
+                            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+                                <a href="{{ route('rooms.index') }}"> Create Rooms </a>
+                            @endif
+                            <a href="{{route('invitedMeetings')}}">Invited Rooms</a>
                         </li>
-
                     </ul>
                 </li>
 
                 @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
                     <li>
                         <a href="">
-
                             <i class="fa fa-user"></i> Attendees
                             <i class="fa arrow"></i>
                         </a>

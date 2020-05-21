@@ -12,7 +12,10 @@
 */
 
 
+use App\bigbluebutton\tests;
 use App\Http\Middleware\AjaxCheck;
+
+use BigBlueButton\TestCase;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -42,14 +45,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
     Route::get('/meeting-attendees/{meeting}','Admin\MeetingController@meetingAttendees')->name('meetingAttendees');
-    Route::resource('/meetings','Admin\MeetingController');
-    Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
 
     Route::resource('/recordings','Admin\RecordingsController');
     Route::resource('/attendees','Admin\AttendeeController');
 
 });
-
+/**
+ * Login & SignUp Route
+ */
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::get('signup/{meeting?}/{email?}', 'Auth\SignupController@create')->name('signup');
 Route::post('register', 'Auth\SignupController@store')->name('register');
@@ -63,21 +66,27 @@ Route::get('/', function () {
         return redirect()->route('login');
     }
 });
+/**
+ * Public Routes
+ */
 
+Route::get('rooms/invite-meetings','PublicControllers\RoomsController@inviteAttendee')->name('invitedMeetings');
 Route::resource('rooms','PublicControllers\RoomsController');
 Route::post('/rooms/joins','PublicControllers\RoomsController@join')->name('join');
-
 Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
+Route::resource('/meetings','Admin\MeetingController');
+Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
 
+
+
+/**
+ * Routes For Ajax Call
+ */
 Route::middleware('ajax.check')->group(function ()
 {
-    Route::post('/rooms/attendeeJoin','PublicControllers\AttendeesRoomController@join')->name('attendeeJoin');
+    Route::post('/rooms/AuthAttendeeJoin','PublicControllers\AttendeesRoomController@authAttendeeJoin')->name('AuthAttendeeJoin');
+    Route::post('/rooms/attendeeJoin','PublicControllers\AttendeesRoomController@Join')->name('attendeeJoin');
+
     Route::post('/attendee/joins','Admin\AttendeeController@joinAttendee')->name('JoinAuthAttendee')->middleware('auth');
 
-
-    Route::get('test',function ()
-   {
-
-       return response()->json(['data'=>'simple']);
-   });
 });

@@ -26,10 +26,12 @@ class RecordingsController extends Controller
         //
         $pageName ="Recordings List";
         $recordingParams = new GetRecordingsParameters();
+//        $recordingParams->setMeetingId("admin-5jc-18A8");
         $bbb = new BigBlueButton();
         $response = $bbb->getRecordings($recordingParams);
 
         if ($response->getReturnCode() == 'SUCCESS') {
+//            dd($response->getRawXml());
             foreach ($response->getRawXml()->recordings->recording as $recording) {
                 // process all recording
 
@@ -43,7 +45,7 @@ class RecordingsController extends Controller
             10,
             null,
             [
-                'path' =>'meetings'
+                'path' =>'recordings'
             ]);
 
         return view('admin.recording.index')->with(['pageName'=>$pageName,'recordingList'=>$this->recordingList]);

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\bigbluebutton\tests\TestCase;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Meeting;
+use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
-use BigBlueButton\Parameters\CreateMeetingParameters;
+//use BigBlueButton\Parameters\CreateMeetingParameters;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Http\Request;
@@ -16,9 +18,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
 
 class MeetingController extends Controller
 {
+
     protected $meetingList = [];
 
     protected $logoutUrl = '/admin/meetings';
@@ -26,8 +30,7 @@ class MeetingController extends Controller
     protected $meetingUrl,$meetingName,$attendeePassword,$moderatorPassword;
     public function __construct()
     {
-        $this->middleware('auth');
-
+//        $this->middleware('auth');
 
     }
 
@@ -37,42 +40,42 @@ class MeetingController extends Controller
     public function index()
     {
 
-
-
+        $this->middleware('auth');
         $pageName ='Meetings List';
-
-        $user =User::FindOrFail(Auth::id());
+        $user = User::FindOrFail(Auth::id());
         $per = $user->getAllPermissions()->pluck('name')->toArray();
 
-        if (in_array('master_manage',$per))
-        {
-            $roomList = Meeting::paginate(10);
-            return view('admin.meetings.index',compact('roomList','pageName'));
-        }
-        if (in_array('users_manage',$per))
-        {
-            $roomList = Meeting::paginate(10);
-            return view('admin.meetings.index',compact('roomList','pageName'));
-        }
-        if (in_array('moderate',$per))
-        {
-            $roomList = $user->meetings()->paginate(10);
-            return view('admin.meetings.index',compact('roomList','pageName'));
 
-        }
-
-         $roomList = $user->attendees()
-             ->whereHas('meetings')
-             ->with('meetings')
-             ->get()
-             ->pluck('meetings')
-             ->collapse();
-
-        $roomList = Helper::paginate($roomList,10,null,[
-           'path' =>'meetings'
-        ]);
+//        if (in_array('master_manage',$per))
+//        {
+//            $roomList = Room::paginate(10);
+//            return view('admin.meetings.index',compact('roomList','pageName'));
+//        }
+//        if (in_array('users_manage',$per))
+//        {
+//            $roomList = Room::paginate(10);
+//            return view('admin.meetings.index',compact('roomList','pageName'));
+//        }
+//        if (in_array('moderate',$per))
+//        {
+//            $roomList = $user->rooms()->paginate(10);
+//            return view('admin.meetings.index',compact('roomList','pageName'));
+//
+//        }
 
 
+
+        $roomList =$user->meetings()->paginate(10);
+//         $roomList = $user->attendees()
+//             ->whereHas('rooms')
+//             ->with('rooms')
+//             ->get()
+//             ->pluck('rooms')
+//             ->collapse();
+//
+//        $roomList = Helper::paginate($roomList,10,null,[
+//           'path' =>'meetings'
+//        ]);
 
 
         return view('admin.meetings.index',['roomList'=>$roomList,'pageName'=>$pageName]);
@@ -108,12 +111,13 @@ class MeetingController extends Controller
     {
         //
 
+        $this->middleware('auth');
         $request->validate([
             'name' => 'required|max:50',
 
         ]);
 
-        $data = $request->all();
+        $data = $request->except('access_code');
 
 
         if (!$request->has('mute_on_join'))
@@ -140,7 +144,7 @@ class MeetingController extends Controller
         $data['user_id'] = Auth::id();
         $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
 
-
+//        dd($data);
         $meeting = Meeting::create($data);
         $user = User::findOrFail(Auth::id());
         $meeting->url =strtolower($user->name).'-'.Str::random(4).'-'.$meeting->id.Str::random(2);
@@ -164,15 +168,16 @@ class MeetingController extends Controller
 
    private function createMeeting($name=null)
    {
-
-
        $bbb = new BigBlueButton();
        $createMeetingParams = new CreateMeetingParameters($this->meetingsParams['meetingUrl'] , $this->meetingsParams['meetingName']);
        $createMeetingParams->setLogoutUrl($this->logoutUrl);
        $createMeetingParams->setRecord(true);
        $createMeetingParams->setAttendeePassword($this->meetingsParams['attendeePassword']);
        $createMeetingParams->setModeratorPassword($this->meetingsParams['moderatorPassword']);
+       $createMeetingParams->setMuteOnStart(true);
+       $createMeetingParams->setOpenJoin();
        $response = $bbb->createMeeting($createMeetingParams);
+
 
        if ($response->getReturnCode() == 'FAILED') {
            return 'Can\'t create room! please contact our administrator.';
@@ -207,9 +212,20 @@ class MeetingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($url)
     {
         //
+        $meeting = Meeting::where('url',$url)->firstOrFail();
+
+
+
+            $pageName = ucwords($meeting->user->username);
+            $password = $meeting->user->password;
+            $room = $meeting->url;
+            return view('public.meetings.join',compact('pageName','password','room'));
+
+
+
     }
 
     /**
@@ -249,19 +265,18 @@ class MeetingController extends Controller
     public function joinMeeting($url)
     {
 
-
         $meeting  = Meeting::where('url',$url)->firstOrFail();
         $bbb = new BigBlueButton();
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters($url,$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
 
+//        dd($response);
 
+//        dd($response);
 
         if ($response->getReturnCode() == 'FAILED') {
 
-
-//            dd('creat');
             $this->logoutUrl = url($this->logoutUrl);
             $this->meetingsParams = [
                 'meetingUrl' => $meeting->url,
@@ -284,7 +299,7 @@ class MeetingController extends Controller
         }
     }
 
-    public function meetingAttendees(Meeting $meeting)
+    public function meetingAttendees(Room $meeting)
     {
         $pageName  = 'Meeting Attendees';
 

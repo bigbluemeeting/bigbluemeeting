@@ -12,9 +12,9 @@ class Attendee extends Model
       'pivot'
     ];
 
-    public function meetings()
+    public function rooms()
     {
-        return $this->belongsToMany(Meeting::class);
+        return $this->belongsToMany(Room::class);
     }
 
 }

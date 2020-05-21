@@ -20,10 +20,7 @@ class Meeting extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function attendees()
-    {
-        return $this->belongsToMany(Attendee::class);
-    }
+
 
     public function setAttendeePasswordAttribute($attendee_password)
     {
@@ -39,6 +36,8 @@ class Meeting extends Model
     {
         return ucwords($value);
     }
+
+
 
 
 

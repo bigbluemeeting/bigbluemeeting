@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Attendee;
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AttendeeMail;
 use App\Meeting;
+use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use BigBlueButton\Parameters\IsMeetingRunningParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -28,43 +31,34 @@ class AttendeeController extends Controller
         $pageName  = "Add Attendee";
 
         $user =User::FindOrFail(Auth::id());
-        $per = $user->getAllPermissions()->pluck('name')->toArray();
+        $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 
-        if (in_array('master_manage',$per))
-        {
-            $meetingsList = Meeting::pluck('name','url')->all();
+        $meetingsList = $user->rooms()
+            ->where('end_date','>=',$currentDate)
+            ->pluck('name','id')
+            ->all();
 
-            return view('admin.attendees.create',compact('meetingsList','pageName'));
+        return view('admin.attendees.create',compact('meetingsList','pageName'));
 
-        }
-        if (in_array('users_manage',$per))
-        {
-            $meetingsList = Meeting::pluck('name','id')->all();
-
-            return view('admin.attendees.create',compact('meetingsList','pageName'));
-        }
-        if (in_array('moderate',$per))
-        {
-            $meetingsList = $user->meetings()->pluck('name','id')->all();
-
-            return view('admin.attendees.create',compact('meetingsList','pageName'));
-
-        }
 
     }
 
     public function store(Request $request)
     {
 
+
         $this->validate($request,[
             'email' => 'required|email' ,
             'meeting_id'=>'required'
         ]);
 
+
         $email = $request->input('email');
         $user = User::where('email',$email)->first();
         $data=$request->all();
-        $meeting = Meeting::where('url',$request->input('meeting_id'))->firstOrFail();
+
+        $room = Room::where('id',$request->input('meeting_id'))->firstOrFail();
+
         if (!empty($user))
         {
             $data['user_id'] = $user->id;
@@ -76,7 +70,7 @@ class AttendeeController extends Controller
 
                     'toEmail' => encrypt($data['email']),
                     'fromEmail' =>  $user->email,
-                    'meeting_name'=> $meeting->name,
+                    'meeting_name'=> $room->name,
                     'meeting_id'=>encrypt($request->input('meeting_id')),
                 ]));
 
@@ -89,7 +83,7 @@ class AttendeeController extends Controller
 
         $attendee = Attendee::create(['email'=>$data['email'],'user_id'=>$data['user_id']]);
 
-        $attendee->meetings()->attach($meeting->id);
+        $attendee->rooms()->attach($room->id);
 
         return $this->create();
 
@@ -98,11 +92,7 @@ class AttendeeController extends Controller
     public function joinAttendee(Request $request)
     {
 
-
-
-
         $meeting = Meeting::where('url',$request->meeting)->firstOrFail();
-
         $bbb = new BigBlueButton();
         $user = User::findOrFail(Auth::id());
         $ismeetingRunningParams =  new IsMeetingRunningParameters($request->meeting);

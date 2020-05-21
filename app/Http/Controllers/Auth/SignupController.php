@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Attendee;
 use App\Http\Controllers\Controller;
 use App\Meeting;
+use App\Room;
 use App\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
@@ -84,10 +85,6 @@ class SignupController extends Controller
 
       }
 
-
-
-
-
         $user = new User;
         $user->name = $request->input('name');
         $user->username = $request->input('username1');
@@ -102,10 +99,11 @@ class SignupController extends Controller
         if ($request->has('meeting_id'))
         {
 
+
+
             $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
-            $meeting = Meeting::where('url',$meeting_id)->firstOrFail();
-//            dd($me)
-            $attendee->meetings()->attach($meeting->id);
+
+            $attendee->rooms()->attach($meeting_id);
 
         }
 

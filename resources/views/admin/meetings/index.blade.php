@@ -3,38 +3,28 @@
 @section('pagename', $pageName)
 @section('css')
     <style>
-        #overlay{
-            position: fixed;
-            top: 0;
-            z-index: 100;
-            width: 80%;
-            height:100%;
-            display: none;
-            background: rgba(0,0,0,0.6);
-            margin-left: -6px;
+
+        .input-icons i {
+            position: absolute;
         }
-        .cv-spinner {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        .input-icons {
+            width: 100%;
+            margin-bottom: 10px;
         }
-        .newspinner {
-            width: 100px;
-            height: 100px;
-            border: 4px #ddd solid;
-            border-top: 4px #2e93e6 solid;
-            border-radius: 50%;
-            animation: sp-anime 0.8s infinite linear;
+        .input-icon .cursor-pointer
+        {
+            cursor: pointer;
         }
-        @keyframes sp-anime {
-            100% {
-                transform: rotate(360deg);
-            }
+
+        .icon {
+            padding: 10px;
+            min-width: 40px;
         }
-        .is-hide{
-            display:none;
+        #delete-icon{
+            margin-top: -45px;
         }
+
     </style>
 @stop
 @section('content')
@@ -72,7 +62,7 @@
             <div class="col-md-3">
                 <button type="submit" name="commit" class="create-only btn btn-info btn-block" data-disable-with="Create Room" data-toggle="modal" data-target="#myModal">
                     <i class="fa fa-plus"></i>
-                    Create a Meeting
+                    Create Room
                 </button>
 
             </div>
@@ -93,60 +83,52 @@
                             <h3 class="text-center">Create New Meeting</h3>
                             <h3 class="update-only" style="display:none !important">Room Settings</h3>
                         </div>
-                        {!! Form::open(['method' => 'POST', 'route' => ['admin::meetings.store'], 'class'=>'form-horizontal']) !!}
+                        {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal']) !!}
 
                         <div class="input-icon mb-2">
-                            <span class="input-icon-addon">
-                                <i class="fas fa-chalkboard-teacher"></i>
+                            <span class="input-icons">
+                                <i class="fa fa-desktop icon ml-2"></i>
                             </span>
                             <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Meeting name..." autocomplete="off" type="text" name=" name">
 
                         </div>
 
                         <div class="input-icon mb-2">
-                            <span onclick="generateAccessCode()" class="input-icon-addon allow-icon-click cursor-pointer">
-                                <i class="fas fa-dice"></i>
+                             <span class="input-icons cursor-pointer">
+                                <i class="fa fa-lock icon ml-2 " id="generate_access_code"></i>
                             </span>
-                            <label id="create-room-access-code" class="form-control" for="room_access_code">Generate an optional room access code</label>
+                            <label id="create-room-access-code" class="form-control text-sm-center" for="room_access_code">Generate an optional room access code</label>
                             <input type="hidden" value="" name="access_code" id="room_access_code">
-                            <span onclick="ResetAccessCode()" class="input-icon-addon allow-icon-click cursor-pointer">
-                                <i class="fa fa-trash-alt"></i>
+                            <span  class="cursor-pointer" >
+                                <i class="fa fa-trash-o float-right icon" id="delete-icon"></i>
                             </span>
                         </div>
                         <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
                             <span class="custom-switch-description">Mute users when they join</span>
-{{--                            <input name="mute_on_join" type="hidden" value="0">--}}
                             <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="room_mute_on_join">
-{{--                            <span class="custom-switch-indicator float-right cursor-pointer"></span>--}}
 
                         </label>
 
                             <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
                                 <span class="custom-switch-description">Require moderator approval before joining</span>
-{{--                                <input name="require_moderator_approval" type="hidden" value="0">--}}
                                 <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">
-{{--                                <span class="custom-switch-indicator float-right cursor-pointer"></span>--}}
+
                             </label>
 
                         <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
                             <span class="custom-switch-description">Allow any user to start this meeting</span>
-{{--                            <input name="anyone_can_start" type="hidden" value="0">--}}
                             <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="anyone_can_start" id="room_anyone_can_start">
-{{--                            <span class="custom-switch-indicator float-right cursor-pointer"></span>--}}
                         </label>
 
                         <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
                             <span class="custom-switch-description">All users join as moderators</span>
-{{--                            <input name="all_join_moderator" type="hidden" value="0">--}}
                             <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="all_join_moderator" id="room_all_join_moderator">
-{{--                            <span class="custom-switch-indicator float-right cursor-pointer"></span>--}}
                         </label>
 
                         <label id="auto-join-label" class="create-only custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block">
                             <span class="custom-switch-description">Automatically join me into the room</span>
-{{--                            <input name="auto_join" type="hidden" value="0" style="display: inline-block;">--}}
                             <input class="custom-switch-input" type="checkbox" value="1" name="auto_join" id="room_auto_join">
-{{--                            <span class="custom-switch-indicator float-right cursor-pointer"></span>--}}
+
                         </label>
 
                         <div class="mt-4">
@@ -193,6 +175,7 @@
                                     <th>Room Name</th>
                                     <th>Create Date</th>
                                     <th>Created By</th>
+                                    <th>Invite Participants</th>
                                     <th>Action</th>
 
 
@@ -204,15 +187,16 @@
                                 @foreach($roomList as $list)
                                     <tr>
 
-                                        <td><a href="{{route('admin::meetingAttendees',$list->id)}}">{{$list->name}}</a></td>
+                                        <td>{{$list->name}}</td>
                                         <td>{{$list->created_at->diffForHumans()}}</td>
                                         <td>{{$list->user->name}}</td>
-                                        <td>
+                                        <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
+                                        <td >
                                             @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-                                            <a href="{{ route('admin::JoinMeetings',[$list->url]) }}" class="btn btn-sm btn-info">Start</a>
+                                            <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-lg  btn-info from-control">Start</a>
                                             @else
 {{--                                                {{ route('admin::JoinAttendee',[$list->url]) }}--}}
-                                                <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-sm btn-info attendeeJoin" id="">Join</a>
+                                                <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-lg btn-info attendeeJoin from-control" id="">Join</a>
                                             @endif
                                         </td>
 
@@ -228,8 +212,6 @@
                             </table>
 
                     </section>
-
-
             </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-5">
@@ -243,15 +225,32 @@
 
 @endsection
 
+
 @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
 
-            $('.attendeeJoin').on('click',function () {
-                // e.preventDefault();
-                let meeting = $(this).data('id');
+            $('#generate_access_code').on('click',function () {
 
+                var arr = [];
+                while(arr.length < 6){
+                    var r = Math.floor(Math.random() * 9) + 1;
+                    if(arr.indexOf(r) === -1) arr.push(r);
+                }
+                $('#room_access_code').val(arr.join(''));
+                $('#create-room-access-code').text('Access Code: '+arr.join(''))
+
+            });
+            $('#delete-icon').on('click',function () {
+
+
+                $('#room_access_code').val('');
+                $('#create-room-access-code').text('Generate an optional room access code')
+
+            });
+            $('.attendeeJoin').on('click',function () {
+                let meeting = $(this).data('id');
                 setInterval(function () {
                     $.ajax({
                         type:'POST',
@@ -285,4 +284,3 @@
 
     </script>
 @stop
-
