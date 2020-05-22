@@ -70,23 +70,27 @@ Route::get('/', function () {
  * Public Routes
  */
 
-Route::get('rooms/invite-meetings','PublicControllers\RoomsController@inviteAttendee')->name('invitedMeetings');
-Route::resource('rooms','PublicControllers\RoomsController');
-Route::post('/rooms/joins','PublicControllers\RoomsController@join')->name('join');
+Route::get('rooms/invite-meetings','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+Route::resource('rooms','PublicControllers\Rooms\RoomsController');
+Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
 Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
-Route::resource('/meetings','Admin\MeetingController');
 Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
-
-
+Route::resource('/meetings','Admin\MeetingController');
+Route::post('/meetings/access','PublicControllers\Meetings\AttendeesMeetingController@accessCodeResult')->name('accessCodeResult');
+Route::get('/meetings/access/{url}','PublicControllers\Meetings\AttendeesMeetingController@checkCode')->name('checkCode');
+Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
+Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');
 
 /**
  * Routes For Ajax Call
  */
 Route::middleware('ajax.check')->group(function ()
 {
-    Route::post('/rooms/AuthAttendeeJoin','PublicControllers\AttendeesRoomController@authAttendeeJoin')->name('AuthAttendeeJoin');
-    Route::post('/rooms/attendeeJoin','PublicControllers\AttendeesRoomController@Join')->name('attendeeJoin');
-
+    Route::post('/rooms/AuthAttendeeJoin','PublicControllers\Rooms\AttendeesRoomController@authAttendeeJoin')->name('AuthAttendeeJoin');
+    Route::post('/rooms/attendeeJoin','PublicControllers\Rooms\AttendeesRoomController@Join')->name('attendeeJoin');
     Route::post('/attendee/joins','Admin\AttendeeController@joinAttendee')->name('JoinAuthAttendee')->middleware('auth');
+    Route::post('/meetings/attendeeJoin','PublicControllers\Meetings\AttendeesMeetingController@joinMeetingAttendee')->name('meetingAttendeesJoin');
+
+
 
 });

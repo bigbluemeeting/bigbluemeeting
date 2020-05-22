@@ -22,6 +22,7 @@ class AttendeesRoomController extends Controller
 
 
 
+
         $validator = Validator::make($request->all(),[
             'name' =>'required'
         ],[

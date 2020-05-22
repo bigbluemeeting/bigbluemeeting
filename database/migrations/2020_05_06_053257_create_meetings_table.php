@@ -19,6 +19,7 @@ class CreateMeetingsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('access_code')->nullable();
+            $table->tinyInteger('access_check')->default(0);
             $table->tinyInteger('mute_on_join');
             $table->tinyInteger('require_moderator_approval');
             $table->tinyInteger('anyone_can_start')->default();

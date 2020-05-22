@@ -24,6 +24,40 @@
         #delete-icon{
             margin-top: -45px;
         }
+        input[type="checkbox"]
+        {
+            position: relative;
+            width: 70px;
+            height: 30px;
+            -webkit-appearance: none;
+            background: #c6c6c6;
+            outline: none;
+            border-radius: 30px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,2);
+            transition: .5s;
+        }
+        input:checked[type="checkbox"]
+        {
+            background: #03a9f4;
+        }
+        input[type="checkbox"]:before
+        {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 100px;
+            top: 0;
+            left: 0;
+            background: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,2);
+            transition: .5s;
+        }
+        input:checked[type="checkbox"]:before
+        {
+            left: 40px;
+        }
 
     </style>
 @stop
@@ -95,7 +129,7 @@
 
                         <div class="input-icon mb-2">
                              <span class="input-icons cursor-pointer">
-                                <i class="fa fa-lock icon ml-2 " id="generate_access_code"></i>
+                                <i class="fa fa-lock icon ml-2" id="generate_access_code"></i>
                             </span>
                             <label id="create-room-access-code" class="form-control text-sm-center" for="room_access_code">Generate an optional room access code</label>
                             <input type="hidden" value="" name="access_code" id="room_access_code">
@@ -103,34 +137,60 @@
                                 <i class="fa fa-trash-o float-right icon" id="delete-icon"></i>
                             </span>
                         </div>
-                        <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                            <span class="custom-switch-description">Mute users when they join</span>
-                            <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="room_mute_on_join">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <label for="room_mute_on_join" class="custom-switch pl-0 mt-3 mb-3 w-100 text-sm-left">
+                                    <span class="custom-switch-description">Mute users when they join</span>
+                                </label>
+                            </div>
+                            <div class="col-sm-3 ml-4 mt-3">
+                                <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="room_mute_on_join">
+                            </div>
+                        </div>
 
-                        </label>
+                        <div class="row mt-2">
+                            <div class="col-sm-8">
+                                <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
+                                    <span class="custom-switch-description">Require moderator approval before joining</span>
+                                </label>
 
-                            <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                                <span class="custom-switch-description">Require moderator approval before joining</span>
+                            </div>
+                            <div class="col-sm-3 ml-4 mt-4">
                                 <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">
+                            </div>
+                        </div>
+                        <div class="row  mt-2">
+                            <div class="col-sm-8">
+                                <label for="room_anyone_can_start" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
+                                    <span class="custom-switch-description">Allow any user to start this meeting</span>
+                                </label>
+                            </div>
+                            <div class="col-sm-3 ml-4 mt-3">
+                                <input class="custom-switch-input " data-default="false" type="checkbox" value="1" name="anyone_can_start" id="room_anyone_can_start">
+                            </div>
+                        </div>
 
-                            </label>
+                        <div class="row  mt-2">
+                            <div class="col-sm-8">
+                                <label for="room_all_join_moderator" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
+                                    <span class="custom-switch-description">All users join as moderators</span>
+                                </label>
+                            </div>
+                            <div class="col-sm-3 ml-4 mt-4">
+                                <input class="custom-switch-input " data-default="false" type="checkbox" value="1" name="all_join_moderator" id="room_all_join_moderator">
+                            </div>
+                        </div>
+                        <div class="row  mt-2">
+                            <div class="col-sm-8">
+                                <label  for="room_auto_join" id="auto-join-label" class="create-only custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block">
+                                    <span class="custom-switch-description">Automatically join me into the room</span>
+                                </label>
 
-                        <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                            <span class="custom-switch-description">Allow any user to start this meeting</span>
-                            <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="anyone_can_start" id="room_anyone_can_start">
-                        </label>
-
-                        <label class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                            <span class="custom-switch-description">All users join as moderators</span>
-                            <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="all_join_moderator" id="room_all_join_moderator">
-                        </label>
-
-                        <label id="auto-join-label" class="create-only custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block">
-                            <span class="custom-switch-description">Automatically join me into the room</span>
-                            <input class="custom-switch-input" type="checkbox" value="1" name="auto_join" id="room_auto_join">
-
-                        </label>
-
+                            </div>
+                            <div class="col-sm-3 ml-4 mt-4">
+                                <input class="custom-switch-input" type="checkbox" value="1" name="auto_join" id="room_auto_join">
+                            </div>
+                        </div>
                         <div class="mt-4">
                             <input type="submit" value="Create Meeting" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
                             <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">

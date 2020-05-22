@@ -60,14 +60,19 @@
     <div class="container">
         <div class="row">
 
-
         </div>
     </div>
 
-    <div class="row">
 
-    </div>
-    <form class="text-center p-5" action="{{route('attendeeJoin')}}" method="Post" id="frm">
+
+
+    @if($room->all_join_moderator)
+        <form action="{{route('attendeeJoinAsModerator')}}" method="post">
+            @elseif($room->anyone_can_start)
+                <form action="{{route('attendeeStartRoom')}}" method="post">
+            @else
+                <form class="text-center p-5"   action="{{route('meetingAttendeesJoin')}}" method="Post" id="frm">
+                    @endif
 
         @csrf
 
@@ -79,12 +84,7 @@
         </span>
 
             <input type="text" name="name" class="form-control mb-4 text-center" placeholder="Enter Your Name">
-
-
-
-            @csrf
-            <input type="hidden" value="{{encrypt($password)}}" name="user">
-            <input type="hidden" value="{{encrypt($room)}}" name="room">
+            <input type="hidden" value="{{encrypt($room->url)}}" name="room">
 
             <!-- Email -->
         </div>
@@ -92,11 +92,20 @@
 
 
             <!-- Sign in button -->
-            <button class="btn btn-info btn-block" type="submit">Join</button>
+
+            <button class="btn btn-info btn-block" type="submit">
+               @if($room->all_join_moderator)
+                Start
+                @elseif($room->anyone_can_start)
+                   Start
+                   @else
+                    Join
+                   @endif
+
+            </button>
         </div>
 
     </form>
-
 
 
     <!-- Sign in button -->
@@ -117,11 +126,26 @@
     <script>
         $(document).ready(function () {
 
+            $('#access_frm').on('submit',function (e) {
+                e.preventDefault();
+               let frmData = $(this).serialize();
+
+               $.post('{{route("accessCodeResult")}}',frmData,function (data) {
+                   if (data.result)
+                   {
+                       $('#frm').show();
+                       $('#access_frm').hide();
+                   }
+               })
+
+            })
+
             $('#frm').on('submit',function (e) {
+
                 e.preventDefault();
                 let frmData =$(this).serialize();
                 setInterval(function () {
-                    $.post('{{route("attendeeJoin")}}',frmData,
+                    $.post('{{route("meetingAttendeesJoin")}}',frmData,
                         function (data,xhrStatus,xhr) {
                             if (data.error)
                             {
@@ -140,7 +164,7 @@
                                 window.location =data.url;
                             }
                         });
-                },300);
+                },1000);
             });
 
         });

@@ -3,7 +3,9 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class Meeting extends Model
 {
@@ -22,15 +24,7 @@ class Meeting extends Model
 
 
 
-    public function setAttendeePasswordAttribute($attendee_password)
-    {
-        $this->attributes['attendee_password'] =  Crypt::encrypt($attendee_password);
-    }
 
-    public function setModeratorPasswordAttribute($moderator_password)
-    {
-        $this->attributes['moderator_password'] =  Crypt::encrypt($moderator_password);
-    }
 
     public function getNameAttribute($value)
     {
