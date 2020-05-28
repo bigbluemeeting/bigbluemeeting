@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicControllers\Meetings;
 
 use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
+use App\Helpers\Helper;
 use App\Http\Controllers\Admin\MeetingController;
 use App\Http\Controllers\Controller;
 use App\Meeting;
@@ -33,21 +34,14 @@ class  AttendeesMeetingController extends Controller
         {
             $meeting = Meeting::where('url',decrypt($request->input('room')))
                 ->firstOrFail();
+
             $meeting->access_check = 1;
             $meeting->save();
             return redirect()->to(route('meetings.show',decrypt($request->input('room'))));
         }
     }
-
-    public function checkCode($url)
-    {
-
-    }
     public function joinMeetingAttendee(Request $request)
     {
-
-
-
         $validator = Validator::make($request->all(),[
             'name' =>'required'
         ],[
@@ -63,32 +57,22 @@ class  AttendeesMeetingController extends Controller
 
         $room = Meeting::where('url',decrypt($request->input('room')))->firstOrFail();
         $bbb = new BigBlueButton();
-        $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),decrypt($room->attendee_password));
-        $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
-
-
-
         $ismeetingRunningParams =  new IsMeetingRunningParameters(decrypt($request->input('room')));
         $response =$bbb->isMeetingRunning($ismeetingRunningParams);
 
         if ($response->getRawXml()->running == 'false')
         {
-
             return response()->json(['notStart'=>true]);
-
         }
         else{
+            $joinMeetingParams = [
 
-            if ($room->all_join_moderator)
-            {
-              dd($room->user->password);
-            }
-
-            $joinMeetingParams = new JoinMeetingParameters(decrypt($request->input('room')), $request->input('name'),decrypt($room->attendee_password));
-            $joinMeetingParams->setRedirect(true);
-//                $joinMeetingParams->guest('true');
-            $url = $bbb->getJoinMeetingURL($joinMeetingParams);
-            return response()->json(['url'=>$url]);
+                'meetingId'  => decrypt($request->input('room')),
+                'username'   => $request->input('name'),
+                'password'   => decrypt($room->attendee_password)
+            ];
+           $url = Helper::joinMeeting($joinMeetingParams);
+           return response()->json(['url'=>$url]);
 
 
         }
@@ -102,29 +86,28 @@ class  AttendeesMeetingController extends Controller
         $meeting = Meeting::where('url',decrypt($request->input('room')))
             ->firstOrFail();
 
+        $meetingsParams = [
 
-//        dd(decrypt($meeting->attendee_password));
-
-        $bbb = new BigBlueButton();
-        $createMeetingParams = new CreateMeetingParameters(decrypt($request->input('room')) , $meeting->name);
-        $createMeetingParams->setLogoutUrl('/meetings/'.decrypt($request->input('room')));
-        $createMeetingParams->setRecord(true);
-        $createMeetingParams->setAttendeePassword(decrypt($meeting->attendee_password));
-        $createMeetingParams->setModeratorPassword($meeting->user->password);
-        $createMeetingParams->setMuteOnStart($meeting->mute_on_join);
-        $createMeetingParams->setLockSettingsDisableMic($meeting->mute_on_join);
-        $createMeetingParams->setAllowStartStopRecording(true);
-
-        $response = $bbb->createMeeting($createMeetingParams);
+            'meetingUrl' => decrypt($request->input('room')),
+            'meetingName' => $meeting->name,
+            'attendeePassword' => decrypt($meeting->attendee_password),
+            'moderatorPassword' => $meeting->user->password,
+            'muteAllUser' => $meeting->mute_on_join,
+            'logoutUrl' => '/meetings/'.decrypt($request->input('room')),
+            'setRecord' => true,
 
 
-        $joinMeetingParams = new JoinMeetingParameters(decrypt($request->input('room')), $request->input('name'), decrypt($meeting->attendee_password));
-        $joinMeetingParams->setRedirect(true);
+        ];
 
-        $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
-        return redirect()->to($apiUrl);
+            $response = Helper::createMeeting($meetingsParams);
+            $joinMeetingParams = [
+                    'meetingId'  => decrypt($request->input('room')),
+                    'username'   => $request->input('name'),
+                    'password'   => decrypt($meeting->attendee_password)
+                ];
 
-
+            $apiUrl = Helper::joinMeeting($joinMeetingParams);
+            return redirect()->to($apiUrl);
 
     }
     public function attendeeJoinAsModerator(Request $request)
@@ -135,25 +118,25 @@ class  AttendeesMeetingController extends Controller
             ->firstOrFail();
 
 
-//        dd(decrypt($meeting->attendee_password));
+        $meetingsParams = [
 
-        $bbb = new BigBlueButton();
-        $createMeetingParams = new CreateMeetingParameters(decrypt($request->input('room')) , $meeting->name);
-        $createMeetingParams->setLogoutUrl('/meetings/'.decrypt($request->input('room')));
-        $createMeetingParams->setRecord(true);
-        $createMeetingParams->setAttendeePassword(decrypt($meeting->attendee_password));
-        $createMeetingParams->setModeratorPassword($meeting->user->password);
-        $createMeetingParams->setMuteOnStart($meeting->mute_on_join);
-        $createMeetingParams->setLockSettingsDisableMic($meeting->mute_on_join);
-        $createMeetingParams->setAllowStartStopRecording(true);
+            'meetingUrl' => decrypt($request->input('room')),
+            'meetingName' => $meeting->name,
+            'attendeePassword' => decrypt($meeting->attendee_password),
+            'moderatorPassword' => $meeting->user->password,
+            'muteAllUser' => $meeting->mute_on_join,
+            'logoutUrl' => '/meetings/'.decrypt($request->input('room')),
+            'setRecord' => true,
+        ];
+        $response  = Helper::createMeeting($meetingsParams);
+        $joinMeetingParams = [
 
-        $response = $bbb->createMeeting($createMeetingParams);
+            'meetingId'  => decrypt($request->input('room')),
+            'username'   => $request->input('name'),
+            'password'   => $meeting->user->password
+        ];
 
-
-        $joinMeetingParams = new JoinMeetingParameters(decrypt($request->input('room')), $request->input('name'), $meeting->user->password);
-        $joinMeetingParams->setRedirect(true);
-
-        $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
+        $apiUrl = Helper::joinMeeting($joinMeetingParams);
         return redirect()->to($apiUrl);
 
 

@@ -6,6 +6,9 @@ namespace App\Helpers;
 
 
 
+use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
+use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -13,7 +16,7 @@ use Illuminate\Support\Collection;
 class Helper
 {
 
-    public static function paginate($items, $perPage = null, $page = null, $options = [])
+     public static function paginate($items, $perPage = null, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
@@ -31,6 +34,45 @@ class Helper
 
         return $tz;
 
+    }
+
+    public static function createMeeting($params)
+    {
+        $bbb = new BigBlueButton();
+        $createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
+        $createMeetingParams->setAttendeePassword($params['attendeePassword']);
+        $createMeetingParams->setModeratorPassword($params['moderatorPassword']);
+        $createMeetingParams->setLogoutUrl($params['logoutUrl']);
+        if (isset($params['muteAllUser']))
+        {
+            $createMeetingParams->setMuteOnStart($params['muteAllUser']);
+            $createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
+        }
+        if (isset($params['moderator_approval']))
+        {
+            $params['moderator_approval'] ? $createMeetingParams->setModerateJoin() :$createMeetingParams->setOpenJoin();
+        }
+        if (isset($params['setRecord']))
+        {
+            $createMeetingParams->setRecord($params['setRecord']);
+            $createMeetingParams->setAllowStartStopRecording($params['setRecord']);
+        }
+        if (isset($params['welcome_message']))
+        {
+            $createMeetingParams->setWelcomeMessage($params['welcome_message']);
+        }
+
+        $response = $bbb->createMeeting($createMeetingParams);
+        return $response;
+    }
+
+    public static function joinMeeting($params)
+    {
+        $bbb = new BigBlueButton();
+        $joinMeetingParams = new JoinMeetingParameters($params['meetingId'], $params['username'], $params['password']);
+        $joinMeetingParams->setRedirect(true);
+        $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
+        return $apiUrl;
     }
 
 }

@@ -9,16 +9,11 @@ use App\Meeting;
 use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
-//use BigBlueButton\Parameters\CreateMeetingParameters;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
-use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
-use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
+
 
 class MeetingController extends Controller
 {
@@ -29,11 +24,8 @@ class MeetingController extends Controller
     protected $logoutUrl = '/admin/meetings';
     protected $meetingsParams = [];
     protected $meetingUrl,$meetingName,$attendeePassword,$moderatorPassword;
-//    public function __construct()
-//    {
-////        $this->middleware('auth');
-//
-//    }
+    protected $autoJoin;
+
 
     /**
      * Meeting List
@@ -84,8 +76,6 @@ class MeetingController extends Controller
         ]);
 
         $data = $request->all();
-
-//        $notSet = 0;
         $request->has('mute_on_join') ? $data['mute_on_join'] :$data['mute_on_join'] = 0;
         $request->has('require_moderator_approval') ? $data['require_moderator_approval'] :$data['require_moderator_approval'] =0 ;
         $request->has('anyone_can_start') ? $data['anyone_can_start']: $data['anyone_can_start'] =0;
@@ -100,7 +90,6 @@ class MeetingController extends Controller
 
         $this->logoutUrl = url($this->logoutUrl);
 
-
         $this->meetingsParams = [
             'meetingUrl' => $meeting->url,
             'meetingName' =>  $request->input('name'),
@@ -108,57 +97,50 @@ class MeetingController extends Controller
             'moderatorPassword' => $user->password,
             'muteAllUser' => $data['mute_on_join'] ? true :false,
             'moderator_approval' =>$data['require_moderator_approval'] ? true :false,
+            'logoutUrl' => $this->logoutUrl,
+            'setRecord' =>true,
+            'username' => Auth::user()->username,
 
         ];
-
+        $this->autoJoin = $data['auto_join'];
         return $this->createMeeting('create');
 
 
     }
 
-   private function createMeeting($name=null)
-   {
+    private function createMeeting($name=null)
+    {
+        $response = Helper::createMeeting($this->meetingsParams);
+        if ($response->getReturnCode() == 'FAILED') {
+            return 'Can\'t create room! please contact our administrator.';
+        } else {
+
+            $joinMeetingParams = [
+
+                'meetingId'  => $this->meetingsParams['meetingUrl'],
+                'username'   => $this->meetingsParams['username'],
+                'password'   => $this->meetingsParams['moderatorPassword']
+            ];
+
+            if ($name== 'create')
+            {
+                if ($this->autoJoin)
+                {
+                    $url = Helper::joinMeeting($joinMeetingParams);
+                    return redirect()->to($url);
+                }
+                return $this->index();
+            }
+            else
+            {
+                $url = Helper::joinMeeting($joinMeetingParams);
+                return redirect()->to($url);
+            }
+
+        }
 
 
-       $bbb = new BigBlueButton();
-       $createMeetingParams = new CreateMeetingParameters($this->meetingsParams['meetingUrl'] , $this->meetingsParams['meetingName']);
-       $createMeetingParams->setLogoutUrl($this->logoutUrl);
-       $createMeetingParams->setRecord(true);
-       $createMeetingParams->setAttendeePassword($this->meetingsParams['attendeePassword']);
-       $createMeetingParams->setModeratorPassword($this->meetingsParams['moderatorPassword']);
-       $createMeetingParams->setMuteOnStart($this->meetingsParams['muteAllUser']);
-       $createMeetingParams->setLockSettingsDisableMic($this->meetingsParams['muteAllUser']);
-       $createMeetingParams->setAllowStartStopRecording(true);
-       $this->meetingsParams['moderator_approval'] ? $createMeetingParams->setModerateJoin() :$createMeetingParams->setOpenJoin();
-       $response = $bbb->createMeeting($createMeetingParams);
-
-       if ($response->getReturnCode() == 'FAILED') {
-           return 'Can\'t create room! please contact our administrator.';
-
-       } else {
-
-           $getMeetingInfoParams = new GetMeetingInfoParameters($this->meetingsParams['meetingUrl'],$this->meetingsParams['moderatorPassword']);
-           $response = $bbb->getMeetingInfo($getMeetingInfoParams);
-
-
-
-           if ($name== 'create')
-           {
-               return $this->index();
-           }
-           else
-           {
-
-               $joinMeetingParams = new JoinMeetingParameters($this->meetingsParams['meetingUrl'], $this->meetingsParams['username'], $this->meetingsParams['moderatorPassword']);
-               $joinMeetingParams->setRedirect(true);
-               $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
-               return redirect()->to($apiUrl);
-           }
-
-       }
-
-
-   }
+    }
 
     /**
      * Display the specified resource.
@@ -233,17 +215,11 @@ class MeetingController extends Controller
 
     public function joinMeeting($url)
     {
-
-
         $meeting  = Meeting::where('url',$url)->firstOrFail();
         $bbb = new BigBlueButton();
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters($url,$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
-
-//        echo $response->getRawXml()->meetingID;
-//        exit;
-//        dd($response->getRawXml()->meetingID);
 
         if ($response->getReturnCode() == 'FAILED') {
 
@@ -256,6 +232,8 @@ class MeetingController extends Controller
                 'username' => $user->name,
                 'muteAllUser' => $meeting->mute_on_join,
                 'moderator_approval' =>$meeting->require_moderator_approval,
+                'logoutUrl' => $this->logoutUrl,
+                'setRecord' => true,
             ];
 
             return $this->createMeeting();
@@ -263,26 +241,18 @@ class MeetingController extends Controller
         } else {
 
 
+            $joinMeetingParams = [
 
-            $joinMeetingParams = new JoinMeetingParameters($url, $user->name, $user->password);
-            $joinMeetingParams->setRedirect(true);
-            $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
-            return redirect()->to($apiUrl);
+                'meetingId'  => $url,
+                'username'   => $user->name,
+                'password'   => $user->password
+            ];
+
+            $url = Helper::joinMeeting($joinMeetingParams);
+            return redirect()->to($url);
         }
     }
 
-    public function meetingAttendees(Room $meeting)
-    {
-        $pageName  = 'Meeting Attendees';
-
-        $attendees =  $meeting->attendees->unique('email')->values();
-        $attendees = Helper::paginate($attendees,10,null,[
-            'path' => ''
-        ]);
-
-
-        return view('admin.meetings.attendees',compact('pageName','attendees'));
-    }
 
 
 

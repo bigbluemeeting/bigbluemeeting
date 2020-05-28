@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PublicControllers\Rooms;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Meeting;
 use App\Room;
@@ -19,9 +20,6 @@ class AttendeesRoomController extends Controller
     //
     public function join(Request $request)
     {
-
-
-
 
         $validator = Validator::make($request->all(),[
             'name' =>'required'
@@ -54,11 +52,14 @@ class AttendeesRoomController extends Controller
 
             if ($room->maximum_people > $participant->getRawXml()->participantCount )
             {
+                $joinMeetingParams = [
 
-                $joinMeetingParams = new JoinMeetingParameters(decrypt($request->input('room')), $request->input('name'),decrypt($room->attendee_password));
-                $joinMeetingParams->setRedirect(true);
-//                $joinMeetingParams->guest('true');
-                $url = $bbb->getJoinMeetingURL($joinMeetingParams);
+                    'meetingId' => decrypt($request->input('room')),
+                    'username'  => $request->input('name'),
+                    'password'  => decrypt($room->attendee_password)
+                ];
+
+                $url = Helper::joinMeeting($joinMeetingParams);
                 return response()->json(['url'=>$url]);
             }
             else{
@@ -95,11 +96,12 @@ class AttendeesRoomController extends Controller
 
             if ($room->maximum_people > $participant->getRawXml()->participantCount )
             {
-                $attendeePassword = 'attendeePassword';
-                $joinMeetingParams = new JoinMeetingParameters($request->meeting,Auth::user()->username,decrypt($room->attendee_password));
-                $joinMeetingParams->setRedirect(true);
-//                $joinMeetingParams->guest('true');
-                $url = $bbb->getJoinMeetingURL($joinMeetingParams);
+                $joinMeetingParams = [
+                    'meetingId' => $request->meeting,
+                    'username'  => Auth::user()->username,
+                    'password'  => decrypt($room->attendee_password)
+                ];
+                $url = Helper::joinMeeting($joinMeetingParams);
                 return response()->json(['url'=>$url]);
             }
             else{

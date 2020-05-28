@@ -26,6 +26,8 @@ class CreateRoomsTable extends Migration
             $table->string('welcome_message')->nullable();
             $table->string('meeting_record')->nullable();
             $table->text('attendee_password')->nullable();
+            $table->tinyInteger('mute_on_join')->default(0);
+            $table->tinyInteger('require_moderator_approval')->default(0);
             $table->timestamps();
 
         });

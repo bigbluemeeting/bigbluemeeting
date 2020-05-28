@@ -24,7 +24,7 @@
             </div>
 
             <section class="example">
-
+                <div class="table-responsive">
                     <table class="table table-bordered table-hover">
                         <thead>
                         <tr>
@@ -64,6 +64,7 @@
 
                         </tbody>
                     </table>
+                </div>
             </section>
 
         </div>

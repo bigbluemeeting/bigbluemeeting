@@ -24,47 +24,50 @@
                 </div>
 
                 <section class="example">
-                <table class="table table-bordered table-hover">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Roles</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Roles</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
 
-                        @if (count($users) > 0)
-                            @foreach($users as $user)
-                                <tr>
-                                    <td>{{ $user->id }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
-                                    <td>
-                                        @foreach ($user->roles()->pluck('name') as $permission)
-                                            <span class="badge badge-danger">{{ $permission }}</span>
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('admin::users.edit',[$user->id]) }}" class="btn btn-sm btn-info">Edit</a>
-                                        {!! Form::open(array(
-                                            'style' => 'display: inline-block;',
-                                            'method' => 'DELETE',
-                                            'onsubmit' => "return confirm('Are you sure do you want to delete?');",
-                                            'route' => ['admin::users.destroy', $user->id])) !!}
-                                        {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}
-                                        {!! Form::close() !!}
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            No Users Found.
-                        @endif
+                            @if (count($users) > 0)
+                                @foreach($users as $user)
+                                    <tr>
+                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $user->name }}</td>
+                                        <td>{{ $user->email }}</td>
+                                        <td>
+                                            @foreach ($user->roles()->pluck('name') as $permission)
+                                                <span class="badge badge-danger">{{ $permission }}</span>
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('admin::users.edit',[$user->id]) }}" class="btn btn-sm btn-info">Edit</a>
+                                            {!! Form::open(array(
+                                                'style' => 'display: inline-block;',
+                                                'method' => 'DELETE',
+                                                'onsubmit' => "return confirm('Are you sure do you want to delete?');",
+                                                'route' => ['admin::users.destroy', $user->id])) !!}
+                                            {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}
+                                            {!! Form::close() !!}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                No Users Found.
+                            @endif
 
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+
+                    </div>
                 </section>
 
             </div>

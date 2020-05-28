@@ -44,8 +44,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
     Route::patch('/change_password', 'Admin\ChangePasswordController@changePassword')->name('change_password');
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
-    Route::get('/meeting-attendees/{meeting}','Admin\MeetingController@meetingAttendees')->name('meetingAttendees');
-
     Route::resource('/recordings','Admin\RecordingsController');
     Route::resource('/attendees','Admin\AttendeeController');
 
@@ -71,6 +69,7 @@ Route::get('/', function () {
  */
 
 Route::get('rooms/invite-meetings','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+Route::get('rooms/invite-participant/{url}','PublicControllers\Rooms\RoomsController@inviteParticipant')->name('invite-participant');
 Route::resource('rooms','PublicControllers\Rooms\RoomsController');
 Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
 Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
@@ -84,13 +83,15 @@ Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\Atte
 /**
  * Routes For Ajax Call
  */
+
 Route::middleware('ajax.check')->group(function ()
 {
     Route::post('/rooms/AuthAttendeeJoin','PublicControllers\Rooms\AttendeesRoomController@authAttendeeJoin')->name('AuthAttendeeJoin');
     Route::post('/rooms/attendeeJoin','PublicControllers\Rooms\AttendeesRoomController@Join')->name('attendeeJoin');
     Route::post('/attendee/joins','Admin\AttendeeController@joinAttendee')->name('JoinAuthAttendee')->middleware('auth');
     Route::post('/meetings/attendeeJoin','PublicControllers\Meetings\AttendeesMeetingController@joinMeetingAttendee')->name('meetingAttendeesJoin');
-
+    Route::post('/rooms/attendeeJoin','PublicControllers\Rooms\AttendeesRoomController@Join')->name('attendeeJoin');
+    Route::post('/meeting-attendees','PublicControllers\Rooms\RoomsController@roomAttendees')->name('roomAttendees');
 
 
 });

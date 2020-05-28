@@ -20,11 +20,11 @@ class CreateMeetingsTable extends Migration
             $table->string('name');
             $table->string('access_code')->nullable();
             $table->tinyInteger('access_check')->default(0);
-            $table->tinyInteger('mute_on_join');
-            $table->tinyInteger('require_moderator_approval');
-            $table->tinyInteger('anyone_can_start')->default();
-            $table->tinyInteger('all_join_moderator')->default();
-            $table->tinyInteger('auto_join')->default();
+            $table->tinyInteger('mute_on_join')->default(0);
+            $table->tinyInteger('require_moderator_approval')->default(0);
+            $table->tinyInteger('anyone_can_start')->default(0);
+            $table->tinyInteger('all_join_moderator')->default(0);
+            $table->tinyInteger('auto_join')->default(0);
             $table->string('url')->nullable();
             $table->text('attendee_password')->nullable();
             $table->unsignedBigInteger('user_id');

@@ -78,13 +78,8 @@ class AttendeeController extends Controller
                 return $this->create();
             }
 
-
-
-
         $attendee = Attendee::create(['email'=>$data['email'],'user_id'=>$data['user_id']]);
-
         $attendee->rooms()->attach($room->id);
-
         return $this->create();
 
     }
@@ -97,17 +92,20 @@ class AttendeeController extends Controller
         $user = User::findOrFail(Auth::id());
         $ismeetingRunningParams =  new IsMeetingRunningParameters($request->meeting);
         $response =$bbb->isMeetingRunning($ismeetingRunningParams);
-
-
         if ($response->getRawXml()->running == 'false')
         {
             return response()->json(['notStart'=>true]);
         }else
         {
 
-            $joinMeetingParams = new JoinMeetingParameters($request->meeting, $user->name, decrypt(decrypt($meeting->attendee_password)));
-            $joinMeetingParams->setRedirect(true);
-            $url = $bbb->getJoinMeetingURL($joinMeetingParams);
+            $joinMeetingParams = [
+
+                'meetingId'  => $request->meeting,
+                'username'   => $user->name,
+                'password'   => decrypt(decrypt($meeting->attendee_password))
+            ];
+
+            $url = Helper::joinMeeting($joinMeetingParams);
             return response()->json(['url'=>$url]);
         }
 

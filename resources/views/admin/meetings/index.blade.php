@@ -228,51 +228,53 @@
 
                     <section class="example">
                         @if (count($roomList) > 0)
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-
-                                    <th>Room Name</th>
-                                    <th>Create Date</th>
-                                    <th>Created By</th>
-                                    <th>Invite Participants</th>
-                                    <th>Action</th>
-
-
-                                </tr>
-                                </thead>
-                                <tbody>
-
-
-                                @foreach($roomList as $list)
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
                                     <tr>
 
-                                        <td>{{$list->name}}</td>
-                                        <td>{{$list->created_at->diffForHumans()}}</td>
-                                        <td>{{$list->user->name}}</td>
-                                        <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
-                                        <td >
-                                            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-                                            <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-lg  btn-info from-control">Start</a>
-                                            @else
-{{--                                                {{ route('admin::JoinAttendee',[$list->url]) }}--}}
-                                                <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-lg btn-info attendeeJoin from-control" id="">Join</a>
-                                            @endif
-                                        </td>
-
+                                        <th>Room Name</th>
+                                        <th>Create Date</th>
+                                        <th>Created By</th>
+                                        <th>Invite Participants</th>
+                                        <th>Action</th>
 
 
                                     </tr>
-                                @endforeach
-                                @else
-                                    No Meetings Found.
-                                @endif
+                                    </thead>
+                                    <tbody>
 
-                                </tbody>
-                            </table>
 
+                                    @foreach($roomList as $list)
+                                        <tr>
+
+                                            <td>{{$list->name}}</td>
+                                            <td>{{$list->created_at->diffForHumans()}}</td>
+                                            <td>{{$list->user->name}}</td>
+                                            <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
+                                            <td >
+                                                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+                                                    <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-sm  btn-info ">Start</a>
+                                                @else
+                                                    {{--                                                {{ route('admin::JoinAttendee',[$list->url]) }}--}}
+                                                    <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-lg btn-info attendeeJoin from-control" id="">Join</a>
+                                                @endif
+                                            </td>
+
+
+
+                                        </tr>
+                                    @endforeach
+                                    @else
+                                        No Meetings Found.
+                                    @endif
+
+                                    </tbody>
+                                </table>
+
+                            </div>
                     </section>
-            </div>
+                </div>
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-5">
                             {{$roomList->links()}}
