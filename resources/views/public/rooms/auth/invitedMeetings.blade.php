@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('pagename', $pageName)
 
 @section('content')
@@ -78,9 +77,9 @@
 
 @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
     <script>
         $(document).ready(function () {
-
             $('.attendeeJoin').on('click',function () {
                 // e.preventDefault();
                 let meeting = $(this).data('id');
@@ -94,6 +93,7 @@
                     },success:function (data) {
 
                         let button ='<button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times; </span></button>';
+
                         if (data.notStart)
                         {
                             $('.errorClass').append(button+'This room not started please contact meeting Owner or try later.');
@@ -102,7 +102,7 @@
                         }
                         if (data.full)
                         {
-                            $('.errorClass').append(button+'This room is full  try later.');
+                            $('.errorClass').empty().append(button+'This room is full  try later.');
 
                             $('.errorClass').show();
                         }

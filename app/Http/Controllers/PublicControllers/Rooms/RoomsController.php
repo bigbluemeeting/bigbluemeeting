@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\PublicControllers\Rooms;
 
+use App\Attendee;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Mail\AttendeeMail;
 use App\Meeting;
 use App\Room;
 use App\User;
@@ -17,6 +19,7 @@ use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class RoomsController extends Controller
@@ -237,7 +240,55 @@ class RoomsController extends Controller
 
     public function roomAttendees(Request $request)
     {
-        dd($request->emails);
+        if(empty($request->emails))
+        {
+            return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
+        }
+        $validEmails=[];
+        $authUsers = [];
+        $notAuthUser = [];
+        $room = Room::where('url',$request->room)->firstOrFail();
+        foreach ($request->emails as $email)
+        {
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                /**
+                 * Valid Emails
+                 */
+                $validEmails[] = $email;
+            }
+        }
+        foreach ($validEmails as $email)
+        {
+            $user = User::where('email',$email)->first();
+            if (!empty($user))
+            {
+                $authUsers[] = $user;
+
+            }else{
+
+                $notAuthUser[] = $email;
+            }
+        }
+        foreach ($authUsers as $user)
+        {
+            $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
+            $attendee->rooms()->attach($room->id);
+
+        }
+        foreach ($notAuthUser as $userEmail)
+        {
+            $user = User::findOrFail(Auth::id());
+            Mail::to($userEmail)->send(new AttendeeMail([
+
+                'toEmail' => encrypt($userEmail),
+                'fromEmail' =>  $user->email,
+                'meeting_name'=> $room->name,
+                'meeting_id'=>encrypt($room->id),
+            ]));
+        }
+
+        return response()->json(['result'=>['success'=>200]]);
+
 
     }
 

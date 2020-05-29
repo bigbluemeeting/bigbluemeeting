@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+
+use App\User;
 use Illuminate\Http\Request;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\GetRecordingsParameters;
+use Illuminate\Support\Facades\Auth;
 
 class RecordingsController extends Controller
 {
@@ -25,8 +28,33 @@ class RecordingsController extends Controller
     {
         //
         $pageName ="Recordings List";
+
+//        $rooms = Auth::user()
+//            ->rooms()
+//            ->where('meeting_record',1)
+//            ->get();
+//
+//        foreach ($rooms as $room)
+//        {
+//            $recordingParams = new GetRecordingsParameters();
+//            $recordingParams->setMeetingId($room->url);
+//            $bbb = new BigBlueButton();
+//            $response = $bbb->getRecordings($recordingParams);
+//
+//            if ($response->getReturnCode() == 'SUCCESS') {
+////            dd($response->getRawXml());
+//                foreach ($response->getRawXml()->recordings->recording as $recording) {
+//                    // process all recording
+//
+//                    $this->recordingList[] =$recording;
+//                }
+//            }
+//        }
+//        dd($this->recordingList);
+//
+
         $recordingParams = new GetRecordingsParameters();
-//        $recordingParams->setMeetingId("admin-5jc-18A8");
+//        $recordingParams->setMeetingId($room->url);
         $bbb = new BigBlueButton();
         $response = $bbb->getRecordings($recordingParams);
 

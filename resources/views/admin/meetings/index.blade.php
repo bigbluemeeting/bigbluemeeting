@@ -325,13 +325,11 @@
 
                             if (data.notStart)
                             {
-                                // console.log(data.notStart)
                                 $("#overlay").fadeIn(300);
                             }
                             if (data.url)
                             {
-                                // console.log(data.url)
-                                window.location =data.url;
+                                window.location = data.url;
                             }
 
                         },

@@ -38,7 +38,7 @@
         }
         .tags-wrapper li.tag {
             font-family:verdana;
-            font-size:11px;
+            font-size:14px;
 
             border-radius:3px;
             list-style: none;
@@ -77,10 +77,11 @@
             background:trasparent;
             outline:none;
             border:none;
-            font-size:14px;
+            font-size:18px;
             height: auto;
             width:420px;
             margin: 4px;
+            color: black;
         }
         .tags-wrapper .autofill-bg {
             position:relative;
@@ -92,6 +93,7 @@
 @section('content')
 
     <div class="container-fluid">
+
         <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Meeting Information</h5>
     </div>
     <div class="row">
@@ -149,6 +151,9 @@
                         </div>
 
                     <div class="row">
+                        <div class="col-sm-6 col-sm-offset-5 ml-3 mt-2">
+                        {{$attendees->links()}}
+                    </div>
                         <div class="col-md-12">
                             <div class="card bg-white">
                                 <div class="card-body">
@@ -174,6 +179,12 @@
                                 </div>
                             </div>
                         </div>
+
+                            <div class="col-sm-6 col-sm-offset-5 ml-3">
+                                {{$attendees->links()}}
+                            </div>
+
+
                     </div>
 
                     </div>
@@ -196,6 +207,10 @@
                             <h3 class="update-only" style="display:none !important">Room Settings</h3>
                         </div>
 {{--                        {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal','id'=>'frm']) !!}--}}
+                        <div class="alert alert-danger errorClass" style="display: none">
+
+                        </div>
+
 
                         <div class="input-icon mb-2">
 {{--                            <span class="input-icons">--}}
@@ -209,7 +224,7 @@
 
                         <div class="row">
                             <div class="mt-3 ml-3">
-                                <input type="submit" value="Add Participant" class="create-only btn btn-primary btn-block" id="addPar" >
+                                <input type="submit" value="Add Participants" class="create-only btn btn-primary btn-block" id="addPar" >
                                 <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
                             </div>
                         </div>
@@ -217,6 +232,7 @@
 {{--                        {!! Form::close() !!}--}}
                     </div>
                 </div>
+                <input type="hidden" id="room" value="{{$meeting->url}}">
                 <div class="modal-footer bg-light">
                     <p class="text-primary"><strong> Info ! </strong> Participants need to singup if he's not member of this site. Invitational mail will be sent to his email </p>
 
@@ -235,15 +251,14 @@
 @section('script')
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
-
 
         (function($) {
 
 
 
             $('#addPar').on('click',function () {
-
                 let emails = [];
                 $('#ul .tag span').each(function(i)
                 {
@@ -256,16 +271,36 @@
                     datatype:'json',
                     data:{
                         emails:emails,
+                        room:$('#room').val(),
                         "_token":"{{csrf_token()}}"
                     },success:function (data) {
+                        if (data.result.error)
+                        {
+                            let button ='<button type="button" class="close"  aria-label="Close"> <span aria-hidden="true">&times; </span></button>';
+                            $('.errorClass').empty().append(button+data.result.error);
+                            $('.errorClass').show();
+                        }
+                       if (data.result.success)
+                       {
+                           {{\Illuminate\Support\Facades\Session::put('participants','Participants Added Successfully')}}
+                           var slug = $('#room').val();
+                           var  url =  "{{ route('invite-participant',":slug")}}";
+                           url = url.replace(':slug', slug);
+                           window.location = url;
 
+                       }
 
                     },
 
                 });
 
 
-            })
+            });
+
+
+            $('#myModal').on('click','.close',function () {
+                $('.errorClass').hide();
+            });
             $.fn.tags = function(opts) {
                 var selector = this.selector;
                 function update($original) {
@@ -303,7 +338,7 @@
                     if(opts.classList) $wrapper.addClass(opts.classList);
 
                     // add input
-                    $ul.append("<li class='tags-input'><input type='text' class='tags-secret form-control text-center border' placeholder='Enter Emails'/></li>");
+                    $ul.append("<li class='tags-input'><input type='text' class='tags-secret form-control text-center border' placeholder='Enter Email'/></li>");
                     // set to dom
                     $self.after($wrapper);
                     // add the old element

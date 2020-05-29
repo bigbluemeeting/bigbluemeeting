@@ -4,7 +4,6 @@
 
 @section('css')
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{asset('css/bootstrap-clockpicker.css')}}">
 
@@ -399,14 +398,13 @@
 
 @endsection
 @section('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
     <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
     <script src="{{asset('js/jquery-clockpicker.js')}}"></script>
+
     <script>
-
-
 
         $('#picker').val(moment(new Date()).format("YYYY-MM-DD"));
         $('#picker2').val(moment(new Date()).format("YYYY-MM-DD"));

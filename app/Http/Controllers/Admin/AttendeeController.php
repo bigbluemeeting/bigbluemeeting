@@ -73,13 +73,12 @@ class AttendeeController extends Controller
                     'meeting_name'=> $room->name,
                     'meeting_id'=>encrypt($request->input('meeting_id')),
                 ]));
-
-
                 return $this->create();
             }
 
         $attendee = Attendee::create(['email'=>$data['email'],'user_id'=>$data['user_id']]);
         $attendee->rooms()->attach($room->id);
+
         return $this->create();
 
     }
