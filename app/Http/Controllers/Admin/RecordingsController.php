@@ -6,14 +6,23 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 
 use App\User;
+use BigBlueButton\Parameters\DeleteRecordingsParameters;
+use BigBlueButton\Parameters\PublishRecordingsParameters;
+use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\GetRecordingsParameters;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use SimpleXMLElement;
+use Spatie\Permission\Models\Role;
 
 class RecordingsController extends Controller
 {
     protected $recordingList = [];
+    protected $meetingsRecordings = [];
+    protected $meetingsParams = [];
     public function __construct()
     {
         $this->middleware('auth');
@@ -29,46 +38,36 @@ class RecordingsController extends Controller
         //
         $pageName ="Recordings List";
 
-//        $rooms = Auth::user()
-//            ->rooms()
-//            ->where('meeting_record',1)
-//            ->get();
-//
-//        foreach ($rooms as $room)
-//        {
-//            $recordingParams = new GetRecordingsParameters();
-//            $recordingParams->setMeetingId($room->url);
-//            $bbb = new BigBlueButton();
-//            $response = $bbb->getRecordings($recordingParams);
-//
-//            if ($response->getReturnCode() == 'SUCCESS') {
-////            dd($response->getRawXml());
-//                foreach ($response->getRawXml()->recordings->recording as $recording) {
-//                    // process all recording
-//
-//                    $this->recordingList[] =$recording;
-//                }
-//            }
-//        }
-//        dd($this->recordingList);
-//
 
-        $recordingParams = new GetRecordingsParameters();
-//        $recordingParams->setMeetingId($room->url);
-        $bbb = new BigBlueButton();
-        $response = $bbb->getRecordings($recordingParams);
 
-        if ($response->getReturnCode() == 'SUCCESS') {
-//            dd($response->getRawXml());
-            foreach ($response->getRawXml()->recordings->recording as $recording) {
-                // process all recording
 
-                $this->recordingList[] =$recording;
-            }
+        $rooms = Auth::user()
+            ->rooms()
+            ->where('meeting_record',1)
+            ->get();
+
+        $meetings = Auth::user()
+            ->meetings()
+            ->get();
+
+        foreach ($rooms as $room)
+        {
+            $this->recordings($this->meetingsParams = [
+                'url' => $room->url,
+                'rooms' => true,
+            ]);
         }
 
-        $this->recordingList = Helper::paginate(
+        foreach ($meetings as $meeting)
+        {
+            $this->recordings($this->meetingsParams = [
+                'url' => $meeting->url,
+                'rooms' => false,
+            ]);
+        }
 
+
+        $this->recordingList = Helper::paginate(
             $this->recordingList,
             10,
             null,
@@ -76,10 +75,62 @@ class RecordingsController extends Controller
                 'path' =>'recordings'
             ]);
 
-        return view('admin.recording.index')->with(['pageName'=>$pageName,'recordingList'=>$this->recordingList]);
+
+        $this->meetingsRecordings = Helper::paginate(
+            $this->meetingsRecordings,
+            10,
+            null,
+            [
+                'path' =>'recordings'
+            ]
+        );
+        return view('admin.recording.index')->with(
+            [
+                'pageName'=>$pageName,
+                'recordingList'=>$this->recordingList,
+                'meetingRecordings' => $this->meetingsRecordings,
+            ]);
 
     }
 
+    /**
+     * @param $meetingId
+     * Set Rooms & Meetings Recoding List
+     */
+
+    public function recordings($meetingId)
+    {
+
+
+        $recordingParams = new GetRecordingsParameters();
+        $recordingParams->setMeetingId($this->meetingsParams['url']);
+        $bbb = new BigBlueButton();
+        $response = $bbb->getRecordings($recordingParams);
+
+        if ($response->getMessageKey() == null) {
+
+            foreach ($response->getRawXml()->recordings->recording as $recording) {
+                $this->meetingsParams['rooms'] ? $this->recordingList[] = $recording : $this->meetingsRecordings[] = $recording ;
+
+            }
+        }
+
+
+    }
+
+    /**
+     * @param $id
+     * Published Or Unpublished Recordings
+     */
+    public function publishedRecording(Request $request)
+    {
+        $bbb = new BigBlueButton();
+
+        $request->published ? $publish = true : $publish = false;
+        $publishRecording  = new PublishRecordingsParameters($request->recording,$publish);
+        $response = $bbb->publishRecordings($publishRecording);
+        return redirect()->back()->with(['success'=>'Meeting Status Changed']);
+    }
     /**
      * Show the form for creating a new resource.
      *
@@ -143,6 +194,61 @@ class RecordingsController extends Controller
      */
     public function destroy($id)
     {
-        //
+
+        $bbb = new BigBlueButton();
+        $deleteRecordingsParams= new DeleteRecordingsParameters($id); // get from "Get Recordings"
+        $response = $bbb->deleteRecordings($deleteRecordingsParams);
+        if ($response->getReturnCode() == 'SUCCESS') {
+            return redirect()->back()->with(['success'=>'Recording Deleted Successfully']);
+        } else {
+
+            return redirect()->back()->with(['success'=>'Something Wrong Please Try Later']);
+        }
+    }
+
+    public function invitedRoomsRecordings()
+    {
+        $rooms = Auth::user()->attendees()
+            ->whereHas('rooms')
+            ->with('rooms')
+            ->get()
+            ->pluck('rooms')
+            ->collapse()
+            ->where('meeting_record' ,1);
+
+        foreach ($rooms as $room)
+        {
+            $this->recordings($this->meetingsParams = [
+                'url' => $room->url,
+                'rooms' => true,
+            ]);
+        }
+
+        $recordingList = [];
+        foreach ($this->recordingList as $recording)
+        {
+            if ($recording->published == 'true')
+            {
+                $recordingList [] = $recording;
+            }
+        }
+        $recordingList = Helper::paginate(
+            $recordingList,
+            10,
+            null,
+            [
+                'path' =>'invited-rooms-recordings'
+            ]);
+
+
+
+        $pageName = 'Rooms Recordings';
+        return view('admin.recording.invited-rooms',with([
+
+            'pageName' => $pageName,
+            'recordingList' => $recordingList,
+        ]));
+
+
     }
 }

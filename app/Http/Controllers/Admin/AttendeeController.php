@@ -23,63 +23,16 @@ class AttendeeController extends Controller
     //
     public function index()
     {
-       return $this->create();
+
     }
 
     public function create()
     {
-        $pageName  = "Add Attendee";
-
-        $user =User::FindOrFail(Auth::id());
-        $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
-
-        $meetingsList = $user->rooms()
-            ->where('end_date','>=',$currentDate)
-            ->pluck('name','id')
-            ->all();
-
-        return view('admin.attendees.create',compact('meetingsList','pageName'));
-
 
     }
 
     public function store(Request $request)
     {
-
-
-        $this->validate($request,[
-            'email' => 'required|email' ,
-            'meeting_id'=>'required'
-        ]);
-
-
-        $email = $request->input('email');
-        $user = User::where('email',$email)->first();
-        $data=$request->all();
-
-        $room = Room::where('id',$request->input('meeting_id'))->firstOrFail();
-
-        if (!empty($user))
-        {
-            $data['user_id'] = $user->id;
-        }
-        else
-            {
-                $user = User::findOrFail(Auth::id());
-                Mail::to($data['email'])->send(new AttendeeMail([
-
-                    'toEmail' => encrypt($data['email']),
-                    'fromEmail' =>  $user->email,
-                    'meeting_name'=> $room->name,
-                    'meeting_id'=>encrypt($request->input('meeting_id')),
-                ]));
-                return $this->create();
-            }
-
-        $attendee = Attendee::create(['email'=>$data['email'],'user_id'=>$data['user_id']]);
-        $attendee->rooms()->attach($room->id);
-
-        return $this->create();
 
     }
 

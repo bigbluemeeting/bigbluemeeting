@@ -53,7 +53,7 @@
 
                 <li>
                     <a href="">
-                        <i class="fa fa-reddit"></i> Rooms
+                        <i class="fa fa-handshake-o"></i> Rooms
                         <i class="fa arrow"></i>
                     </a>
                     <ul class="sidebar-nav">
@@ -65,21 +65,19 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="">
 
-                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-                    <li>
-                        <a href="">
-                            <i class="fa fa-user"></i> Attendees
-                            <i class="fa arrow"></i>
-                        </a>
-                        <ul class="sidebar-nav">
-                            <li>
-                                <a href="{{ route('admin::attendees.index') }}"> Create Attended </a>
-                            </li>
+                        <i class="fa fa-meetup"></i> Meetings
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li>
+                            <a href="{{ route('meetings.index') }}"> Meetings List </a>
+                        </li>
 
-                        </ul>
-                    </li>
-                @endif
+                    </ul>
+                </li>
 
 
                 <li>
@@ -92,9 +90,13 @@
                         <li>
                             <a href="{{ route('admin::recordings.index') }}"> Recordings List </a>
                         </li>
+                        <li>
+                            <a href="{{ route('admin::invitedRoomsRecordings') }}"> Invited Rooms Recordings </a>
+                        </li>
 
                     </ul>
                 </li>
+
                 <li>
                     <a href="{{ route('admin::change_password') }}">
                         <i class="fa fa-key"></i> Change Password </a>

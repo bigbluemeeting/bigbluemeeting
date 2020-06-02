@@ -4,64 +4,173 @@
 
 @section('content')
     <div class="title-block">
-        <h3 class="title"> {{ $pageName }} </h3>
+        <h4 class="title"><i class="fa fa-film"></i> {{ $pageName }} </h4>
     </div>
+    @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+
+        <div class="container-fluid">
+
+        <h5>My Rooms Recordings</h5>
+        <div class="row" id="error">
+            <div class="col-md-12">
+                @include('includes.form-errors')
+            </div>
+        </div>
+    </div>
+        @endif
 
     <div class="col-lg-12">
 
+        @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+            @if(Session::has($msg))
+                <div class="alert alert-{{ $msg }}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ session($msg) }}
+                </div>
+            @endif
+        @endforeach
+            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
 
 
         <div class="card card-block sameheight-item">
 
-
             <section class="example">
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-5">
+                        {{$recordingList->links()}}
+                    </div>
+                </div>
                 @if (count($recordingList) > 0)
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                        <tr>
-
-                            <th>Name</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Participant</th>
-                            <th>Breakout</th>
-                            <th>State</th>
-                            <th>Recording</th>
-
-                        </tr>
-                        </thead>
-                        <tbody>
-
-
-                        @foreach($recordingList as $list)
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover">
+                            <thead>
                             <tr>
-                                <td>{{$list->name}}</td>
-                                <td>{{date("F jS, Y", strtotime($list->startTime))}}</td>
-                                <td>{{date("F jS, Y", strtotime($list->endTime))}}</td>
-                                <td>{{$list->participants}}</td>
-                                <td>{{!$list->isBreakout?'Yes':'No'}}</td>
-                                <td>{{ucwords($list->state)}}</td>
-                                <td><a href="{{$list->playback->format->url}}">Recording</a></td>
+
+                                <th>Name</th>
+                                <th>Playback</th>
+                                <th>Published</th>
+                                <th>Delete</th>
+                                <th>Participant</th>
+                                <th>Started</th>
+                                <th>Ended</th>
 
                             </tr>
-                        @endforeach
-                        @else
-                            No Recording Found.
-                        @endif
+                            </thead>
+                            <tbody>
 
-                        </tbody>
-                    </table>
+                            @foreach($recordingList as  $list)
+                                <tr>
+                                    <td>{{$list->name}}</td>
+                                    <td><a class="btn btn-sm btn-info" href="{{$list->playback->format->url}}">Watch</a></td>
+                                    <td>
+
+                                        {!! Form::open(array(
+                                                             'style' => 'display: inline-block;',
+                                                             'method' => 'POST',
+                                                             'route' => 'admin::publishedRecording')) !!}
+                                        <input type="hidden" name="recording" value="{{$list->recordID}}">
+                                        <input type="hidden" value ="{{$list->published == 'true' ? 0 :1 }}" name="published">
+                                        {!! Form::submit($list->published == 'true' ? 'UnPublished' : ' Published', array('class' => 'btn btn-sm btn-dark')) !!}
+                                        {!! Form::close() !!}
+                                    </td>
+                                    <td>
+                                        {!! Form::open(array(
+                                                 'style' => 'display: inline-block;',
+                                                 'method' => 'DELETE',
+                                                 'onsubmit' => "return confirm('Are you sure do you want to delete?');",
+                                                 'route' => ['admin::recordings.destroy', $list->recordID])) !!}
+                                        {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger ')) !!}
+                                        {!! Form::close() !!}
+                                    </td>
+                                    <td class="text-center">{{$list->participants}}</td>
+                                    @foreach (\App\Room::where('url',$list->metadata->meetingId)->get() as $meeting)
+                                        <td>{{\Carbon\Carbon::parse($meeting->start_date)->format('M d,yy g:i A')}}</td>
+                                        <td>{{\Carbon\Carbon::parse($meeting->end_date)->format('M d,yy g:i A')}}</td>
+                                    @endforeach
+                                </tr>
+                            @endforeach
+                            @else
+                                No Recording Found.
+                            @endif
+
+                            </tbody>
+                        </table>
+
+                    </div>
 
             </section>
-
-
         </div>
+            @endif
 
-        <div class="row">
-            <div class="col-sm-6 col-sm-offset-5">
-                {{$recordingList->links()}}
+    {{-- Rooms Recordings List --}}
+
+            <div class="container-fluid mt-3">
+                <h5>My Meetings Recordings</h5>
             </div>
-        </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card card-block sameheight-item">
+                        <section class="example">
+                            @if (count($meetingRecordings) > 0)
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <th>Name</th>
+                                        <th>Playback</th>
+                                        <th>Published</th>
+                                        <th>Delete</th>
+                                        <th>Participant</th>
+                                        </thead>
+                                        <tbody>
+                                        @foreach($meetingRecordings as $list)
+                                            <tr>
+                                                <td>{{$list->name}}</td>
+                                                <td><a class="btn btn-sm btn-info" href="{{$list->playback->format->url}}">Watch</a></td>
+                                                <td>
+                                                    {!! Form::open(array(
+                                                              'style' => 'display: inline-block;',
+                                                              'method' => 'POST',
+                                                              'route' => 'admin::publishedRecording')) !!}
+                                                    <input type="hidden" name="recording" value="{{$list->recordID}}">
+                                                    <input type="hidden" value ="{{$list->published == 'true' ? 0 :1 }}" name="published">
+                                                    {!! Form::submit($list->published == 'true' ? 'UnPublished' : ' Published', array('class' => 'btn btn-sm btn-dark')) !!}
+                                                    {!! Form::close() !!}
+                                                </td>
+                                                <td>
+                                                    {!! Form::open(array(
+                                                             'style' => 'display: inline-block;',
+                                                             'method' => 'DELETE',
+                                                             'onsubmit' => "return confirm('Are you sure do you want to delete?');",
+                                                             'route' => ['admin::recordings.destroy', $list->recordID])) !!}
+                                                    {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}
+                                                    {!! Form::close() !!}
+                                                </td>
+                                                <td class="text-center">{{$list->participants}}</td>
+
+                                            </tr>
+                                        @endforeach
+                                        @else
+                                            No Recording Found.
+                                        @endif
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 col-sm-offset-5">
+                                        {{$recordingList->links()}}
+                                    </div>
+                                </div>
+                        </section>
+                    </div>
+
+
+                </div>
+            </div>
+
+
+
 
 
 

@@ -44,8 +44,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
     Route::patch('/change_password', 'Admin\ChangePasswordController@changePassword')->name('change_password');
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
+    Route::get('/recordings/invited-rooms-recordings','Admin\RecordingsController@invitedRoomsRecordings')->name('invitedRoomsRecordings');
     Route::resource('/recordings','Admin\RecordingsController');
     Route::resource('/attendees','Admin\AttendeeController');
+    Route::post('/recordings/published','Admin\RecordingsController@publishedRecording')->name('publishedRecording');
 
 });
 /**
@@ -68,7 +70,7 @@ Route::get('/', function () {
  * Public Routes
  */
 
-Route::get('rooms/invite-meetings','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+Route::get('rooms/invite-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
 Route::get('rooms/invite-participant/{url}','PublicControllers\Rooms\RoomsController@inviteParticipant')->name('invite-participant');
 Route::resource('rooms','PublicControllers\Rooms\RoomsController');
 Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');

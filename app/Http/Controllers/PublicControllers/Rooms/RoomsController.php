@@ -13,6 +13,7 @@ use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\CreateMeetingParameters;
 
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
+use BigBlueButton\Parameters\GetRecordingsParameters;
 use BigBlueButton\Parameters\IsMeetingRunningParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use Faker\Provider\DateTime;
@@ -140,17 +141,46 @@ class RoomsController extends Controller
 
     }
 
-    public function show($room)
+    public function show($url)
     {
 
-
-        $room = Room::where('url',$room)->firstOrFail();
+        $room = Room::where('url',$url)->firstOrFail();
         if (Auth::check())
         {
             $pageName = ucwords($room->name);
             return view('public.rooms.auth.single',compact('pageName','room'));
         }else{
 
+            $recordingList = [];
+            $recordingParams = new GetRecordingsParameters();
+            $recordingParams->setMeetingId($url);
+            $bbb = new BigBlueButton();
+            $response = $bbb->getRecordings($recordingParams);
+            if ($response->getMessageKey() == null) {
+                foreach ($response->getRawXml()->recordings->recording as $recording) {
+                    $recordingList[] = $recording ;
+                }
+            }
+
+            $roomsRecordingList = [];
+
+            foreach ($recordingList as $recording)
+            {
+                if ($recording->published == 'true')
+                {
+                    $roomsRecordingList [] = $recording;
+                }
+            }
+
+            $roomsRecordingList = Helper::paginate(
+                $roomsRecordingList,
+                10,
+                null,
+                [
+                    'path' =>'invited-rooms-recordings'
+                ]);
+
+            dd($roomsRecordingList);
             $pageName = ucwords($room->user->username);
             $password = $room->user->password;
             $room = $room->url;
@@ -273,7 +303,6 @@ class RoomsController extends Controller
         {
             $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
             $attendee->rooms()->attach($room->id);
-
         }
         foreach ($notAuthUser as $userEmail)
         {

@@ -77,7 +77,7 @@
         <h3 class="title"> {{ $pageName }} </h3>
     </div>
 
-    @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+
     <div class="container-fluid">
         <div class="row" id="error">
             <div class="col-md-12">
@@ -91,18 +91,99 @@
                 @endif
             </div>
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col-md-3">
-                <button type="submit" name="commit" class="create-only btn btn-info btn-block" data-disable-with="Create Room" data-toggle="modal" data-target="#myModal">
-                    <i class="fa fa-plus"></i>
-                    Create Room
-                </button>
+{{--    <div class="row">--}}
+{{--        <div class="col-md-3">--}}
+{{--            <button type="submit" name="commit" class="create-only btn btn-info btn-block" data-disable-with="Create Room" data-toggle="modal" data-target="#myModal">--}}
+{{--                <i class="fa fa-plus"></i>--}}
+{{--                Create Room--}}
+{{--            </button>--}}
 
+{{--        </div>--}}
+{{--    </div>--}}
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card bg-white">
+                <div class="card-body">
+                    <div class="input-group">
+                        <div class="input-group-prepend" >
+                            <div class="col-md-12">
+                                         <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom" data-target="#myModal">
+                                             <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Rooms </i>
+                                         </span>
+                            </div>
+
+                        </div>
+                    </div>
+                    @if(count($roomList)>0)
+                        <section class="example">
+                            <div class="row">
+                                <div class="col-sm-6 col-sm-offset-5">
+                                    {{$roomList->links()}}
+                                </div>
+                            </div>
+                            <div class="table-responsive ">
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th>Room Name</th>
+                                        <th>Create Date</th>
+                                        <th>Created By</th>
+                                        <th>Invite Participants</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($roomList as $list)
+                                        <tr>
+                                            <td>{{$list->name}}</td>
+                                            <td>{{$list->created_at->diffForHumans()}}</td>
+                                            <td>{{$list->user->name}}</td>
+                                            <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
+                                            <td >
+                                                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+                                                    <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-sm  btn-info ">Start</a>
+                                                @else
+                                                    {{--                                                {{ route('admin::JoinAttendee',[$list->url]) }}--}}
+                                                    <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-lg btn-info attendeeJoin from-control" id="">Join</a>
+                                                @endif
+                                            </td>
+
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6 col-sm-offset-5">
+                                    {{$roomList->links()}}
+                                </div>
+                            </div>
+                        </section>
+                    @else
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="card">
+                                    <div class="card-body" id="warning-dev">
+                                        <div class="col-md-7">
+                                            <p class="text-danger">We're sorry,you don have any in-progress rooms or upcoming rooms.</p>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <p class="text-danger">To Create a new room,press the "Room" button</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
+
         </div>
     </div>
-    @endif
 
 
     <div id="myModal" class="modal fade" role="dialog">
@@ -208,81 +289,6 @@
     </div><br>
 
 
-    {{--Table For Meetings List--}}
-
-        <div class="row">
-            <div class="col-lg-12">
-
-
-                @foreach (['danger', 'warning', 'success', 'info'] as $msg)
-                    @if(Session::has($msg))
-                        <div class="alert alert-{{ $msg }}">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            {{ session($msg) }}
-                        </div>
-                    @endif
-                @endforeach
-
-                <div class="card card-block sameheight-item">
-
-
-                    <section class="example">
-                        @if (count($roomList) > 0)
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-
-                                        <th>Room Name</th>
-                                        <th>Create Date</th>
-                                        <th>Created By</th>
-                                        <th>Invite Participants</th>
-                                        <th>Action</th>
-
-
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-
-                                    @foreach($roomList as $list)
-                                        <tr>
-
-                                            <td>{{$list->name}}</td>
-                                            <td>{{$list->created_at->diffForHumans()}}</td>
-                                            <td>{{$list->user->name}}</td>
-                                            <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
-                                            <td >
-                                                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-                                                    <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-sm  btn-info ">Start</a>
-                                                @else
-                                                    {{--                                                {{ route('admin::JoinAttendee',[$list->url]) }}--}}
-                                                    <a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-lg btn-info attendeeJoin from-control" id="">Join</a>
-                                                @endif
-                                            </td>
-
-
-
-                                        </tr>
-                                    @endforeach
-                                    @else
-                                        No Meetings Found.
-                                    @endif
-
-                                    </tbody>
-                                </table>
-
-                            </div>
-                    </section>
-                </div>
-                    <div class="row">
-                        <div class="col-sm-6 col-sm-offset-5">
-                            {{$roomList->links()}}
-                        </div>
-                    </div>
-
-        </div>
-    </div>
 
 
 @endsection
