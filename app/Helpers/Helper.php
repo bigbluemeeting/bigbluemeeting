@@ -8,6 +8,7 @@ namespace App\Helpers;
 
 use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
 use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\GetRecordingsParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -43,6 +44,7 @@ class Helper
         $createMeetingParams->setAttendeePassword($params['attendeePassword']);
         $createMeetingParams->setModeratorPassword($params['moderatorPassword']);
         $createMeetingParams->setLogoutUrl($params['logoutUrl']);
+        dd($createMeetingParams);
         if (isset($params['muteAllUser']))
         {
             $createMeetingParams->setMuteOnStart($params['muteAllUser']);
@@ -50,6 +52,8 @@ class Helper
         }
         if (isset($params['moderator_approval']))
         {
+
+
             $params['moderator_approval'] ? $createMeetingParams->setModerateJoin() :$createMeetingParams->setOpenJoin();
         }
         if (isset($params['setRecord']))
@@ -62,6 +66,8 @@ class Helper
             $createMeetingParams->setWelcomeMessage($params['welcome_message']);
         }
 
+
+
         $response = $bbb->createMeeting($createMeetingParams);
         return $response;
     }
@@ -73,6 +79,43 @@ class Helper
         $joinMeetingParams->setRedirect(true);
         $apiUrl = $bbb->getJoinMeetingURL($joinMeetingParams);
         return $apiUrl;
+    }
+
+    public static function formatBytes($size, $precision = 2)
+    {
+        if ($size > 0) {
+            $size = (int) $size;
+            $base = log($size) / log(1024);
+            $suffixes = array(' bytes', ' KB', ' MB', ' GB', ' TB');
+
+            return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
+        } else {
+            return $size;
+        }
+    }
+    public static function recordingLists($url)
+    {
+        $recordingList = [];
+        $recordingParams = new GetRecordingsParameters();
+        $recordingParams->setMeetingId($url);
+        $bbb = new BigBlueButton();
+        $response = $bbb->getRecordings($recordingParams);
+        if ($response->getMessageKey() == null) {
+            foreach ($response->getRawXml()->recordings->recording as $recording) {
+                $recordingList[] = $recording ;
+            }
+        }
+
+        $roomsRecordingList = [];
+
+        foreach ($recordingList as $recording)
+        {
+            if ($recording->published == 'true')
+            {
+                $roomsRecordingList [] = $recording;
+            }
+        }
+        return $roomsRecordingList;
     }
 
 }

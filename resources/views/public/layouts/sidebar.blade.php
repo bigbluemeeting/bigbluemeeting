@@ -1,122 +1,27 @@
-<aside class="sidebar">
-    <div class="sidebar-container">
-        <div class="sidebar-header">
-            <div class="brand">
-                <div class="logo">
-                    <span class="l l1"></span>
-                    <span class="l l2"></span>
-                    <span class="l l3"></span>
-                    <span class="l l4"></span>
-                    <span class="l l5"></span>
-                </div> {{ env('APP_NAME') }} </div>
-        </div>
-        <nav class="menu">
-            <ul class="sidebar-menu metismenu" id="sidebar-menu">
-                <li>
-                    <a href="">
-                        <i class="fa fa-home"></i> Dashboard </a>
-                </li>
+{{--<div class="container mt-3">--}}
+{{--    <div class="row">--}}
+{{--        <div class="col-md-4">--}}
+{{--            <h3>Big Blue Button</h3>--}}
+{{--        </div>--}}
+{{--        <div class="col-md-8 position-absolute d-flex flex-row-reverse">--}}
+{{--            <button class="btn btn-primary  ml-4 bg-white text-primary auth" >Sing In</button>--}}
+{{--            <button class="btn btn-primary  bg-white text-primary auth">Sing Up</button>--}}
+{{--        </div>--}}
+{{--    </div>--}}
 
-            </ul>
-        </nav>
+{{--</div>--}}
+
+<div class="header py-4">
+    <div class="container">
+        <div class="d-flex">
+            <a class="header-brand">
+                <img class="header-brand-img" alt="" src="https://raw.githubusercontent.com/bigbluebutton/greenlight/master/app/assets/images/logo_with_text.png">
+            </a>
+            <div class="d-flex ml-auto">
+                <a class="btn btn-outline-primary mx-2 sign-in-button" >Sign in</a>
+
+                <a class="btn btn-outline-primary mx-2 sign-in-button" >Sign up</a>
+            </div>
+        </div>
     </div>
-    <footer class="sidebar-footer">
-        <ul class="sidebar-menu metismenu" id="customize-menu">
-            <li>
-                <ul>
-                    <li class="customize">
-                        <div class="customize-item">
-                            <div class="row customize-header">
-                                <div class="col-4"> </div>
-                                <div class="col-4">
-                                    <label class="title">fixed</label>
-                                </div>
-                                <div class="col-4">
-                                    <label class="title">static</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="title">Sidebar:</label>
-                                </div>
-                                <div class="col-4">
-                                    <label>
-                                        <input class="radio" type="radio" name="sidebarPosition" value="sidebar-fixed">
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-4">
-                                    <label>
-                                        <input class="radio" type="radio" name="sidebarPosition" value="">
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="title">Header:</label>
-                                </div>
-                                <div class="col-4">
-                                    <label>
-                                        <input class="radio" type="radio" name="headerPosition" value="header-fixed">
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-4">
-                                    <label>
-                                        <input class="radio" type="radio" name="headerPosition" value="">
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-4">
-                                    <label class="title">Footer:</label>
-                                </div>
-                                <div class="col-4">
-                                    <label>
-                                        <input class="radio" type="radio" name="footerPosition" value="footer-fixed">
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <div class="col-4">
-                                    <label>
-                                        <input class="radio" type="radio" name="footerPosition" value="">
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="customize-item">
-                            <ul class="customize-colors">
-                                <li>
-                                    <span class="color-item color-red" data-theme="red"></span>
-                                </li>
-                                <li>
-                                    <span class="color-item color-orange" data-theme="orange"></span>
-                                </li>
-                                <li>
-                                    <span class="color-item color-green active" data-theme=""></span>
-                                </li>
-                                <li>
-                                    <span class="color-item color-seagreen" data-theme="seagreen"></span>
-                                </li>
-                                <li>
-                                    <span class="color-item color-blue" data-theme="blue"></span>
-                                </li>
-                                <li>
-                                    <span class="color-item color-purple" data-theme="purple"></span>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-                <a href="">
-                    <i class="fa fa-cog"></i> Customize </a>
-            </li>
-        </ul>
-    </footer>
-</aside>
-<div class="sidebar-overlay" id="sidebar-overlay"></div>
-<div class="sidebar-mobile-menu-handle" id="sidebar-mobile-menu-handle"></div>
-<div class="mobile-menu-handle"></div>
+</div>

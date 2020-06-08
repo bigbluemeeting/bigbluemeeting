@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 
+use App\Room;
 use App\User;
 use BigBlueButton\Parameters\DeleteRecordingsParameters;
 use BigBlueButton\Parameters\PublishRecordingsParameters;
@@ -38,14 +39,13 @@ class RecordingsController extends Controller
         //
         $pageName ="Recordings List";
 
-
-
-
         $rooms = Auth::user()
             ->rooms()
             ->where('meeting_record',1)
             ->get();
 
+
+//        dd(Cache::pull('posts.count'));
         $meetings = Auth::user()
             ->meetings()
             ->get();
@@ -58,12 +58,14 @@ class RecordingsController extends Controller
             ]);
         }
 
+
         foreach ($meetings as $meeting)
         {
-            $this->recordings($this->meetingsParams = [
+            $this->meetingsParams = [
                 'url' => $meeting->url,
                 'rooms' => false,
-            ]);
+            ];
+            $this->recordings();
         }
 
 
@@ -84,6 +86,7 @@ class RecordingsController extends Controller
                 'path' =>'recordings'
             ]
         );
+
         return view('admin.recording.index')->with(
             [
                 'pageName'=>$pageName,
@@ -98,7 +101,55 @@ class RecordingsController extends Controller
      * Set Rooms & Meetings Recoding List
      */
 
-    public function recordings($meetingId)
+    /**
+     * Cache Function
+     */
+    public function cache()
+    {
+
+
+//        dd($this->recordingList);
+//        dd(Cache::pull('posts.count'));
+//        $rooms = Cache::remember(
+//            'posts.count',
+//            now()->addMinute()
+//            ,function () {
+//            $rooms = Auth::user()
+//                ->rooms()
+//                ->where('meeting_record',1)
+//                ->get();
+//            foreach ($rooms as $room)
+//            {
+//
+//                $recordingParams = new GetRecordingsParameters();
+//                $recordingParams->setMeetingId($room->url);
+//                $bbb = new BigBlueButton();
+//                $response = $bbb->getRecordings($recordingParams);
+//                if ($response->getMessageKey() == null) {
+//
+//                    foreach ($response->getRawXml()->recordings->recording as $recording) {
+//                        $this->recordingList[] = json_encode($recording) ;
+//
+//                }
+//                }
+//            }
+//                return $this->recordingList;
+//            });
+
+
+//        $this->recordingList = [];
+//        foreach ($rooms as $room)
+//        {
+//
+//            $this->recordingList[] = json_decode($room);
+//        }
+//        dd($this->recordingList);
+//        dd(Cache::pull('posts.count'));
+//        dd(json_decode($rooms));
+//       $this->recordingList = json_decode($rooms);
+
+    }
+    public function recordings()
     {
 
 
@@ -106,10 +157,10 @@ class RecordingsController extends Controller
         $recordingParams->setMeetingId($this->meetingsParams['url']);
         $bbb = new BigBlueButton();
         $response = $bbb->getRecordings($recordingParams);
-
         if ($response->getMessageKey() == null) {
 
             foreach ($response->getRawXml()->recordings->recording as $recording) {
+
                 $this->meetingsParams['rooms'] ? $this->recordingList[] = $recording : $this->meetingsRecordings[] = $recording ;
 
             }
@@ -117,6 +168,7 @@ class RecordingsController extends Controller
 
 
     }
+
 
     /**
      * @param $id

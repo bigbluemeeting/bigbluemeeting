@@ -2,10 +2,11 @@
 
 namespace App\Exceptions;
 
-use http\Exception\RuntimeException;
+
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+
 
 class Handler extends ExceptionHandler
 {
@@ -50,10 +51,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+
         if ($exception instanceof CustomException) {
             return response()->view('errors.404');
-
         }
+
+
         if ($exception instanceof MethodNotAllowedHttpException)
         {
             return response()->view('errors.404');

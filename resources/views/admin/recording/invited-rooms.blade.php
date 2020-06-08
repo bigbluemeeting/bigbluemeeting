@@ -45,7 +45,9 @@
                                    <th>Name</th>
                                    <th>Playback</th>
                                    <th>State</th>
-                                   <th>Participant</th>
+                                   <th>Length</th>
+                                   <th>Users</th>
+                                   <th>Format</th>
                                    <th>Started</th>
                                    <th>Ended</th>
 
@@ -59,7 +61,9 @@
                                        <td>{{$list->name}}</td>
                                        <td><a class="btn btn-sm btn-info" href="{{$list->playback->format->url}}">Watch</a></td>
                                        <td>{{ucwords($list->state)}}</td>
+                                       <td>{{\App\Helpers\Helper::formatBytes($list->rawSize)}}</td>
                                        <td class="text-center">{{$list->participants}}</td>
+                                       <td>{{ucwords($list->playback->format->type)}}</td>
                                        @foreach (\App\Room::where('url',$list->metadata->meetingId)->get() as $meeting)
                                            <td>{{\Carbon\Carbon::parse($meeting->start_date)->format('M d,yy g:i A')}}</td>
                                            <td>{{\Carbon\Carbon::parse($meeting->end_date)->format('M d,yy g:i A')}}</td>

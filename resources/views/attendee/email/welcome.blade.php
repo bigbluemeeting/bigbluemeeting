@@ -7,11 +7,11 @@
 <body>
 <h2>Welcome to the site </h2>
 <br/>
-You are for this meeting  {{$meeting}} from {{$from}}
+You are  Invited for this meeting  from
 <br/>
 <form>
 
-    <a href="{{url('signup/' .$meeting_id. '/' . $to)}}">SignUp For Attend Meeting</a>
+{{--    <a href="{{url('signup/' .$meeting_id. '/' . $to)}}">SignUp For Attend Meeting</a>--}}
 </form>
 
 </body>

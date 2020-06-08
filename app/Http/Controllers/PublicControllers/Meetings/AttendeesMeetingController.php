@@ -19,25 +19,35 @@ class  AttendeesMeetingController extends Controller
 {
     //
 
+    protected  $logoutUrl ='/meetings';
     public function accessCodeResult(Request $request)
     {
 
-        $meeting = Meeting::where('url',decrypt($request->input('room')))
+        $validator = Validator::make($request->all(),[
+            'access_code' =>'required'
+        ],[
+            'access_code.required' =>'Please Enter Access Code'
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['error'=>$validator->errors()->all()]);
+        }
+        $room = Meeting::where('url',decrypt($request->input('room')))
             ->where('access_code',$request->input('access_code'))
             ->first();
-
-        if (empty($meeting))
+        if (!empty($room))
         {
-            return redirect()->back();
+            $recordingList = Helper::recordingLists(decrypt($request->input('room')));
+            return view('includes.meetingJoinForm',compact('room','recordingList'));
+
         }
         else
         {
-            $meeting = Meeting::where('url',decrypt($request->input('room')))
+            $room = Meeting::where('url',decrypt($request->input('room')))
                 ->firstOrFail();
+            return view('includes.meetingAccessCodeForm',compact('room'));
 
-            $meeting->access_check = 1;
-            $meeting->save();
-            return redirect()->to(route('meetings.show',decrypt($request->input('room'))));
         }
     }
     public function joinMeetingAttendee(Request $request)
@@ -86,6 +96,8 @@ class  AttendeesMeetingController extends Controller
         $meeting = Meeting::where('url',decrypt($request->input('room')))
             ->firstOrFail();
 
+        $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+
         $meetingsParams = [
 
             'meetingUrl' => decrypt($request->input('room')),
@@ -93,7 +105,7 @@ class  AttendeesMeetingController extends Controller
             'attendeePassword' => decrypt($meeting->attendee_password),
             'moderatorPassword' => $meeting->user->password,
             'muteAllUser' => $meeting->mute_on_join,
-            'logoutUrl' => '/meetings/'.decrypt($request->input('room')),
+            'logoutUrl' => $this->logoutUrl,
             'setRecord' => true,
 
 
@@ -118,6 +130,8 @@ class  AttendeesMeetingController extends Controller
             ->firstOrFail();
 
 
+        $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+
         $meetingsParams = [
 
             'meetingUrl' => decrypt($request->input('room')),
@@ -125,7 +139,7 @@ class  AttendeesMeetingController extends Controller
             'attendeePassword' => decrypt($meeting->attendee_password),
             'moderatorPassword' => $meeting->user->password,
             'muteAllUser' => $meeting->mute_on_join,
-            'logoutUrl' => '/meetings/'.decrypt($request->input('room')),
+            'logoutUrl' =>  $this->logoutUrl,
             'setRecord' => true,
         ];
         $response  = Helper::createMeeting($meetingsParams);

@@ -50,7 +50,9 @@
                                 <th>Playback</th>
                                 <th>Published</th>
                                 <th>Delete</th>
-                                <th>Participant</th>
+                                <th>Length</th>
+                                <th>Users</th>
+                                <th>Format</th>
                                 <th>Started</th>
                                 <th>Ended</th>
 
@@ -80,9 +82,11 @@
                                                  'onsubmit' => "return confirm('Are you sure do you want to delete?');",
                                                  'route' => ['admin::recordings.destroy', $list->recordID])) !!}
                                         {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger ')) !!}
-                                        {!! Form::close() !!}
+                                   {!! Form::close() !!}
                                     </td>
+                                    <td>{{\App\Helpers\Helper::formatBytes($list->rawSize)}}</td>
                                     <td class="text-center">{{$list->participants}}</td>
+                                    <td>{{ucwords($list->playback->format->type)}}</td>
                                     @foreach (\App\Room::where('url',$list->metadata->meetingId)->get() as $meeting)
                                         <td>{{\Carbon\Carbon::parse($meeting->start_date)->format('M d,yy g:i A')}}</td>
                                         <td>{{\Carbon\Carbon::parse($meeting->end_date)->format('M d,yy g:i A')}}</td>
@@ -120,7 +124,9 @@
                                         <th>Playback</th>
                                         <th>Published</th>
                                         <th>Delete</th>
-                                        <th>Participant</th>
+                                        <th>Length</th>
+                                        <th>Users</th>
+                                        <th>Format</th>
                                         </thead>
                                         <tbody>
                                         @foreach($meetingRecordings as $list)
@@ -146,8 +152,9 @@
                                                     {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}
                                                     {!! Form::close() !!}
                                                 </td>
+                                                <td>{{\App\Helpers\Helper::formatBytes($list->rawSize)}}</td>
                                                 <td class="text-center">{{$list->participants}}</td>
-
+                                                <td>{{ucwords($list->playback->format->type)}}</td>
                                             </tr>
                                         @endforeach
                                         @else

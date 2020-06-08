@@ -1,174 +1,92 @@
-
 @extends('public.layouts.app')
-@section('pagename', $pageName)
+@section('pagename', 'BigBlueButton')
 @section('css')
-    <style>
-        #overlay{
-            position: fixed;
-            top: 0;
-            z-index: 100;
-            width: 80%;
-            height:100%;
-            display: none;
-            background: rgba(0,0,0,0.6);
-            margin-left: -6px;
-        }
-        .cv-spinner {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .newspinner {
-            width: 100px;
-            height: 100px;
-            border: 4px #ddd solid;
-            border-top: 4px #2e93e6 solid;
-            border-radius: 50%;
-            animation: sp-anime 0.8s infinite linear;
-        }
-        @keyframes sp-anime {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        .is-hide{
-            display:none;
-        }
-    </style>
+    <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/front.css?var=time()')}}">
 @stop
+
 @section('content')
-    <div id="overlay">
+  <div id="data">
+      @include('includes.meetingJoinForm')
+  </div>
 
 
-        <div class="cv-spinner">
-
-            <span class="newspinner">
-            </span>
-        </div>
-    </div>
-    <div class="title-block">
-        <h4> You have been invited to join</h4>
-        <h2>
-            {{ $pageName }}'s Meeting
-        </h2>
-    </div>
-
-
-
-    <!-- Default form subscription -->
-    <div class="container">
-        <div class="row">
-
-        </div>
-    </div>
-
-
-
-
-    @if($room->all_join_moderator)
-        <form action="{{route('attendeeJoinAsModerator')}}" method="post">
-            @elseif($room->anyone_can_start)
-                <form action="{{route('attendeeStartRoom')}}" method="post">
-            @else
-                <form class="text-center p-5"   action="{{route('meetingAttendeesJoin')}}" method="Post" id="frm">
-                    @endif
-
-        @csrf
-
-        <div class="col-sm-6">
-            <!-- Name -->
-
-            <span class="has-error text-danger" id="error">
-
-        </span>
-
-            <input type="text" name="name" class="form-control mb-4 text-center" placeholder="Enter Your Name">
-            <input type="hidden" value="{{encrypt($room->url)}}" name="room">
-
-            <!-- Email -->
-        </div>
-        <div class="col-sm-2">
-
-
-            <!-- Sign in button -->
-
-            <button class="btn btn-info btn-block" type="submit">
-               @if($room->all_join_moderator)
-                Start
-                @elseif($room->anyone_can_start)
-                   Start
-                   @else
-                    Join
-                   @endif
-
-            </button>
-        </div>
-
-    </form>
-
-
-    <!-- Sign in button -->
-
-
-
-
-    <!-- Default form subscription -->
-
-    {{--Table For Meetings List--}}
-
-
-
-
-@endsection
+@stop
 @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src={{asset('js/jquery.dataTables.min.js')}}></script>
+    <!-- Data Bootstarp -->
+    <script type="text/javascript" src={{asset('js/dataTables.bootstrap4.min.js')}}></script>
+
     <script>
         $(document).ready(function () {
+            var time;
+            var frmData;
+            var table =  $('#table').DataTable({
+                pagingType: 'full_numbers',
+                lengthMenu :[[5,10,25,50,-1],[5,10,25,50,'All']],
+                "language": {
+                    "emptyTable": "No Recording Available"
+                },
 
-            $('#access_frm').on('submit',function (e) {
+                "initComplete": function () {
+                    var api = this.api();
+                    api.$('td').click( function () {
+                        api.search( this.innerHTML ).draw();
+                    });
+                },
+                "fnDrawCallback":function(){
+                    if($("#tablesorter").find("tr:not(.ui-widget-header)").length==0){
+                        $('#table_wrapper .row:first').remove();
+                        $('#table_wrapper .row:last').remove();
+                    }
+                }
+            });
+
+            $('#data').on('submit','#frm',function (e) {
+
                 e.preventDefault();
-               let frmData = $(this).serialize();
-
-               $.post('{{route("accessCodeResult")}}',frmData,function (data) {
-                   if (data.result)
-                   {
-                       $('#frm').show();
-                       $('#access_frm').hide();
-                   }
-               })
-
-            })
-
-            $('#frm').on('submit',function (e) {
-
-                e.preventDefault();
-                let frmData =$(this).serialize();
-                setInterval(function () {
-                    $.post('{{route("meetingAttendeesJoin")}}',frmData,
-                        function (data,xhrStatus,xhr) {
-                            if (data.error)
-                            {
-                                $('#error').html(data.error[0]);
-                            }
-                            if (data.notStart)
-                            {
-                                $("#overlay").fadeIn(300);
-                            }
-                            if (data.full)
-                            {
-                                $("#overlay").fadeIn(300);
-                            }
-                            if (data.url)
-                            {
-                                window.location =data.url;
-                            }
-                        });
+                frmData =$(this).serialize();
+                time = setTimeout(function () {
+                    jsonResult()
                 },1000);
             });
 
-        });
+            function jsonResult() {
+                $.post('{{route("meetingAttendeesJoin")}}',frmData,
+                    function (data,xhrStatus,xhr) {
+                        if (data.error)
+                        {
+                            $('#error').html(data.error[0]);
+                            clearInterval(time);
+                        }
+                        if (data.notStart)
+                        {
+                            $('.input-group').html(`
+                                                <div>
+                                                <h4>This meeting hasn't started yet.</h4>
+                                                <p>You will automatically  join when the meeting starts.</p>
+                                                </div>
+                                            <span class="input-group-append ml-5 mb-1">
+                                            <div id="overlay">
+                                                <div class="cv-spinner">
+                                                    <span class="newspinner"></span>
+                                                </div>
+                                            </div>
+                                            </span>`)
+                            $('#errorDiv').empty();
+                            setTimeout(jsonResult,15000)
 
+                        }
+                        if (data.url)
+                        {
+                            window.location =data.url;
+                        }
+
+
+                    });
+            }
+        });
 
     </script>
 @stop

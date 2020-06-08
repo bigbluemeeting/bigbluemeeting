@@ -7,20 +7,19 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AttendeeMail;
 use App\Meeting;
+use App\Notifications\InviteParticipantMail;
 use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\CreateMeetingParameters;
-
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
-use BigBlueButton\Parameters\GetRecordingsParameters;
-use BigBlueButton\Parameters\IsMeetingRunningParameters;
-use BigBlueButton\Parameters\JoinMeetingParameters;
-use Faker\Provider\DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 
 class RoomsController extends Controller
@@ -32,20 +31,41 @@ class RoomsController extends Controller
 
     public function index()
     {
+//        https://c38e6.bigbluemeeting.com/bigbluebutton/
+//       QFCwDfZr6PqO9Utwd82LcUJMfAJt5OjfsftlrPiRrQ
         $pageName='Rooms List';
-        $user = User::findOrFail(Auth::id());
 
+        $user = User::findOrFail(Auth::id());
         $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 
-        $pastMeetings = $user->rooms()
-            ->where('end_date','<',$currentDate)
-            ->orderBy('id','DESC')
-            ->paginate(10);
 
-        $upComingMeetings = $user->rooms()
-            ->where('end_date','>=',$currentDate)
-            ->orderBy('id','DESC')
-            ->paginate(10);
+
+
+        $pastMeetings = Cache::remember(
+          'past.meetings',
+          now()->addSeconds(10),
+          function() use ($user,$currentDate){
+              return $user->rooms()
+                  ->where('end_date','<',$currentDate)
+                  ->orderBy('id','DESC')
+                  ->paginate(10);
+          }
+        );
+
+
+
+        $upComingMeetings =   Cache::remember(
+            'upcoming.meetings',
+            now()->addSeconds(10),
+            function() use ($user,$currentDate){
+                return $user->rooms()
+                    ->where('end_date','>=',$currentDate)
+                    ->orderBy('id','DESC')
+                    ->paginate(10);
+            }
+        );
+
+
 
         return view('public.rooms.index',compact('pageName','upComingMeetings','pastMeetings'));
     }
@@ -53,18 +73,13 @@ class RoomsController extends Controller
     public function store(Request $request)
     {
 
-        $startDate = Carbon::createFromFormat('yy-m-d',$request->input('start_date'))->toDateString();
-        $startTime =Carbon::parse($request->input('startTime'))->format('H:i');
-        $start_date = $startDate.' '.$startTime;
-        $endDate =  Carbon::createFromFormat('yy-m-d',$request->input('end_date'))->toDateString();
-        $endTime =  Carbon::parse($request->input('endTime'))->format('H:i');
-        $end_date = $endDate.' '.$endTime;
 
         $rules = [
             'name' => 'required|max:50',
             'maximum_people' => 'required|integer|min:2',
             'meeting_description' =>'required',
             'welcome_message' =>'required',
+            'startTime' => 'date_format:h:i A'
         ];
         $message =[
             'name.required' =>'Meeting Name Required',
@@ -78,9 +93,24 @@ class RoomsController extends Controller
         ];
 
         $request->validate($rules,$message);
+        $this->saveRoomToDb($request);
+        return $this->createMeeting('create');
+    }
+    public function edit(Room $room)
+    {
+        return view('public.rooms.editRoomModal',compact('room'));
+
+    }
+
+    public function saveRoomToDb($request)
+    {
+        $startDate = Carbon::createFromFormat('yy-m-d',$request->input('start_date'))->toDateString();
+        $startTime =Carbon::parse($request->input('startTime'))->format('H:i');
+        $start_date = $startDate.' '.$startTime;
+        $endDate =  Carbon::createFromFormat('yy-m-d',$request->input('end_date'))->toDateString();
+        $endTime =  Carbon::parse($request->input('endTime'))->format('H:i');
+        $end_date = $endDate.' '.$endTime;
         $data= $request->except('startTime','endTime');
-
-
         $data['user_id'] = Auth::id();
         $data['start_date'] = $start_date;
         $data['end_date'] = $end_date;
@@ -89,7 +119,6 @@ class RoomsController extends Controller
         $user = User::findOrFail(Auth::id());
         $room->url =strtolower($user->name).'-'.Str::random(3).'-'.$room->id.Str::random(2);
         $room->save();
-
         $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
         $this->meetingsParams = [
             'meetingUrl' =>  $room->url,
@@ -104,8 +133,6 @@ class RoomsController extends Controller
 
         ];
 
-
-        return $this->createMeeting('create');
     }
 
     public function createMeeting($name=null)
@@ -147,44 +174,23 @@ class RoomsController extends Controller
         $room = Room::where('url',$url)->firstOrFail();
         if (Auth::check())
         {
-            $pageName = ucwords($room->name);
-            return view('public.rooms.auth.single',compact('pageName','room'));
+            $response = Gate::allows('view',$room);
+            if ($response)
+            {
+                $pageName = ucwords($room->name);
+                return view('public.rooms.auth.single',compact('pageName','room'));
+            }
+            else{
+                return redirect()->to(route('invitedMeetings'));
+//                return $this->inviteAttendee();
+            }
+
+
         }else{
 
-            $recordingList = [];
-            $recordingParams = new GetRecordingsParameters();
-            $recordingParams->setMeetingId($url);
-            $bbb = new BigBlueButton();
-            $response = $bbb->getRecordings($recordingParams);
-            if ($response->getMessageKey() == null) {
-                foreach ($response->getRawXml()->recordings->recording as $recording) {
-                    $recordingList[] = $recording ;
-                }
-            }
-
-            $roomsRecordingList = [];
-
-            foreach ($recordingList as $recording)
-            {
-                if ($recording->published == 'true')
-                {
-                    $roomsRecordingList [] = $recording;
-                }
-            }
-
-            $roomsRecordingList = Helper::paginate(
-                $roomsRecordingList,
-                10,
-                null,
-                [
-                    'path' =>'invited-rooms-recordings'
-                ]);
-
-            dd($roomsRecordingList);
+            $roomsRecordingList = Helper::recordingLists($url);
             $pageName = ucwords($room->user->username);
-            $password = $room->user->password;
-            $room = $room->url;
-            return view('public.rooms.notauth.join',compact('pageName','password','room'));
+            return view('public.rooms.notauth.join',compact('pageName','room','roomsRecordingList'));
         }
 
 
@@ -198,7 +204,6 @@ class RoomsController extends Controller
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
-
         if ($response->getReturnCode() == 'FAILED') {
 
             $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
@@ -304,16 +309,19 @@ class RoomsController extends Controller
             $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
             $attendee->rooms()->attach($room->id);
         }
+        $when = now()->addSeconds(5);
         foreach ($notAuthUser as $userEmail)
         {
             $user = User::findOrFail(Auth::id());
-            Mail::to($userEmail)->send(new AttendeeMail([
-
-                'toEmail' => encrypt($userEmail),
-                'fromEmail' =>  $user->email,
-                'meeting_name'=> $room->name,
-                'meeting_id'=>encrypt($room->id),
-            ]));
+            Notification::route('mail',$userEmail)
+                ->notify((new InviteParticipantMail(
+                   [
+                        'toEmail' => encrypt($userEmail),
+                        'from' => $user,
+                        'meetingName'=>  $room->name,
+                        'meeting_id' => encrypt($room->id)
+                   ]
+                ))->delay($when));
         }
 
         return response()->json(['result'=>['success'=>200]]);

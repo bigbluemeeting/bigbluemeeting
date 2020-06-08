@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
 use App\bigbluebutton\tests\TestCase;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,7 @@ use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 
 
@@ -21,7 +23,7 @@ class MeetingController extends Controller
     protected $meetingList = [];
     protected $checkCode = true;
 
-    protected $logoutUrl = '/admin/meetings';
+    protected $logoutUrl = '/meetings';
     protected $meetingsParams = [];
     protected $meetingUrl,$meetingName,$attendeePassword,$moderatorPassword;
     protected $autoJoin;
@@ -73,6 +75,7 @@ class MeetingController extends Controller
         $request->validate([
             'name' => 'required|max:50',
 
+
         ]);
 
         $data = $request->all();
@@ -88,7 +91,7 @@ class MeetingController extends Controller
         $meeting->url =strtolower($user->name).'-'.Str::random(4).'-'.$meeting->id.Str::random(2);
         $meeting->save();
 
-        $this->logoutUrl = url($this->logoutUrl);
+        $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
 
         $this->meetingsParams = [
             'meetingUrl' => $meeting->url,
@@ -102,6 +105,7 @@ class MeetingController extends Controller
             'username' => Auth::user()->username,
 
         ];
+
         $this->autoJoin = $data['auto_join'];
         return $this->createMeeting('create');
 
@@ -110,6 +114,14 @@ class MeetingController extends Controller
 
     private function createMeeting($name=null)
     {
+        $bbb = new BigBlueButton();
+        $createMeetingParams = new CreateMeetingParameters($this->meetingsParams['meetingUrl'] , $this->meetingsParams['meetingName']);
+        $createMeetingParams->setAttendeePassword($this->meetingsParams['attendeePassword']);
+        $createMeetingParams->setModeratorPassword($this->meetingsParams['moderatorPassword']);
+        $createMeetingParams->setLogoutUrl($this->meetingsParams['logoutUrl']);
+        $createMeetingParams->setModerateJoin();
+        $bbb->createMeeting($createMeetingParams);
+        dd($createMeetingParams);
         $response = Helper::createMeeting($this->meetingsParams);
         if ($response->getReturnCode() == 'FAILED') {
             return 'Can\'t create room! please contact our administrator.';
@@ -150,30 +162,24 @@ class MeetingController extends Controller
      */
     public function show($url)
     {
-
-
-
         $room = Meeting::where('url',$url)->firstOrFail();
         $pageName = ucwords($room->user->username);
-
-        if ($room->access_check)
+        $response = Gate::allows('view',$room);
+        if (!$response)
         {
-            $room->access_check=0;
-            $room->save();
-            return view('public.meetings.join',compact('pageName','room'));
+            if (!empty($room->access_code))
+            {
+                return view('public.meetings.access_code',compact('pageName','room'));
+            }
+            else{
 
+                $recordingList = Helper::recordingLists($url);
+                return view('public.meetings.join',compact('pageName','room','recordingList'));
+            }
         }
-        if (!empty($room->access_code))
-        {
-            return view('public.meetings.access_code',compact('pageName','room'));
-        }
-
         else{
-            return view('public.meetings.join',compact('pageName','room'));
-
+            return redirect()->to(route('meetings.index'));
         }
-
-
 
     }
 
@@ -215,15 +221,20 @@ class MeetingController extends Controller
 
     public function joinMeeting($url)
     {
+
+
         $meeting  = Meeting::where('url',$url)->firstOrFail();
         $bbb = new BigBlueButton();
+
+
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters($url,$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
 
         if ($response->getReturnCode() == 'FAILED') {
 
-            $this->logoutUrl = url($this->logoutUrl);
+            $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+
             $this->meetingsParams = [
                 'meetingUrl' => $meeting->url,
                 'meetingName' =>  $meeting->name,

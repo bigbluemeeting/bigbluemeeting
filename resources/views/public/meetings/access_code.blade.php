@@ -1,89 +1,92 @@
-
 @extends('public.layouts.app')
 @section('pagename', $pageName)
 @section('css')
-    <style>
-        #overlay{
-            position: fixed;
-            top: 0;
-            z-index: 100;
-            width: 80%;
-            height:100%;
-            display: none;
-            background: rgba(0,0,0,0.6);
-            margin-left: -6px;
-        }
-        .cv-spinner {
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .newspinner {
-            width: 100px;
-            height: 100px;
-            border: 4px #ddd solid;
-            border-top: 4px #2e93e6 solid;
-            border-radius: 50%;
-            animation: sp-anime 0.8s infinite linear;
-        }
-        @keyframes sp-anime {
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-        .is-hide{
-            display:none;
-        }
-    </style>
+    <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
+    <link rel="stylesheet" href="{{asset('css/front.css?v=time()')}}">
 @stop
 @section('content')
-    <div id="overlay">
-
-
-        <div class="cv-spinner">
-
-            <span class="newspinner">
-            </span>
-        </div>
+    <div id="data">
+        @include('includes.meetingAccessCodeForm')
     </div>
-    <div class="title-block">
-        <h4> You have been invited to join</h4>
-        <h2>
-            {{ $pageName }}'s Meeting
-        </h2>
-    </div>
-
-
-
-    <!-- Default form subscription -->
-
-    <form class="text-center p-5" action="{{route('accessCodeResult')}}" method="Post" id="frm">
-
-        @csrf
-
-        <div class="col-sm-6">
-            <!-- Name -->
-
-            <span class="has-error text-danger" id="error">
-
-        </span>
-
-            <input type="text" name="access_code" class="form-control mb-4 text-center" placeholder="Enter Room Access Code">
-            <input type="hidden" value="{{encrypt($room->url)}}" name="room">
-
-            <!-- Email -->
-        </div>
-        <div class="col-sm-2">
-
-
-            <!-- Sign in button -->
-            <button class="btn btn-info btn-block" type="submit">Enter</button>
-        </div>
-
-    </form>
-
 
 
 @endsection
+
+@section('script')
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src={{asset('js/jquery.dataTables.min.js')}}></script>
+    <!-- Data Bootstarp -->
+    <script type="text/javascript" src={{asset('js/dataTables.bootstrap4.min.js')}}></script>
+    <script>
+        $(document).ready(function () {
+            $('#data').on('submit','#accessFrm',function (e) {
+                e.preventDefault();
+                frmData =$(this).serialize();
+                $.post('{{route("accessCodeResult")}}',frmData,
+                    function (data,xhrStatus,xhr) {
+                    if (data.error){
+                        $('#error').html(data.error[0]);
+                    }else {
+                        $('#data').empty().append(data);
+                        $( '#data').find('#table').DataTable({
+                            pagingType: 'full_numbers',
+                            lengthMenu :[[5,10,25,50,-1],[5,10,25,50,'All']],
+                            "initComplete": function () {
+                                var api = this.api();
+                                api.$('td').click( function () {
+                                    api.search( this.innerHTML ).draw();
+                                });
+                            }
+                        });
+                    }
+
+                    });
+            });
+
+            $('#data').on('submit','#frm',function (e) {
+
+                e.preventDefault();
+                frmData =$(this).serialize();
+                time = setTimeout(function () {
+                    jsonResult()
+                },1000);
+            });
+
+            function jsonResult() {
+                $.post('{{route("meetingAttendeesJoin")}}',frmData,
+                    function (data,xhrStatus,xhr) {
+                        if (data.error)
+                        {
+                            $('#error').html(data.error[0]);
+                            clearInterval(time);
+                        }
+                        if (data.notStart)
+                        {
+                            $('.input-group').html(`
+                                                <div>
+                                                <h4>This meeting hasn't started yet.</h4>
+                                                <p>You will automatically  join when the meeting starts.</p>
+                                                </div>
+                                            <span class="input-group-append ml-5 mb-1">
+                                            <div id="overlay">
+                                                <div class="cv-spinner">
+                                                    <span class="newspinner"></span>
+                                                </div>
+                                            </div>
+                                            </span>`)
+                            $('#errorDiv').empty();
+                            setTimeout(jsonResult,15000)
+
+                        }
+                        if (data.url)
+                        {
+                            window.location =data.url;
+                        }
+
+
+                    });
+            }
+        })
+    </script>
+@stop
 

@@ -93,15 +93,7 @@
         </div>
     </div>
 
-{{--    <div class="row">--}}
-{{--        <div class="col-md-3">--}}
-{{--            <button type="submit" name="commit" class="create-only btn btn-info btn-block" data-disable-with="Create Room" data-toggle="modal" data-target="#myModal">--}}
-{{--                <i class="fa fa-plus"></i>--}}
-{{--                Create Room--}}
-{{--            </button>--}}
 
-{{--        </div>--}}
-{{--    </div>--}}
 
     <div class="row">
         <div class="col-lg-12">
@@ -111,7 +103,7 @@
                         <div class="input-group-prepend" >
                             <div class="col-md-12">
                                          <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom" data-target="#myModal">
-                                             <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Rooms </i>
+                                             <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Meetings </i>
                                          </span>
                             </div>
 

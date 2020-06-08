@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Meeting;
+use App\Policies\MeetingOwnerPolicy;
+use App\Policies\RoomOwnerPolicy;
+use App\Room;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +19,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        Room::class =>RoomOwnerPolicy::class,
+        Meeting::class =>MeetingOwnerPolicy::class
+
     ];
 
     /**
@@ -24,6 +32,7 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
 
         //
     }

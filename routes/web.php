@@ -45,6 +45,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
     Route::get('/recordings/invited-rooms-recordings','Admin\RecordingsController@invitedRoomsRecordings')->name('invitedRoomsRecordings');
+    Route::get('/recordings/cache','Admin\RecordingsController@cache');
     Route::resource('/recordings','Admin\RecordingsController');
     Route::resource('/attendees','Admin\AttendeeController');
     Route::post('/recordings/published','Admin\RecordingsController@publishedRecording')->name('publishedRecording');
@@ -70,14 +71,14 @@ Route::get('/', function () {
  * Public Routes
  */
 
-Route::get('rooms/invite-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+Route::get('rooms/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
 Route::get('rooms/invite-participant/{url}','PublicControllers\Rooms\RoomsController@inviteParticipant')->name('invite-participant');
 Route::resource('rooms','PublicControllers\Rooms\RoomsController');
 Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
 Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
 Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
 Route::resource('/meetings','Admin\MeetingController');
-Route::post('/meetings/access','PublicControllers\Meetings\AttendeesMeetingController@accessCodeResult')->name('accessCodeResult');
+
 Route::get('/meetings/access/{url}','PublicControllers\Meetings\AttendeesMeetingController@checkCode')->name('checkCode');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');
@@ -94,5 +95,5 @@ Route::middleware('ajax.check')->group(function ()
     Route::post('/meetings/attendeeJoin','PublicControllers\Meetings\AttendeesMeetingController@joinMeetingAttendee')->name('meetingAttendeesJoin');
     Route::post('/rooms/attendeeJoin','PublicControllers\Rooms\AttendeesRoomController@Join')->name('attendeeJoin');
     Route::post('/meeting-attendees','PublicControllers\Rooms\RoomsController@roomAttendees')->name('roomAttendees');
-
+    Route::post('/meetings/access','PublicControllers\Meetings\AttendeesMeetingController@accessCodeResult')->name('accessCodeResult');
 });
