@@ -1,1 +1,83 @@
-.input-icons i{position:absolute}.input-icons{width:100%;margin-bottom:10px}.input-icon .cursor-pointer{cursor:pointer}.icon{padding:10px;min-width:40px}.tags-wrapper{background:#fff;overflow:hidden}.tags-wrapper ul{margin:0;padding:0}.tags-wrapper li{float:left}.tags-wrapper li.tag{font-family:verdana;font-size:14px;border-radius:3px;list-style:none;background-clip:padding-box;background-color:#e4e4e4;background-image:-webkit-linear-gradient(top,#f4f4f4 20%,#f0f0f0 50%,#e8e8e8 52%,#eee 100%);box-shadow:0 0 2px #fff inset,0 1px 0 rgba(0,0,0,.05);color:#333;border:1px solid #aaa;line-height:13px;padding:1px 3px 3px 5px;margin:3px 0 3px 5px}.tags-wrapper li a{text-decoration:none;color:#fff;padding:2px;display:inline-block;margin-left:6px;color:#333}.tags-wrapper li a:hover{color:#222}.tags-wrapper input{display:none;border:#000}.tags-wrapper li.tags-input{white-space:nowrap;margin:0;padding:0}.tags-wrapper li input{display:block;background:trasparent;outline:0;border:none;font-size:18px;height:auto;width:420px;margin:4px;color:#000}.tags-wrapper .autofill-bg{position:relative;top:4px}
+.input-icons i {
+    position: absolute;
+}
+
+.input-icons {
+    width: 100%;
+    margin-bottom: 10px;
+}
+.input-icon .cursor-pointer
+{
+    cursor: pointer;
+}
+
+.icon {
+    padding: 10px;
+    min-width: 40px;
+}
+
+.tags-wrapper {
+    background:white;
+    overflow:hidden;
+    /*width:300px;*/
+    /*background-image: -webkit-linear-gradient(top, rgb(238, 238, 238) 1%, white 15%);*/
+    /*box-shadow: 0 0 5px rgba(0, 0, 0, .3);*/
+}
+.tags-wrapper ul {
+    margin:0px;
+    padding:0px;
+}
+.tags-wrapper li {
+    float:left;
+}
+.tags-wrapper li.tag {
+    font-family:verdana;
+    font-size:14px;
+
+    border-radius:3px;
+    list-style: none;
+    background-clip: padding-box;
+    background-color: rgb(228, 228, 228);
+    background-image:-webkit-linear-gradient(top, rgb(244, 244, 244) 20%, rgb(240, 240, 240) 50%, rgb(232, 232, 232) 52%, rgb(238, 238, 238) 100%);
+    box-shadow: 0 0 2px white inset, 0 1px 0 rgba(0, 0, 0, 0.05);
+    color: rgb(51, 51, 51);
+    border: 1px solid rgb(170, 170, 170);
+    line-height: 13px;
+    padding: 1px 3px 3px 5px;
+    margin: 3px 0 3px 5px;
+}
+.tags-wrapper li a {
+    text-decoration:none;
+    color:white;
+    padding:2px;
+    display:inline-block;
+    margin-left:6px;
+    color: rgb(51, 51, 51);
+}
+.tags-wrapper li a:hover {
+    color:#222;
+}
+.tags-wrapper input {
+    display:none;
+    border: black;
+}
+.tags-wrapper li.tags-input {
+    white-space: nowrap;
+    margin: 0;
+    padding: 0;
+}
+.tags-wrapper li input {
+    display:block;
+    background:trasparent;
+    outline:none;
+    border:none;
+    font-size:18px;
+    height: auto;
+    width:420px;
+    margin: 4px;
+    color: black;
+}
+.tags-wrapper .autofill-bg {
+    position:relative;
+    top:4px;
+}

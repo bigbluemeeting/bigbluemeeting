@@ -17,6 +17,7 @@
                             </span>
                         <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Room name..." autocomplete="off" type="text" name="name">
 
+
                     </div>
 
                     <div class="row mt-2">
@@ -103,7 +104,7 @@
 
                     <div class="row">
                         <div class="mt-3 ml-3">
-                                <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="advanceSettings">
+                                <span class="create-only btn btn-info btn-block input-group-text advanceSettings" data-toggle="modal" >
                                     Advanced Settings
                                     <i class="fa fa-chevron-circle-down text-center text-dark pl-3 mt-1"></i>
                                 </span>
@@ -112,7 +113,7 @@
                     </div>
 
 
-                    <div class="container border border-light rounded mt-3 " style="display: none;" id="advancedOptions">
+                    <div class="container border border-light rounded mt-3 advancedOptions" style="display: none;" >
                         <div class="row">
                             <div class="col-sm-8">
                                 <label for="room_mute_on_join" class="custom-switch pl-0 mt-3 mb-3 w-100 text-sm-left">
@@ -124,6 +125,7 @@
                             </div>
                         </div>
 
+
                         <div class="row mt-2">
                             <div class="col-sm-8">
                                 <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
@@ -131,7 +133,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3  mt-4">
-                                <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">
+                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="room_require_moderator_approval" >
                             </div>
                         </div>
                     </div>

@@ -12,6 +12,7 @@ let mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/inviteParticipants.js','public/js/ip.js')
+    .js('resources/assets/js/rooms.js','public/js/rooms.js')
     .styles('resources/assets/css/inviteParticipants.css','public/css/ip.css');
 // mix.js('resources/assets/js/app.js', 'public/js')
 //     .sass('resources/assets/sass/app.scss', 'public/css');

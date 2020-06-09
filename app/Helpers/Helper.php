@@ -44,7 +44,7 @@ class Helper
         $createMeetingParams->setAttendeePassword($params['attendeePassword']);
         $createMeetingParams->setModeratorPassword($params['moderatorPassword']);
         $createMeetingParams->setLogoutUrl($params['logoutUrl']);
-        dd($createMeetingParams);
+       
         if (isset($params['muteAllUser']))
         {
             $createMeetingParams->setMuteOnStart($params['muteAllUser']);
@@ -65,8 +65,6 @@ class Helper
         {
             $createMeetingParams->setWelcomeMessage($params['welcome_message']);
         }
-
-
 
         $response = $bbb->createMeeting($createMeetingParams);
         return $response;

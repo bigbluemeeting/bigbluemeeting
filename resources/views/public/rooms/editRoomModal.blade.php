@@ -7,13 +7,14 @@
                     <div class="card-title">
                         <h3 class="text-center">Edit New Room</h3>
                     </div>
-                    {!! Form::open(['method' => 'POST', 'route' => ['rooms.store'], 'class'=>'form-horizontal']) !!}
 
+                    {!! Form::open(['method' => 'PATCH', 'class'=>'form-horizontal manageForm']) !!}
+                    <input type="hidden" name="room_id" value="" id="room_id">
                     <div class="input-icon mb-2">
                             <span class="input-icons">
                                 <i class="fa fa-desktop icon mt-1 ml-2"></i>
                             </span>
-                        <input id="create-room-name" class="form-control text-center" value="{{$room->name}}" placeholder="Enter a Room name..." autocomplete="off" type="text" name="name">
+                        <input id="edit-room-name" class="form-control text-center" value="{{isset($room->name)?$room->name : ''}}" placeholder="Enter a Room name..." autocomplete="off" type="text" name="name">
 
                     </div>
 
@@ -22,14 +23,14 @@
                                 <span class="input-icons">
                                 <i class="fa fa-users icon mt-1 ml-2"></i>
                                 </span>
-                            <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Maximum People..." autocomplete="off" type="text" name="maximum_people">
+                            <input id="edit-max-people" class="form-control text-center" value="" placeholder="Enter a Maximum People..." autocomplete="off" type="text" name="maximum_people">
                         </div>
                     </div>
                     <label for="start_date" class="mt-2" >Room Start on</label>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="text"  name="start_date"  placeholder="Enter Start Date" class="form-control text-center picker">
+                                <input type="text"  name="start_date"  placeholder="Enter Start Date" class="form-control text-center picker editPicker">
                                 <div class="input-group-prepend">
                                         <span id="toggle" class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -40,7 +41,7 @@
                         <p class="mt-2 col-md-1">at</p>
                         <div class="col-sm-5 clockpicker1">
                             <div class="input-group">
-                                <input type="text" name="startTime" class="form-control" id="startTime">
+                                <input type="text" name="startTime" class="form-control startTime" id="">
                                 <div class="input-group-append">
                                             <span type="button" id="toggle3" class="input-group-text">
                                                 <i class="fa fa-clock-o"></i>
@@ -54,7 +55,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
-                                <input type="text"  name="end_date" placeholder="Enter End Date" class="form-control text-center picker2">
+                                <input type="text"  name="end_date" placeholder="Enter End Date" class="form-control text-center picker2 editPicker2">
                                 <div class="input-group-prepend">
                                         <span type="button" id="toggle2" class="input-group-text">
                                             <i class="fa fa-calendar"></i>
@@ -65,7 +66,7 @@
                         <p class="mt-2  col-md-1">at</p>
                         <div class="col-sm-5 clockpicker2">
                             <div class="input-group">
-                                <input type="text" name="endTime" class="form-control" id="endTime" >
+                                <input type="text" name="endTime" class="form-control endTime" id="" >
                                 <div class="input-group-append">
                                             <span type="button" id="toggle3" class="input-group-text">
                                                 <i class="fa fa-clock-o"></i>
@@ -77,23 +78,23 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <textarea class="form-control" name="meeting_description"  placeholder="A description of the invite to be send along with the e-mail invite" id="" cols="40" rows="2"></textarea>
+                            <textarea class="form-control meeting_description" name="meeting_description"  placeholder="A description of the invite to be send along with the e-mail invite" id="" cols="40" rows="2"></textarea>
                         </div>
                     </div>
 
                     <div class="row mt-2">
                         <div class="col-md-12">
 
-                            <textarea class="form-control" name="welcome_message"  placeholder="A welcome message shown in the chat room" id="" cols="40" rows="1.5"></textarea>
+                            <textarea class="form-control welcome_message" name="welcome_message"  placeholder="A welcome message shown in the chat room" id="" cols="40" rows="1.5"></textarea>
                         </div>
                     </div>
 
                     <div class="row mt-2">
                         <div class="col-md-6">
                             <label>Record This Room</label>
-                            <select name="meeting_record"  class="form-control">
-                                <option value="{{encrypt(false)}}">No,don't record it.</option>
-                                <option value="{{encrypt(true)}}">Record it.</option>
+                            <select name="meeting_record"  class="form-control meeting_record">
+                                <option value="0">No,don't record it.</option>
+                                <option value="1">Record it.</option>
                             </select>
                         </div>
 
@@ -101,7 +102,7 @@
 
                     <div class="row">
                         <div class="mt-3 ml-3">
-                                <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="advanceSettings">
+                                <span class="create-only btn btn-info btn-block input-group-text advanceSettings" data-toggle="modal" >
                                     Advanced Settings
                                     <i class="fa fa-chevron-circle-down text-center text-dark pl-3 mt-1"></i>
                                 </span>
@@ -110,7 +111,7 @@
                     </div>
 
 
-                    <div class="container border border-light rounded mt-3 " style="display: none;" id="advancedOptions">
+                    <div class="container border border-light rounded mt-3 advancedOptions" style="display: none;" >
                         <div class="row">
                             <div class="col-sm-8">
                                 <label for="room_mute_on_join" class="custom-switch pl-0 mt-3 mb-3 w-100 text-sm-left">
@@ -118,7 +119,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3 mt-3">
-                                <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="room_mute_on_join">
+                                <input class="custom-switch-input mute_on_join" data-default="false" type="checkbox" value="1" name="mute_on_join" >
                             </div>
                         </div>
 
@@ -129,7 +130,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3  mt-4">
-                                <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">
+                                <input class="custom-switch-input require_moderator_approval" data-default="false" type="checkbox" value="1" name="require_moderator_approval" >
                             </div>
                         </div>
                     </div>

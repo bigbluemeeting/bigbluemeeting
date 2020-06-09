@@ -98,8 +98,15 @@ class RoomsController extends Controller
     }
     public function edit(Room $room)
     {
-        return view('public.rooms.editRoomModal',compact('room'));
+        return response()->json(['result' =>$room]);
+//        return view('public.rooms.editRoomModal',compact('room'));
 
+    }
+
+    public function update(Request $request,$id)
+    {
+        dd($id);
+        dd($request->all());
     }
 
     public function saveRoomToDb($request)
@@ -115,6 +122,7 @@ class RoomsController extends Controller
         $data['start_date'] = $start_date;
         $data['end_date'] = $end_date;
         $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
+
         $room = Room::create($data);
         $user = User::findOrFail(Auth::id());
         $room->url =strtolower($user->name).'-'.Str::random(3).'-'.$room->id.Str::random(2);
@@ -192,9 +200,6 @@ class RoomsController extends Controller
             $pageName = ucwords($room->user->username);
             return view('public.rooms.notauth.join',compact('pageName','room','roomsRecordingList'));
         }
-
-
-
     }
 
     public function join(Request $request)
