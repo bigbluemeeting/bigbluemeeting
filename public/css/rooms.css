@@ -1,0 +1,64 @@
+.input-icons i {
+    position: absolute;
+}
+
+.input-icons {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.icon {
+    padding: 10px;
+    min-width: 40px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+#warning-dev{
+    background: #fff8a0;
+}
+.modal-lg {
+    max-width: 900px;
+}
+@media (min-width: 768px) {
+    .modal-lg {
+        width: 100%;
+    }
+}
+.custom-switch-input[type="checkbox"]
+{
+    position: relative;
+    width: 70px;
+    height: 30px;
+    -webkit-appearance: none;
+    background: #c6c6c6;
+    outline: none;
+    border-radius: 30px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,2);
+    transition: .5s;
+}
+.custom-switch-input:checked[type="checkbox"]
+{
+    background: #03a9f4;
+}
+.custom-switch-input[type="checkbox"]:before
+{
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 100px;
+    top: 0;
+    left: 0;
+    background: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,2);
+    transition: .5s;
+}
+.custom-switch-input:checked[type="checkbox"]:before
+{
+    left: 40px;
+}

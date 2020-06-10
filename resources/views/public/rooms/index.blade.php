@@ -5,77 +5,9 @@
 @section('css')
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
-
     <link rel="stylesheet" href="{{asset('css/bootstrap-clockpicker.css')}}">
+    <link rel="stylesheet" href="{{asset('css/rooms.css')}}">
 
-    <style>
-
-        .input-icons i {
-            position: absolute;
-        }
-
-        .input-icons {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        .icon {
-            padding: 10px;
-            min-width: 40px;
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            text-align: center;
-        }
-        #warning-dev{
-            background: #fff8a0;
-        }
-        .modal-lg {
-            max-width: 900px;
-        }
-        @media (min-width: 768px) {
-            .modal-lg {
-                width: 100%;
-            }
-        }
-        input[type="checkbox"]
-        {
-            position: relative;
-            width: 70px;
-            height: 30px;
-            -webkit-appearance: none;
-            background: #c6c6c6;
-            outline: none;
-            border-radius: 30px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,2);
-            transition: .5s;
-        }
-        input:checked[type="checkbox"]
-        {
-            background: #03a9f4;
-        }
-        input[type="checkbox"]:before
-        {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 100px;
-            top: 0;
-            left: 0;
-            background: #fff;
-            transform: scale(1.1);
-            box-shadow: 0 2px 5px rgba(0,0,0,2);
-            transition: .5s;
-        }
-        input:checked[type="checkbox"]:before
-        {
-            left: 40px;
-        }
-
-    </style>
 
 @stop
 @section('content')
@@ -84,6 +16,17 @@
         <h3 class="title"> {{ $pageName }} </h3>
     </div>
 
+    <div class="col-lg-12">
+
+        @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+            @if(Session::has($msg))
+                <div class="alert alert-{{ $msg }}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ session($msg) }}
+                </div>
+            @endif
+        @endforeach
+    </div>
     <div class="container-fluid">
         <h5>In-Progress and Upcoming Rooms</h5>
         <div class="row" id="error">
@@ -129,6 +72,7 @@
                                     <tbody>
                                     @foreach($upComingMeetings as $list)
                                         <tr>
+{{--                                            <td class="text-center"><input type="checkbox" name="rooms[]" value="{{$list->id}}"></td>--}}
                                             <td><a href="{{route('rooms.show',$list->url)}}">{{$list->name}}</a></td>
                                             <td>{{\Carbon\Carbon::parse($list->start_date)->format('M d,yy g:i A')}}</td>
                                             <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>
@@ -137,15 +81,11 @@
                                                 <a href="{{route('invite-participant',$list->url)}}" class="btn btn-sm  btn-info">Add Participant</a>
                                             </td>
                                             <td>
-                                                <span data-task="{{$list->id}}"  class="btn btn-sm btn-info btn-manage" >Edit</span>
+                                                <span data-task="{{$list->id}}"  class="btn btn-sm btn-info-outline btn-manage"><i class="fa fa-edit"></i> Edit</span>
                                                 |
-                                                {!! Form::open(array(
-                                                    'style' => 'display: inline-block;',
-                                                    'method' => 'DELETE',
-                                                    'onsubmit' => "return confirm('Are you sure do you want to delete?');",
-                                                    )) !!}
-                                                {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}
-                                                {!! Form::close() !!}
+                                                <span href="javascript:;" data-toggle="modal"  data-item = {{$list->id}}
+                                                   data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
+
                                             </td>
                                         </tr>
                                     @endforeach
@@ -188,7 +128,7 @@
 
         @include('public.rooms.addRoomModal')
         @include('public.rooms.editRoomModal')
-
+        @include('public.rooms.deleteRoomModal')
     </div>
 
 
@@ -201,14 +141,7 @@
 
     <div class="row">
         <div class="col-lg-12">
-            @foreach (['danger', 'warning', 'success', 'info'] as $msg)
-                @if(Session::has($msg))
-                    <div class="alert alert-{{ $msg }}">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        {{ session($msg) }}
-                    </div>
-                @endif
-            @endforeach
+
 
             <div class="card card-block sameheight-item">
                 <section class="example">
@@ -233,18 +166,15 @@
                                 <tbody>
                                 @foreach($pastMeetings as $list)
                                     <tr>
+
                                         <td>{{$list->name}}</td>
                                         <td>{{\Carbon\Carbon::parse($list->start_date)->format('M d,yy g:i A')}}</td>
                                         <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>
                                         <td>{{$list->meeting_record ? 'Yes':'No'}}</td>
                                         <td>
-                                            {!! Form::open(array(
-                                                    'style' => 'display: inline-block;',
-                                                    'method' => 'DELETE',
-                                                    'onsubmit' => "return confirm('Are you sure do you want to delete?');",
-                                                    )) !!}
-                                            {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}
-                                            {!! Form::close() !!}
+                                             <span href="javascript:;" data-toggle="modal"  data-item = {{$list->id}}
+                                                     data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
+
 
                                         </td>
                                     </tr>
@@ -283,116 +213,11 @@
 
     <script>
         url = '{{URL::to('rooms/:id/edit')}}';
-
+        action =  "{{\Illuminate\Support\Facades\URL::to('rooms')}}/:id";
     </script>
-    <script src="{{asset('js/rooms.js')}}">
-
-
-
-
-      //  $('#createRoom').on('click',function () {
-      //
-      //      $('.picker').val(moment(new Date()).format("YYYY-MM-DD"));
-      //      $('.picker2').val(moment(new Date()).format("YYYY-MM-DD"));
-      //      var  startTime =$('#startTime');
-      //      var  endTime =$('#endTime');
-      //      startTime.val(moment(new Date(), "h:mm:ss").format("hh:mm A"));
-      //      endTime.val(moment(new Date(), "h:mm:ss").add(10,'minutes').format("hh:mm A"));
-      //
-      //
-      //      $('#myModal').modal('show');
-      //  });
-      //  $('.btn-manage').on('click',function () {
-      //      var id = $(this).data('task');
-      //
-      //      url=url.replace(':id',id);
-      //      console.log(url)
-      //
-      //      $.get(url,function (data) {
-      //          action =  $('.manageForm').prop('action')+'/'+data.result.id;
-      //          $('.manageForm').prop('action',action);
-      //          startDate = moment(new Date(data.result.start_date)).format("YYYY-MM-DD");
-      //          endDate  =  moment(new Date(data.result.end_date)).format("YYYY-MM-DD");
-      //          startTime =  moment(new Date(data.result.start_date),"h:mm:ss").format("hh:mm A");
-      //          endTime =  moment(new Date(data.result.end_date),"h:mm:ss").format("hh:mm A");
-      //          $('#edit-room-name').val(data.result.name);
-      //          $('#edit-max-people').val(data.result.maximum_people);
-      //          $('.editPicker').val(startDate);
-      //          $('.editPicker2').val(endDate);
-      //          $('.startTime').val(startTime);
-      //          $('.endTime').val(endTime);
-      //          $('.meeting_description').val(data.result.meeting_description);
-      //          $('.welcome_message').val(data.result.welcome_message);
-      //
-      //
-      //
-      //          if (data.result.mute_on_join)
-      //          {
-      //              $('.mute_on_join').attr("checked","checked");
-      //          }
-      //          if (data.result.require_moderator_approval)
-      //          {
-      //              $('.require_moderator_approval').attr("checked","checked");
-      //          }
-      //
-      //          $(".meeting_record option").each(function(){
-      //
-      //
-      //              if ($(this).val()== data.result.meeting_record)
-      //                  $(this).attr("selected","selected");
-      //          });
-      //
-      //
-      //          $('#editModal').modal('show');
-      //
-      //
-      //      });
-      //
-      //  });
-      //
-      //  $('#modal').on('click','.advanceSettings',function () {
-      //     $('.advancedOptions').slideToggle()
-      //  });
-      //
-      //  dateTimePickers();
-      // function dateTimePickers() {
-      //     $('#modal').find('#myModal,#editModal').find('.picker').datetimepicker({
-      //         timepicker: false,
-      //         datepicker: true,
-      //         format: 'Y-m-d',
-      //         // formatDate
-      //
-      //
-      //     });
-      //
-      //     $('#modal').find('#myModal,#editModal').find('.picker2').datetimepicker({
-      //         timepicker: false,
-      //         datepicker: true,
-      //         format: 'Y-m-d', // formatDate
-      //
-      //     });
-      //
-      //     $('.clockpicker1').clockpicker({
-      //         autoclose: true,
-      //         twelvehour: true,
-      //         placement: 'bottom',
-      //         align: 'left',
-      //         vibrate:true,
-      //
-      //     });
-      //
-      //     $('.clockpicker2').clockpicker({
-      //         autoclose: true,
-      //         twelvehour: true,
-      //         placement: 'top',
-      //         align: 'left',
-      //         vibrate:true,
-      //
-      //     });
-      // }
-
-
-    </script>
+    <script src="{{asset('js/rooms.js')}}"></script>
 
 @stop
+
+
 

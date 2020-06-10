@@ -1,5 +1,7 @@
+
 $('#createRoom').on('click',function () {
 
+    $('.addForm')[0].reset();
     $('.picker').val(moment(new Date()).format("YYYY-MM-DD"));
     $('.picker2').val(moment(new Date()).format("YYYY-MM-DD"));
     var  startTime =$('#startTime');
@@ -13,11 +15,13 @@ $('#createRoom').on('click',function () {
 $('.btn-manage').on('click',function () {
     var id = $(this).data('task');
 
+    url=url.replace(':id',id);
 
-
+    $('.manageForm')[0].reset();
     $.get(url,function (data) {
 
-        action =  $('.manageForm').prop('action')+'/'+data.result.id;
+
+        action = action.replace(':id',data.result.id);
         $('.manageForm').prop('action',action);
         startDate = moment(new Date(data.result.start_date)).format("YYYY-MM-DD");
         endDate  =  moment(new Date(data.result.end_date)).format("YYYY-MM-DD");
@@ -36,11 +40,14 @@ $('.btn-manage').on('click',function () {
 
         if (data.result.mute_on_join)
         {
-            $('.mute_on_join').attr("checked","checked");
+            $('.mute_on_join').prop("checked","checked");
+
         }
+
         if (data.result.require_moderator_approval)
         {
-            $('.require_moderator_approval').attr("checked","checked");
+            $('.require_moderator_approval').prop("checked","checked");
+
         }
 
         $(".meeting_record option").each(function(){
@@ -57,6 +64,7 @@ $('.btn-manage').on('click',function () {
     });
 
 });
+
 
 $('#modal').on('click','.advanceSettings',function () {
     $('.advancedOptions').slideToggle()
@@ -98,3 +106,17 @@ function dateTimePickers() {
 
     });
 }
+$('.btnDeleteConfirm').on('click',function () {
+
+
+    id = $(this).data('item');
+    deleteData(id)
+});
+function deleteData(id)
+{
+    url = action.replace(':id', id);
+    $("#deleteForm").prop('action', url);
+}
+$('.btnDelete').on('click',function () {
+    $("#deleteForm").submit();
+});

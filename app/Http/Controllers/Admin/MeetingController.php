@@ -81,6 +81,7 @@ class MeetingController extends Controller
         $data = $request->all();
         $request->has('mute_on_join') ? $data['mute_on_join'] :$data['mute_on_join'] = 0;
         $request->has('require_moderator_approval') ? $data['require_moderator_approval'] :$data['require_moderator_approval'] =0 ;
+
         $request->has('anyone_can_start') ? $data['anyone_can_start']: $data['anyone_can_start'] =0;
         $request->has('all_join_moderator') ? $data['all_join_moderator'] :$data['all_join_moderator'] =0 ;
         $request->has('auto_join') ? $data['auto_join'] : $data['auto_join'] = 0;
@@ -121,7 +122,7 @@ class MeetingController extends Controller
         $createMeetingParams->setLogoutUrl($this->meetingsParams['logoutUrl']);
         $createMeetingParams->setModerateJoin();
         $bbb->createMeeting($createMeetingParams);
-        dd($createMeetingParams);
+
         $response = Helper::createMeeting($this->meetingsParams);
         if ($response->getReturnCode() == 'FAILED') {
             return 'Can\'t create room! please contact our administrator.';
@@ -191,9 +192,11 @@ class MeetingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Meeting $meeting)
     {
-        //
+        ///// /return response()->json(['result'=>$meeting]);
+
+        return view('admin.meetings.editMeetingModal',compact('meeting'));
     }
 
     /**
@@ -214,9 +217,11 @@ class MeetingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Meeting $meeting)
     {
-        //
+
+        $meeting->delete();
+        return redirect()->back()->with(['success'=>'Meeting Deleted Successfully !!']);
     }
 
     public function joinMeeting($url)
@@ -234,7 +239,6 @@ class MeetingController extends Controller
         if ($response->getReturnCode() == 'FAILED') {
 
             $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
-
             $this->meetingsParams = [
                 'meetingUrl' => $meeting->url,
                 'meetingName' =>  $meeting->name,

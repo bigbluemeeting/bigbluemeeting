@@ -5,16 +5,16 @@
             <div class="modal-body">
                 <div class="card-body p-sm-6">
                     <div class="card-title">
-                        <h3 class="text-center">Edit New Room</h3>
+                        <h3 class="text-center">Edit Your Room</h3>
                     </div>
 
                     {!! Form::open(['method' => 'PATCH', 'class'=>'form-horizontal manageForm']) !!}
-                    <input type="hidden" name="room_id" value="" id="room_id">
+
                     <div class="input-icon mb-2">
                             <span class="input-icons">
                                 <i class="fa fa-desktop icon mt-1 ml-2"></i>
                             </span>
-                        <input id="edit-room-name" class="form-control text-center" value="{{isset($room->name)?$room->name : ''}}" placeholder="Enter a Room name..." autocomplete="off" type="text" name="name">
+                        <input id="edit-room-name" class="form-control text-center"  placeholder="Enter a Room name..." autocomplete="off" type="text" name="name">
 
                     </div>
 
@@ -119,7 +119,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3 mt-3">
-                                <input class="custom-switch-input mute_on_join" data-default="false" type="checkbox" value="1" name="mute_on_join" >
+                                <input class="custom-switch-input mute_on_join" data-default="false" type="checkbox" value="1" name="mute_on_join" autocomplete="off">
                             </div>
                         </div>
 
@@ -130,7 +130,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3  mt-4">
-                                <input class="custom-switch-input require_moderator_approval" data-default="false" type="checkbox" value="1" name="require_moderator_approval" >
+                                <input class="custom-switch-input require_moderator_approval" data-default="false" type="checkbox" value="1" name="require_moderator_approval" autocomplete="off">
                             </div>
                         </div>
                     </div>
@@ -138,8 +138,8 @@
 
                     <div class="row">
                         <div class="mt-3 ml-3">
-                            <input type="submit" value="Schedule Room" class="create-only btn btn-info btn-block" data-disable-with="Create Room">
-                            <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
+{{--                            <input type="submit" value="Schedule Room" class="create-only btn btn-info btn-block" data-disable-with="Create Room">--}}
+                            <input type="submit" name="commit" value="Update Room" class="update-only btn btn-info btn-block" data-disable-with="Update Room" >
                         </div>
                     </div>
 

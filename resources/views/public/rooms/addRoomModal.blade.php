@@ -9,7 +9,7 @@
                         <h3 class="text-center">Create New Room</h3>
                         <h3 class="update-only" style="display:none !important">Room Settings</h3>
                     </div>
-                    {!! Form::open(['method' => 'POST', 'route' => ['rooms.store'], 'class'=>'form-horizontal']) !!}
+                    {!! Form::open(['method' => 'POST', 'route' => ['rooms.store'], 'class'=>'form-horizontal addForm']) !!}
 
                     <div class="input-icon mb-2">
                             <span class="input-icons">
@@ -95,8 +95,8 @@
                         <div class="col-md-6">
                             <label>Record This Room</label>
                             <select name="meeting_record"  class="form-control">
-                                <option value="{{encrypt(false)}}">No,don't record it.</option>
-                                <option value="{{encrypt(true)}}">Record it.</option>
+                                <option value="Don't Record">No,don't record it.</option>
+                                <option value="Record">Record it.</option>
                             </select>
                         </div>
 
@@ -121,7 +121,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3 mt-3">
-                                <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="room_mute_on_join">
+                                <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="room_mute_on_join" autocomplete="off">
                             </div>
                         </div>
 
@@ -133,7 +133,7 @@
                                 </label>
                             </div>
                             <div class="col-sm-3  mt-4">
-                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="room_require_moderator_approval" >
+                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="room_require_moderator_approval" autocomplete="off" >
                             </div>
                         </div>
                     </div>

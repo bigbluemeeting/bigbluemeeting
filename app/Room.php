@@ -20,8 +20,5 @@ class Room extends Model
     {
         return $this->belongsToMany(Attendee::class);
     }
-    public function setMeetingRecordAttribute($meeting_record)
-    {
-        $this->attributes['meeting_record'] = decrypt($meeting_record);
-    }
+
 }
