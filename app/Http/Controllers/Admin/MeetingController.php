@@ -10,6 +10,7 @@ use App\Meeting;
 use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\EndMeetingParameters;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class MeetingController extends Controller
 
     protected $meetingList = [];
     protected $checkCode = true;
+    protected $data = [];
 
     protected $logoutUrl = '/meetings';
     protected $meetingsParams = [];
@@ -40,7 +42,9 @@ class MeetingController extends Controller
 
         $user = User::FindOrFail(Auth::id());
 
-        $roomList =$user->meetings()->paginate(10);
+        $roomList =$user->meetings()
+            ->orderBy('id','DESC')
+            ->paginate(10);
 
 
 
@@ -78,16 +82,11 @@ class MeetingController extends Controller
 
         ]);
 
-        $data = $request->all();
-        $request->has('mute_on_join') ? $data['mute_on_join'] :$data['mute_on_join'] = 0;
-        $request->has('require_moderator_approval') ? $data['require_moderator_approval'] :$data['require_moderator_approval'] =0 ;
-
-        $request->has('anyone_can_start') ? $data['anyone_can_start']: $data['anyone_can_start'] =0;
-        $request->has('all_join_moderator') ? $data['all_join_moderator'] :$data['all_join_moderator'] =0 ;
-        $request->has('auto_join') ? $data['auto_join'] : $data['auto_join'] = 0;
-        $data['user_id'] = Auth::id();
-        $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
-        $meeting = Meeting::create($data);
+        $this->data = $request->all();
+        $this->setDefaultData($request);
+        $this->data['user_id'] = Auth::id();
+        $this->data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
+        $meeting = Meeting::create($this->data);
         $user = User::findOrFail(Auth::id());
         $meeting->url =strtolower($user->name).'-'.Str::random(4).'-'.$meeting->id.Str::random(2);
         $meeting->save();
@@ -97,20 +96,29 @@ class MeetingController extends Controller
         $this->meetingsParams = [
             'meetingUrl' => $meeting->url,
             'meetingName' =>  $request->input('name'),
-            'attendeePassword' => decrypt($data['attendee_password']),
+            'attendeePassword' => decrypt($this->data['attendee_password']),
             'moderatorPassword' => $user->password,
-            'muteAllUser' => $data['mute_on_join'] ? true :false,
-            'moderator_approval' =>$data['require_moderator_approval'] ? true :false,
+            'muteAllUser' => $this->data['mute_on_join'] ? true :false,
+            'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
             'logoutUrl' => $this->logoutUrl,
             'setRecord' =>true,
-            'username' => Auth::user()->username,
+            'username' => $user->username,
 
         ];
 
-        $this->autoJoin = $data['auto_join'];
+        $this->autoJoin = $this->data['auto_join'];
         return $this->createMeeting('create');
 
 
+    }
+
+    private function setDefaultData($request)
+    {
+        $request->has('mute_on_join') ? $this->data['mute_on_join'] :$this->data['mute_on_join'] = 0;
+        $request->has('require_moderator_approval') ? $this->data['require_moderator_approval'] :$this->data['require_moderator_approval'] =0 ;
+        $request->has('anyone_can_start') ? $this->data['anyone_can_start']: $this->data['anyone_can_start'] =0;
+        $request->has('all_join_moderator') ? $this->data['all_join_moderator'] :$this->data['all_join_moderator'] =0 ;
+        $request->has('auto_join') ? $this->data['auto_join'] : $this->data['auto_join'] = 0;
     }
 
     private function createMeeting($name=null)
@@ -206,9 +214,55 @@ class MeetingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Meeting $meeting)
     {
         //
+        $request->validate([
+            'name' => 'required|max:50',
+        ]);
+
+        $this->data = $request->all();
+        $this->setDefaultData($request);
+        $this->updateMeeting($meeting);
+
+        return redirect()->back()->with(['success'=>'Meeting Updated Successfully']);
+
+
+
+    }
+    private function updateMeeting($meeting)
+    {
+
+        $meeting->update($this->data);
+        $user = Auth::user();
+        $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+        $this->meetingsParams = [
+            'meetingUrl' => $meeting->url,
+            'meetingName' =>  $this->data['name'],
+            'attendeePassword' => decrypt($meeting['attendee_password']),
+            'moderatorPassword' => $user->password,
+//            $this->data['mute_on_join'] ? true :false,
+            'muteAllUser' => true,
+            'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
+            'logoutUrl' => $this->logoutUrl,
+            'setRecord' =>true,
+            'username' => $user->username,
+
+        ];
+        $bbb = new BigBlueButton();
+        $getMeetingInfoParams = new GetMeetingInfoParameters($meeting->url,$user->password);
+        $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+
+        if ($response->getReturnCode() == 'FAILED')
+        {
+            return $this->createMeeting('create');
+        }else{
+
+            $endMeetingParams = new EndMeetingParameters($meeting->url,$user->password);
+            $response = $bbb->endMeeting($endMeetingParams);
+            return $this->createMeeting('create');
+        }
+
     }
 
     /**

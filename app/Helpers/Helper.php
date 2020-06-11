@@ -39,22 +39,35 @@ class Helper
 
     public static function createMeeting($params)
     {
+
         $bbb = new BigBlueButton();
+
         $createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
         $createMeetingParams->setAttendeePassword($params['attendeePassword']);
         $createMeetingParams->setModeratorPassword($params['moderatorPassword']);
         $createMeetingParams->setLogoutUrl($params['logoutUrl']);
-       
+        $files = ['https://img.youtube.com/vi/FAFlmkh0tEM/0.jpg','http://www.africau.edu/images/default/sample.pdf','https://file-examples.com/wp-content/uploads/2017/08/file_example_PPT_250kB.ppt'];
+
+        foreach ($files as $file)
+        {
+            $createMeetingParams->addPresentation($file);
+
+        }
+
         if (isset($params['muteAllUser']))
         {
+
+
             $createMeetingParams->setMuteOnStart($params['muteAllUser']);
             $createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
+
         }
         if (isset($params['moderator_approval']))
         {
 
 
             $params['moderator_approval'] ? $createMeetingParams->setModerateJoin() :$createMeetingParams->setOpenJoin();
+
         }
         if (isset($params['setRecord']))
         {
@@ -67,6 +80,8 @@ class Helper
         }
 
         $response = $bbb->createMeeting($createMeetingParams);
+
+
         return $response;
     }
 

@@ -10,7 +10,7 @@
                         <h3 class="text-center">Update Meeting</h3>
 
                     </div>
-                    {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal']) !!}
+                    {!! Form::open(['method' => 'PATCH', 'route' => ['meetings.update',$meeting->id], 'class'=>'form-horizontal']) !!}
 
                     <div class="input-icon mb-2">
                             <span class="input-icons">
@@ -25,7 +25,7 @@
                                 <i class="fa fa-lock icon ml-2 generate_access_code" id=""></i>
                             </span>
                         <label id="" class="form-control text-sm-center create-room-access-code" for="room_access_code">{{$meeting->access_code ? 'Access Code '.$meeting->access_code : 'Generate an optional room access code'}}</label>
-                        <input class="room_access_code" type="hidden" value="" name="access_code">
+                        <input class="room_access_code" type="hidden" value="{{$meeting->access_code}}" name="access_code">
                         <span  class="cursor-pointer" >
                                 <i class="fa fa-trash-o float-right icon delete-icon" ></i>
                             </span>
