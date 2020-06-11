@@ -6,8 +6,9 @@ namespace App\Helpers;
 
 
 
-use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
+
 use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
 use BigBlueButton\Parameters\GetRecordingsParameters;
 use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -42,6 +43,7 @@ class Helper
 
         $bbb = new BigBlueButton();
 
+
         $createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
         $createMeetingParams->setAttendeePassword($params['attendeePassword']);
         $createMeetingParams->setModeratorPassword($params['moderatorPassword']);
@@ -66,7 +68,7 @@ class Helper
         {
 
 
-            $params['moderator_approval'] ? $createMeetingParams->setModerateJoin() :$createMeetingParams->setOpenJoin();
+            $params['moderator_approval'] ? $createMeetingParams->setGuestPolicyAskModerator() : $createMeetingParams->setGuestPolicyAlwaysAccept();
 
         }
         if (isset($params['setRecord']))
@@ -78,6 +80,7 @@ class Helper
         {
             $createMeetingParams->setWelcomeMessage($params['welcome_message']);
         }
+
 
         $response = $bbb->createMeeting($createMeetingParams);
 

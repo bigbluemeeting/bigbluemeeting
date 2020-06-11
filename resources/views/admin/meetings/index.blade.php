@@ -98,7 +98,8 @@
                         <div class="input-group-prepend" >
                             <div class="col-md-12">
                                          <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom" data-target="#myModal">
-                                             <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Meetings </i>
+                                             <i class="fa fa-plus-circle text-center text-white pr-3"> &nbsp;Meeting
+                                             </i>
                                          </span>
                             </div>
 
@@ -167,7 +168,7 @@
                                             <p class="text-danger">We're sorry,you don have any in-progress rooms or upcoming rooms.</p>
                                         </div>
                                         <div class="col-md-5">
-                                            <p class="text-danger">To Create a new room,press the "Room" button</p>
+                                            <p class="text-danger">To Create a new meeting,press the "Meeting" button</p>
                                         </div>
                                     </div>
                                 </div>

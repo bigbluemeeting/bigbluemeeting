@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
+
 use App\bigbluebutton\tests\TestCase;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -10,6 +10,7 @@ use App\Meeting;
 use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
+use BigBlueButton\Parameters\CreateMeetingParameters;
 use BigBlueButton\Parameters\EndMeetingParameters;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use Illuminate\Http\Request;
@@ -123,13 +124,7 @@ class MeetingController extends Controller
 
     private function createMeeting($name=null)
     {
-        $bbb = new BigBlueButton();
-        $createMeetingParams = new CreateMeetingParameters($this->meetingsParams['meetingUrl'] , $this->meetingsParams['meetingName']);
-        $createMeetingParams->setAttendeePassword($this->meetingsParams['attendeePassword']);
-        $createMeetingParams->setModeratorPassword($this->meetingsParams['moderatorPassword']);
-        $createMeetingParams->setLogoutUrl($this->meetingsParams['logoutUrl']);
-        $createMeetingParams->setModerateJoin();
-        $bbb->createMeeting($createMeetingParams);
+
 
         $response = Helper::createMeeting($this->meetingsParams);
         if ($response->getReturnCode() == 'FAILED') {
@@ -255,6 +250,7 @@ class MeetingController extends Controller
 
         if ($response->getReturnCode() == 'FAILED')
         {
+
             return $this->createMeeting('create');
         }else{
 

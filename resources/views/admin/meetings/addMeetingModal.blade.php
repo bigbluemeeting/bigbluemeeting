@@ -41,17 +41,17 @@
                         </div>
                     </div>
 
-                    <div class="row mt-2">
-                        <div class="col-sm-8">
-                            <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                                <span class="custom-switch-description">Require moderator approval before joining</span>
-                            </label>
+{{--                    <div class="row mt-2">--}}
+{{--                        <div class="col-sm-8">--}}
+{{--                            <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">--}}
+{{--                                <span class="custom-switch-description">Require moderator approval before joining</span>--}}
+{{--                            </label>--}}
 
-                        </div>
-                        <div class="col-sm-3 ml-4 mt-4">
-                            <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">
-                        </div>
-                    </div>
+{{--                        </div>--}}
+{{--                        <div class="col-sm-3 ml-4 mt-4">--}}
+{{--                            <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="row  mt-2">
                         <div class="col-sm-8">
                             <label for="room_anyone_can_start" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
