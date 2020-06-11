@@ -49,6 +49,7 @@ class RoomsController extends Controller
 
 
 
+
         $upComingMeetings =  $user->rooms()
             ->where('end_date','>=',$currentDate)
             ->orderBy('id','DESC')

@@ -50,7 +50,7 @@
 
                             </tbody>
                         </table>
-                        <hr>
+                        <hr >
                         <div class="container-fluid">
                             <h5><i class="fa fa-user"></i>&nbsp;&nbsp;Meeting Participants</h5>
                         </div>
@@ -65,14 +65,18 @@
                             </div>
                         </div>
 
+
                     <div class="row">
-                        <div class="col-sm-6 col-sm-offset-5 ml-3 mt-2">
-                        {{$attendees->links()}}
-                    </div>
+{{--                        @if(count($attendees)>0)--}}
+{{--                        <div class="col-sm-6 col-sm-offset-5 ml-3 mt-2">--}}
+{{--                        {{$attendees->links()}}--}}
+{{--                        </div>--}}
+{{--                        @endif--}}
                         <div class="col-md-12">
-                            <div class="card bg-white">
-                                <div class="card-body">
-                                    <div class="table-responsive">
+                            @if(count($attendees)>0)
+                                <div class="card bg-white m-0">
+                                    <div class="card-body">
+                                        <div class="table-responsive">
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr>
@@ -90,22 +94,102 @@
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
                             </div>
+                            @else
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="card">
+                                            <div class="card-body" style="background: #fff8a0;">
+                                                <div class="col-md-7" >
+                                                    <p class="text-danger m-0">There are currently no participants invited to your meeting.</p>
+                                                    <p class="text-danger pt-1">To participants to this meeting,click the blue button on the top left.</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+
                         </div>
 
+                        <div class="container-fluid {{count($attendees) > 0 ? '' :'mt-3' }}">
+                            <hr class="m-0">
+                        </div>
+                            <div class="container mt-3">
+
+                                <h5><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Files</h5>
+                            </div>
+
+                            <div class="col-md-12">
+{{--                                <div class="card bg-light">--}}
+{{--                                    <div class="card-body">--}}
+{{--                                        <div class="card">--}}
+
+
+{{--                                        </div>--}}
+
+{{--                                    </div>--}}
+{{--                                </div>--}}
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th class="bg-light" colspan="4">
+
+                                            <form action="">
+                                                <div class="row mt-3">
+                                                    <div class="col-md-4 ml-2">
+                                                        <div class="form-group">
+{{--                                                            {!!Form::label('Title', 'Title')!!}--}}
+                                                            {!!Form::file('title',null, ['class'=>'form-control'])!!}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7 ml-5">
+
+                                                            {!! Form::submit('Upload File',['class'=>'btn btn-info']) !!}
+
+                                                            <a class="btn btn-info ml-4" href="">Manage File</a>
+{{--                                                            {!! Form::submit('Create Post',['class'=>'btn btn-primary']) !!}--}}
+
+                                                    </div>
+                                                </div>
+
+
+
+                                            </form>
+                                        </th>
+
+                                    </tr>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Date</th>
+                                        <th>Mime</th>
+                                        <th>Size</th>
+                                    </tr>
+
+
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>John</td>
+                                        <td>Doe</td>
+                                        <td>john@example.com</td>
+
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
                             <div class="col-sm-6 col-sm-offset-5 ml-3">
                                 {{$attendees->links()}}
                             </div>
-
-
-                    </div>
-
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
 
 
         {{-- Add Participant Modal   --}}

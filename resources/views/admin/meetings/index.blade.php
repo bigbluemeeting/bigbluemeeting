@@ -163,12 +163,12 @@
                         <div class="card bg-light">
                             <div class="card-body">
                                 <div class="card">
-                                    <div class="card-body" id="warning-dev">
+                                    <div class="card-body" style="background: #fff8a0;">
                                         <div class="col-md-7">
-                                            <p class="text-danger">We're sorry,you don have any in-progress rooms or upcoming rooms.</p>
+                                            <p class="text-danger m-0">We're sorry,you don have any meeting.</p>
                                         </div>
                                         <div class="col-md-5">
-                                            <p class="text-danger">To Create a new meeting,press the "Meeting" button</p>
+                                            <p class="text-danger pt-1">To Create a new meeting,press the "Meeting" button</p>
                                         </div>
                                     </div>
                                 </div>

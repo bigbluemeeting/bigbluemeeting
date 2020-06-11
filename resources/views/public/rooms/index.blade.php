@@ -105,10 +105,10 @@
                                 <div class="card">
                                     <div class="card-body" id="warning-dev">
                                         <div class="col-md-7">
-                                            <p class="text-danger">We're sorry,you don have any in-progress rooms or upcoming rooms.</p>
+                                            <p class="text-danger m-0">We're sorry,you don't have any in-progress rooms or upcoming rooms.</p>
                                         </div>
                                         <div class="col-md-5">
-                                            <p class="text-danger">To Create a new room,press the "Room" button</p>
+                                            <p class="text-danger pt-1">To Create a new room,press the "Room" button</p>
                                         </div>
                                     </div>
                                 </div>
@@ -145,12 +145,14 @@
 
             <div class="card card-block sameheight-item">
                 <section class="example">
-                    @if (count($pastMeetings) > 0)
+
                         <div class="row">
+
                             <div class="col-sm-6 col-sm-offset-5">
                                 {{$upComingMeetings->links()}}
                             </div>
                         </div>
+                    @if (count($pastMeetings) > 0)
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover">
                                 <thead>
@@ -179,13 +181,28 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                @else
-                                    No Meetings Found.
-                                @endif
+
+
+
 
                                 </tbody>
                             </table>
                         </div>
+                    @else
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="card">
+                                    <div class="card-body" id="warning-dev">
+                                        <div class="col-md-7">
+                                            <p class="text-danger m-0">We're sorry,you don't have any past rooms.</p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
                         <div class="row">
                             <div class="col-sm-6 col-sm-offset-5">
                                 {{$upComingMeetings->links()}}
