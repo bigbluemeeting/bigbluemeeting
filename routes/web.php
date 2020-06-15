@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
     Route::post('/recordings/published','Admin\RecordingsController@publishedRecording')->name('publishedRecording');
 
 });
+Route::resource('/files','Admin\FilesController');
 /**
  * Login & SignUp Route
  */
@@ -78,7 +79,6 @@ Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name
 Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
 Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
 Route::resource('/meetings','Admin\MeetingController');
-
 Route::get('/meetings/access/{url}','PublicControllers\Meetings\AttendeesMeetingController@checkCode')->name('checkCode');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');

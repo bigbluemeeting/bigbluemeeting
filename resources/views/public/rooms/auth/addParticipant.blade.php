@@ -2,8 +2,19 @@
 
 @section('pagename', $pageName)
 @section('css')
+{{--    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">--}}
     <link rel="stylesheet" href="{{asset('css/ip.css')}}">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/css/blueimp-gallery.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload-ui.min.css">
 
+    <style>
+        .inner-table td {
+            border: none !important;
+            border-bottom: 1px solid #dee2e6 !important;
+
+        }
+    </style>
 @stop
 @section('content')
 
@@ -67,11 +78,6 @@
 
 
                     <div class="row">
-{{--                        @if(count($attendees)>0)--}}
-{{--                        <div class="col-sm-6 col-sm-offset-5 ml-3 mt-2">--}}
-{{--                        {{$attendees->links()}}--}}
-{{--                        </div>--}}
-{{--                        @endif--}}
                         <div class="col-md-12">
                             @if(count($attendees)>0)
                                 <div class="card bg-white m-0">
@@ -122,50 +128,75 @@
                                 <h5><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Files</h5>
                             </div>
 
+
+                        <div class="table-responsive">
                             <div class="col-md-12">
-{{--                                <div class="card bg-light">--}}
-{{--                                    <div class="card-body">--}}
-{{--                                        <div class="card">--}}
-
-
-{{--                                        </div>--}}
-
-{{--                                    </div>--}}
-{{--                                </div>--}}
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                     <tr>
-                                        <th class="bg-light" colspan="4">
+                                        <th class="bg-light  form-header" colspan="5">
 
-                                            <form action="">
-                                                <div class="row mt-3">
-                                                    <div class="col-md-4 ml-2">
-                                                        <div class="form-group">
-{{--                                                            {!!Form::label('Title', 'Title')!!}--}}
-                                                            {!!Form::file('title',null, ['class'=>'form-control'])!!}
-                                                        </div>
+                                            <form id="fileupload" action="{{ route('files.store') }}" method="post" enctype="multipart/form-data">
+                                                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                                                <div class="row fileupload-buttonbar">
+                                                    <div class="col-lg-7">
+                                                        <!-- The fileinput-button span is used to style the file input field as button -->
+                                                        <span class="btn btn-success fileinput-button text-white ">
+                                                            <i class="fa fa-plus"></i>
+                                                            <span>Add files...</span>
+                                                            <input type="file" name="files[]" multiple>
+                                                        </span>
+                                                        <button type="submit" class="btn btn-primary start">
+                                                            <i class="fa fa-upload"></i>
+                                                            <span>Start upload</span>
+                                                        </button>
+                                                        <button type="reset" class="btn btn-warning cancel text-white">
+                                                            <i class="fa fa-ban"></i>
+                                                            <span>Cancel upload</span>
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger delete">
+                                                            <i class="fa fa-trash"></i>
+                                                            <span>Delete</span>
+                                                        </button>
+                                                        <input type="checkbox" class="toggle">
+                                                        <!-- The global file processing state -->
+                                                        <span class="fileupload-process"></span>
                                                     </div>
-                                                    <div class="col-md-7 ml-5">
-
-                                                            {!! Form::submit('Upload File',['class'=>'btn btn-info']) !!}
-
-                                                            <a class="btn btn-info ml-4" href="">Manage File</a>
-{{--                                                            {!! Form::submit('Create Post',['class'=>'btn btn-primary']) !!}--}}
-
+                                                    <!-- The global progress state -->
+                                                    <div class="col-lg-5 fileupload-progress fade">
+                                                        <!-- The global progress bar -->
+                                                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                                            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                                                        </div>
+                                                        <!-- The extended global progress state -->
+                                                        <div class="progress-extended">&nbsp;</div>
                                                     </div>
                                                 </div>
-
-
-
+                                                <!-- The table listing the files available for upload/download -->
+                                                <table role="presentation" class="table inner-table mt-4"><tbody class="files"></tbody></table>
                                             </form>
-                                        </th>
+                                            <!-- The blueimp Gallery widget -->
+                                            <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
+                                                <div class="slides"></div>
+                                                <h3 class="title"></h3>
+                                                <a class="prev">‹</a>
+                                                <a class="next">›</a>
+                                                <a class="close">×</a>
+                                                <a class="play-pause"></a>
+                                                <ol class="indicator"></ol>
+                                            </div>
 
+                                            <div class="card bg-light attachment-container ">
+
+                                            </div>
+                                        </th>
                                     </tr>
                                     <tr>
                                         <th>File</th>
                                         <th>Date</th>
                                         <th>Mime</th>
                                         <th>Size</th>
+
                                     </tr>
 
 
@@ -175,12 +206,14 @@
                                         <td>John</td>
                                         <td>Doe</td>
                                         <td>john@example.com</td>
-
+                                        <td>Action</td>
                                     </tr>
-
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+
+
                             <div class="col-sm-6 col-sm-offset-5 ml-3">
                                 {{$attendees->links()}}
                             </div>
@@ -189,6 +222,8 @@
             </div>
         </div>
     </div>
+
+
 
 
 
@@ -205,30 +240,17 @@
                             <h3 class="text-center">Invite Participants</h3>
                             <h3 class="update-only" style="display:none !important">Room Settings</h3>
                         </div>
-{{--                        {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal','id'=>'frm']) !!}--}}
                         <div class="alert alert-danger errorClass" style="display: none">
-
                         </div>
-
-
                         <div class="input-icon mb-2">
-{{--                            <span class="input-icons">--}}
-{{--                                <i class="fa fa-envelope icon ml-2"></i>--}}
-{{--                            </span>--}}
-{{--                            class="form-control text-center" value="" placeholder="Enter Participants Email..." autocomplete="off" type="text" name="name"--}}
                             <input id="testInput" >
-{{--                            <input  type="text" id="testInput" value=""/>--}}
                         </div>
-
-
                         <div class="row">
                             <div class="mt-3 ml-3">
                                 <input type="submit" value="Add Participants" class="create-only btn btn-primary btn-block" id="addPar" >
                                 <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
                             </div>
                         </div>
-
-{{--                        {!! Form::close() !!}--}}
                     </div>
                 </div>
                 <input type="hidden" id="room" value="{{$meeting->url}}">
@@ -240,17 +262,12 @@
 
         </div>
     </div>
-
-
-
-
-
 @stop
 
 @section('script')
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
 
         var slug = $('#room').val();
@@ -259,5 +276,25 @@
         var csrf = '{{csrf_token()}}'
 
     </script>
+
     <script src="{{asset('js/ip.js')}}"></script>
+
 @stop
+
+@section('js')
+
+    @include('_partials.x-template')
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/vendor/jquery.ui.widget.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.11.0/js/tmpl.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.17.0/load-image.all.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.14.0/js/canvas-to-blob.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/js/jquery.blueimp-gallery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.iframe-transport.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-process.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-image.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-validate.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-ui.min.js"></script>
+    <script src="{{asset('js/fileUpload.js')}}"></script>
+@stop
+
