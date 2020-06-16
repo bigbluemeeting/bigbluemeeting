@@ -15,7 +15,9 @@
         "laravel/ui": "^2.0",
         "laravelcollective/html": "^6.0",
         "littleredbutton/bigbluebutton-api-php": "^3.0",
-        "spatie/laravel-permission": "^3.0"
+        "spatie/laravel-permission": "^3.0",
+        "gargron/fileupload": "^1.4"
+
     },
     "require-dev": {
         "filp/whoops": "~2.0",

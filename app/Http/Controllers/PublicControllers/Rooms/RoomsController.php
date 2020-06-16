@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicControllers\Rooms;
 
 use App\Attendee;
+use App\Files;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AttendeeMail;
@@ -38,9 +39,6 @@ class RoomsController extends Controller
 
         $user = User::findOrFail(Auth::id());
         $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
-
-
-
 
         $pastMeetings =$user->rooms()
             ->where('end_date','<',$currentDate)
@@ -329,8 +327,9 @@ class RoomsController extends Controller
         $attendees = $meeting->attendees()
             ->paginate(10);
 
+        $files  =  Files::paginate(2);
 
-        return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees'));
+        return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees','files'));
     }
 
     public function roomAttendees(Request $request)

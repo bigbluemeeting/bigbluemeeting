@@ -40,45 +40,49 @@
 {% } %}
 </script>
 <!-- The template to display files available for download -->
+
 <script id="template-download" type="text/x-tmpl">
+
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade show">
-        <td>
-            <span class="preview">
-                {% if (file.thumbnailUrl) { %}
-                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" data-gallery><img src="{%=file.thumbnailUrl%}"></a>
-                {% } %}
-            </span>
-        </td>
+
         <td>
             <p class="name">
                 {% if (file.url) { %}
-                    <a href="{%=file.url%}" title="{%=file.name%}" download="{%=file.name%}" {%=file.thumbnailUrl?'data-gallery':''%}>{%=file.name%}</a>
+                    <a href="{%=file.url%}" title="{%=file.name%}"  >{%=file.name%}</a>
                 {% } else { %}
                     <span>{%=file.name%}</span>
                 {% } %}
             </p>
             {% if (file.error) { %}
-                <div><span class="label label-danger">Error</span> {%=file.error%}</div>
+                <div class="text-danger"><span >Error</span> {%=file.error%}</div>
             {% } %}
         </td>
         <td>
-            <span class="size">{%=o.formatFileSize(file.size)%}</span>
+            <span >{%=file.upload_date%}</span>
+        </td>
+        <td>
+            <span >{%=file.type%}</span>
+        </td>
+        <td>
+            <span class="size">{%=file.size%}</span>
         </td>
         <td>
             {% if (file.deleteUrl) { %}
-                <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                    <i class="glyphicon glyphicon-trash"></i>
+                    <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                    <i class="fa fa-trash"></i>
                     <span>Delete</span>
                 </button>
-                <input type="checkbox" name="delete" value="1" class="toggle">
+
             {% } else { %}
-                <button class="btn btn-warning cancel">
+                    <button class="btn btn-warning cancel">
                     <i class="fa fa-ban"></i>
                     <span>Cancel</span>
-                </button>
+                    </button>
             {% } %}
         </td>
     </tr>
 {% } %}
+
+
 </script>

@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Files;
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Croppa;
-use File;
+
 //use FileUpload;
+use FileUpload\Validator\Simple;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 
 class FilesController extends Controller
 {
@@ -56,94 +61,81 @@ class FilesController extends Controller
      */
     public function store(Request $request)
     {
-        //
-
-//        $files =$request->file('file');
-//        $valid_ext = array('application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-powerpoint','application/pdf','image/jpeg','image/png','image/gif'
-//        );
-//
-//
-//        foreach ($files as $file)
-//        {
-//
-//            $ext =$file->getClientMimeType();
-//            if(in_array($ext  , $valid_ext )) {
-//
-//                /**
-//                 * SET All Allowed Files With Extension
-//                 *@Var $filesDetails
-//                 */
-//                $this->filesDetails[]= [$file->getClientOriginalName() => $file->getClientOriginalExtension()];
-//
-//            }
-//        }
-//
-
-        dd($_FILES['files']);
 
 
-//        $path = public_path($this->folder);
-//        if(!File::exists($path)) {
-//            File::makeDirectory($path);
-//        };
-//
-//        // Simple validation (max file size 2MB and only two allowed mime types)
-//        $validator = new FileUpload\Validator\Simple('30M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.ms-powerpoint','application/pdf','image/jpeg','image/png','image/gif','image/jpg']);
-//
-//        // Simple path resolver, where uploads will be put
-//        $pathresolver = new FileUpload\PathResolver\Simple($path);
-//
-//        // The machine's filesystem
-//        $filesystem = new FileUpload\FileSystem\Simple();
-//
-//        // FileUploader itself
-//        $fileupload = new FileUpload\FileUpload($_FILES['files'], $_SERVER);
-//        $slugGenerator = new FileUpload\FileNameGenerator\Slug();
-//
-//        // Adding it all together. Note that you can use multiple validators or none at all
-//        $fileupload->setPathResolver($pathresolver);
-//        $fileupload->setFileSystem($filesystem);
-//        $fileupload->addValidator($validator);
-//        $fileupload->setFileNameGenerator($slugGenerator);
-//
-//        // Doing the deed
-//        list($files, $headers) = $fileupload->processAll();
-//
-//        // Outputting it, for example like this
-//        foreach($headers as $header => $value) {
-//            header($header . ': ' . $value);
-//        }
-//
-//        foreach($files as $file){
-//            //Remember to check if the upload was completed
-//            if ($file->completed) {
-//
-//                // set some data
-//                $filename = $file->getFilename();
-//                $url = $this->folder . $filename;
-//
-//                // save data
-//                $picture = Files::create([
-//                    'name' => $filename,
-//                    'url' => $this->folder . $filename,
-//                ]);
-//
-//                // prepare response
-//                $data[] = [
-//                    'size' => $file->size,
-//                    'name' => $filename,
-//                    'url' => $url,
-////                    'thumbnailUrl' => url($url),
-//                    'deleteType' => 'DELETE',
-//                    'deleteUrl' => route('pictures.destroy', $picture->id),
-//                ];
-//
-//                // output uploaded file response
-//                return response()->json(['files' => $data]);
-//            }
-//        }
-//        // errors, no uploaded file
-//        return response()->json(['files' => $files]);
+
+
+        $path = public_path($this->folder);
+        if(!File::exists($path)) {
+            File::makeDirectory($path);
+        };
+
+        // Simple validation (max file size 2MB and only two allowed mime types)
+        $validator = new Simple('30M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword',
+            'application/vnd.oasis.opendocument.text','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.oasis.opendocument.presentation','application/vnd.ms-powerpoint','application/pdf','image/jpeg','image/png','image/gif','image/jpg','text/plain']);
+
+//        'application/CDFV2','application/x-rar'
+        // Simple path resolver, where uploads will be put
+
+        $pathresolver = new \FileUpload\PathResolver\Simple($path);
+
+        // The machine's filesystem
+
+        $filesystem = new \FileUpload\FileSystem\Simple();
+
+        // FileUploader itself
+        $fileupload = new \FileUpload\FileUpload($_FILES['files'], $_SERVER);
+        $slugGenerator = new \FileUpload\FileNameGenerator\Slug();
+
+        // Adding it all together. Note that you can use multiple validators or none at all
+        $fileupload->setPathResolver($pathresolver);
+        $fileupload->setFileSystem($filesystem);
+        $fileupload->addValidator($validator);
+        $fileupload->setFileNameGenerator($slugGenerator);
+
+        // Doing the deed
+        list($files, $headers) = $fileupload->processAll();
+
+        // Outputting it, for example like this
+        foreach($headers as $header => $value) {
+            header($header . ': ' . $value);
+        }
+
+        foreach($files as $file){
+            //Remember to check if the upload was completed
+            if ($file->completed) {
+
+                // set some data
+                $filename = $file->getFilename();
+                $url = $this->folder . $filename;
+
+                // save data
+                $picture = Files::create([
+                    'name' => $filename,
+                    'url' =>  $filename,
+                    'type' => $file->getMimeType(),
+                    'size' => $file->size,
+                    'upload_date' => Carbon::now(),
+                ]);
+                // prepare response
+                $data[] = [
+                    'size' => Helper::formatBytes($file->size),
+                    'name' => $filename,
+                    'url' => $url,
+                    'type' => $file->getMimeType(),
+                    'upload_date' => Carbon::now()->format('Y-m-d h:m A'),
+                    'deleteType' => 'DELETE',
+                    'deleteUrl' => route('files.destroy', $picture->id),
+
+                ];
+
+                // output uploaded file response
+                return response()->json(['files' => $data]);
+            }
+        }
+//        return redirect()->back();
+        // errors, no uploaded file
+        return response()->json(['files' => $files]);
 
     }
 
@@ -189,9 +181,14 @@ class FilesController extends Controller
      */
     public function destroy(Files $file)
     {
+
+
+        dd($file);
         //
-        Croppa::delete($file->url); // delete file and thumbnail(s)
+        $filename  = public_path().'/uploads/im.pdf';
+        File::delete($filename);
         $file->delete(); // delete db record
-        return response()->json([$file->url]);
+
+        return response()->json(['file'=>$file->url]);
     }
 }

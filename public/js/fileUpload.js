@@ -22,7 +22,7 @@ $(function(){
             // send Blob objects via XHR requests:
             disableImageResize: /Android(?!.*Chrome)|Opera/
                 .test(window.navigator.userAgent),
-            maxFileSize: 30000000,
+            maxFileSize: 100000000,
 
 
 

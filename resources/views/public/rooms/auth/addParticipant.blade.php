@@ -154,12 +154,6 @@
                                                             <i class="fa fa-ban"></i>
                                                             <span>Cancel upload</span>
                                                         </button>
-                                                        <button type="button" class="btn btn-danger delete">
-                                                            <i class="fa fa-trash"></i>
-                                                            <span>Delete</span>
-                                                        </button>
-                                                        <input type="checkbox" class="toggle">
-                                                        <!-- The global file processing state -->
                                                         <span class="fileupload-process"></span>
                                                     </div>
                                                     <!-- The global progress state -->
@@ -173,49 +167,47 @@
                                                     </div>
                                                 </div>
                                                 <!-- The table listing the files available for upload/download -->
-                                                <table role="presentation" class="table inner-table mt-4"><tbody class="files"></tbody></table>
+                                                <table role="presentation" class="table inner-table mt-2">
+                                                    <tbody class="files">
+
+                                                    </tbody>
+                                                </table>
                                             </form>
                                             <!-- The blueimp Gallery widget -->
-                                            <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
-                                                <div class="slides"></div>
-                                                <h3 class="title"></h3>
-                                                <a class="prev">‹</a>
-                                                <a class="next">›</a>
-                                                <a class="close">×</a>
-                                                <a class="play-pause"></a>
-                                                <ol class="indicator"></ol>
-                                            </div>
-
-                                            <div class="card bg-light attachment-container ">
-
-                                            </div>
                                         </th>
                                     </tr>
+                                    @if(count($files)>0)
                                     <tr>
                                         <th>File</th>
                                         <th>Date</th>
                                         <th>Mime</th>
                                         <th>Size</th>
-
-                                    </tr>
-
-
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>John</td>
-                                        <td>Doe</td>
-                                        <td>john@example.com</td>
                                         <td>Action</td>
                                     </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($files as $file)
+                                    <tr>
+                                        <td><a href="{{$file->url}}">{{$file->name}}</a></td>
+                                        <td>{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
+                                        <td>{{$file->type}}</td>
+                                        <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
+                                        <td>
+                                             <span href="javascript:;" data-toggle="modal"  data-item = {{$file->id}}
+                                                     data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
+
+                                        </td>
+                                    </tr>
+                                    @endforeach
                                     </tbody>
+                                    @endif
                                 </table>
                             </div>
                         </div>
 
 
                             <div class="col-sm-6 col-sm-offset-5 ml-3">
-                                {{$attendees->links()}}
+                                {{$files->links()}}
                             </div>
                     </div>
                 </div>
@@ -262,6 +254,7 @@
 
         </div>
     </div>
+    @include('public.rooms.deleteRoomModal');
 @stop
 
 @section('script')
@@ -278,6 +271,22 @@
     </script>
 
     <script src="{{asset('js/ip.js')}}"></script>
+    <script>
+
+        action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
+        $('.btnDeleteConfirm').on('click', function () {
+
+            id = $(this).data('item');
+            deleteData(id);
+        });
+        function deleteData(id) {
+            url = action.replace(':id', id);
+            $("#deleteForm").prop('action', url);
+        }
+        $('.btnDelete').on('click', function () {
+            $("#deleteForm").submit();
+        });
+    </script>
 
 @stop
 
@@ -296,5 +305,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-validate.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-ui.min.js"></script>
     <script src="{{asset('js/fileUpload.js')}}"></script>
+
 @stop
 
