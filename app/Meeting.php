@@ -23,16 +23,15 @@ class Meeting extends Model
     }
 
 
-
-
-
     public function getNameAttribute($value)
     {
         return ucwords($value);
     }
 
-
-
+    public function files()
+    {
+        return $this->morphMany(Files::class,'meetingable');
+    }
 
 
 

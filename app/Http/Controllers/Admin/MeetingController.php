@@ -125,8 +125,8 @@ class MeetingController extends Controller
     private function createMeeting($name=null)
     {
 
-
-        $response = Helper::createMeeting($this->meetingsParams);
+        Helper::setMeetingParams($this->meetingsParams);
+        $response = Helper::createMeeting();
         if ($response->getReturnCode() == 'FAILED') {
             return 'Can\'t create room! please contact our administrator.';
         } else {

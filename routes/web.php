@@ -51,6 +51,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
     Route::post('/recordings/published','Admin\RecordingsController@publishedRecording')->name('publishedRecording');
 
 });
+
 Route::resource('/files','Admin\FilesController');
 /**
  * Login & SignUp Route
@@ -82,6 +83,7 @@ Route::resource('/meetings','Admin\MeetingController');
 Route::get('/meetings/access/{url}','PublicControllers\Meetings\AttendeesMeetingController@checkCode')->name('checkCode');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');
+Route::get('/files/setDefault/{val}','Admin\FilesController@setDefault')->name('setDefault');
 
 /**
  * Routes For Ajax Call
@@ -96,4 +98,6 @@ Route::middleware('ajax.check')->group(function ()
     Route::post('/rooms/attendeeJoin','PublicControllers\Rooms\AttendeesRoomController@Join')->name('attendeeJoin');
     Route::post('/meeting-attendees','PublicControllers\Rooms\RoomsController@roomAttendees')->name('roomAttendees');
     Route::post('/meetings/access','PublicControllers\Meetings\AttendeesMeetingController@accessCodeResult')->name('accessCodeResult');
+
 });
+

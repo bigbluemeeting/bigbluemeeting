@@ -199,8 +199,8 @@ class RoomsController extends Controller
     public function createMeeting($name=null)
     {
 
-        $response = Helper::createMeeting($this->meetingsParams);
-
+        Helper::setMeetingParams($this->meetingsParams);
+        $response = Helper::createMeeting();
         if ($response->getReturnCode() == 'FAILED') {
             return 'Can\'t create room! please contact our administrator.';
 
@@ -327,7 +327,8 @@ class RoomsController extends Controller
         $attendees = $meeting->attendees()
             ->paginate(10);
 
-        $files  =  Files::paginate(2);
+
+        $files = $meeting->files()->paginate(10);
 
         return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees','files'));
     }

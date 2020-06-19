@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Files;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Room;
 use Carbon\Carbon;
 use Croppa;
 
@@ -22,25 +23,18 @@ class FilesController extends Controller
      * @return \Illuminate\Http\Response
      */
     protected  $filesDetails = [];
-    public $folder = '/uploads/'; // add slashes for better url handling
+
+    protected $bbbPresentation = [];
+
     public function index()
     {
-        // get all pictures
+        // get all files
+        $files  =  Files::orderBy('id','DESC')->paginate(10);
 
-        return view('public.rooms.auth.multi');
-        $pictures = Files::all();
 
-        // add properties to pictures
-        $pictures->map(function ($picture) {
-            $picture['size'] = File::size(public_path($picture['url']));
-//            $picture['thumbnailUrl'] =url($picture['url']);
-            $picture['deleteType'] = 'DELETE';
-            $picture['deleteUrl'] = route('pictures.destroy', $picture->id);
-            return $picture;
-        });
+        $pageName = 'File Upload';
+        return view('admin.files.index',compact('files','pageName'));
 
-        // show all pictures
-        return response()->json(['files' => $pictures]);
     }
 
     /**
@@ -62,16 +56,18 @@ class FilesController extends Controller
     public function store(Request $request)
     {
 
+        if ($request->has('meeting'))
+        {
+            $room = Room::findorFail($request->input('meeting'));
+        }
 
-
-
-        $path = public_path($this->folder);
+        $path = public_path(Files::Folder);
         if(!File::exists($path)) {
             File::makeDirectory($path);
         };
 
         // Simple validation (max file size 2MB and only two allowed mime types)
-        $validator = new Simple('30M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword',
+        $validator = new Simple('100M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword',
             'application/vnd.oasis.opendocument.text','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.oasis.opendocument.presentation','application/vnd.ms-powerpoint','application/pdf','image/jpeg','image/png','image/gif','image/jpg','text/plain']);
 
 //        'application/CDFV2','application/x-rar'
@@ -103,20 +99,38 @@ class FilesController extends Controller
 
         foreach($files as $file){
             //Remember to check if the upload was completed
+
             if ($file->completed) {
 
                 // set some data
                 $filename = $file->getFilename();
-                $url = $this->folder . $filename;
+                $url = Files::Folder . $filename;
 
-                // save data
-                $picture = Files::create([
+
+                $dataArray = [
                     'name' => $filename,
-                    'url' =>  $filename,
                     'type' => $file->getMimeType(),
                     'size' => $file->size,
                     'upload_date' => Carbon::now(),
-                ]);
+
+                ];
+                // save data
+                if ($request->has('meeting'))
+                {
+                    $fileUploaded = $room->files()->create($dataArray);
+                }
+                else{
+
+
+                    $fileUploaded = Files::create($dataArray);
+
+
+
+
+                }
+
+
+
                 // prepare response
                 $data[] = [
                     'size' => Helper::formatBytes($file->size),
@@ -125,11 +139,14 @@ class FilesController extends Controller
                     'type' => $file->getMimeType(),
                     'upload_date' => Carbon::now()->format('Y-m-d h:m A'),
                     'deleteType' => 'DELETE',
-                    'deleteUrl' => route('files.destroy', $picture->id),
-
+                    'setDefaultUrl' =>route('setDefault',$fileUploaded->id),
+                    'deleteUrl' => route('files.destroy', $fileUploaded->id),
                 ];
 
+
+
                 // output uploaded file response
+
                 return response()->json(['files' => $data]);
             }
         }
@@ -138,6 +155,7 @@ class FilesController extends Controller
         return response()->json(['files' => $files]);
 
     }
+
 
     /**
      * Display the specified resource.
@@ -182,13 +200,20 @@ class FilesController extends Controller
     public function destroy(Files $file)
     {
 
-
-        dd($file);
-        //
-        $filename  = public_path().'/uploads/im.pdf';
+        $filename  = public_path().Files::Folder.$file->name;
         File::delete($filename);
         $file->delete(); // delete db record
+        return response()->json(['file'=>'Deleted']);
+    }
 
-        return response()->json(['file'=>$file->url]);
+    public function setDefault($id)
+    {
+        Files::where('setDefault',1)->update(['setDefault'=>0]);
+
+        $files = Files::findOrFail($id);
+        $files->setDefault = 1;
+        $files->save();
+        return redirect()->back();
+
     }
 }

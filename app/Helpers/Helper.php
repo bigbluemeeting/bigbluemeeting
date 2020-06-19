@@ -14,10 +14,12 @@ use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
+use phpDocumentor\Reflection\Types\Self_;
 
 class Helper
 {
 
+    public  static $createMeetingParams;
      public static function paginate($items, $perPage = null, $page = null, $options = [])
     {
         $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
@@ -38,21 +40,21 @@ class Helper
 
     }
 
-    public static function createMeeting($params)
+    public static function setMeetingParams($params)
     {
 
-        $bbb = new BigBlueButton();
+
+        self::$createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
+        self::$createMeetingParams->setAttendeePassword($params['attendeePassword']);
+        self::$createMeetingParams->setModeratorPassword($params['moderatorPassword']);
+        self::$createMeetingParams->setLogoutUrl($params['logoutUrl']);
 
 
-        $createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
-        $createMeetingParams->setAttendeePassword($params['attendeePassword']);
-        $createMeetingParams->setModeratorPassword($params['moderatorPassword']);
-        $createMeetingParams->setLogoutUrl($params['logoutUrl']);
         $files = ['https://img.youtube.com/vi/FAFlmkh0tEM/0.jpg','http://www.africau.edu/images/default/sample.pdf','https://file-examples.com/wp-content/uploads/2017/08/file_example_PPT_250kB.ppt'];
 
         foreach ($files as $file)
         {
-            $createMeetingParams->addPresentation($file);
+            self::$createMeetingParams->addPresentation($file);
 
         }
 
@@ -60,34 +62,36 @@ class Helper
         {
 
 
-            $createMeetingParams->setMuteOnStart($params['muteAllUser']);
-            $createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
+            self::$createMeetingParams->setMuteOnStart($params['muteAllUser']);
+            self::$createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
 
         }
         if (isset($params['moderator_approval']))
         {
 
 
-            $params['moderator_approval'] ? $createMeetingParams->setGuestPolicyAskModerator() : $createMeetingParams->setGuestPolicyAlwaysAccept();
+            $params['moderator_approval'] ? self::$createMeetingParams->setGuestPolicyAskModerator() : self::$createMeetingParams->setGuestPolicyAlwaysAccept();
 
         }
         if (isset($params['setRecord']))
         {
-            $createMeetingParams->setRecord($params['setRecord']);
-            $createMeetingParams->setAllowStartStopRecording($params['setRecord']);
+            self::$createMeetingParams->setRecord($params['setRecord']);
+            self::$createMeetingParams->setAllowStartStopRecording($params['setRecord']);
         }
         if (isset($params['welcome_message']))
         {
-            $createMeetingParams->setWelcomeMessage($params['welcome_message']);
+            self::$createMeetingParams->setWelcomeMessage($params['welcome_message']);
         }
 
 
-        $response = $bbb->createMeeting($createMeetingParams);
-
-
-        return $response;
     }
 
+    public static function createMeeting()
+    {
+        $bbb = new BigBlueButton();
+        $response = $bbb->createMeeting(self::$createMeetingParams);
+        return $response;
+    }
     public static function joinMeeting($params)
     {
         $bbb = new BigBlueButton();

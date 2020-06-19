@@ -16,10 +16,12 @@ class CreateFilesTable extends Migration
         Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('url');
             $table->timestamp('upload_date');
             $table->string('type');
             $table->string('size');
+            $table->tinyInteger('setDefault')->default(0);
+            $table->unsignedBigInteger('meetingable_id')->default(0);
+            $table->string('meetingable_type')->nullable();
             $table->timestamps();
         });
     }

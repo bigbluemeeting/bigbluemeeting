@@ -14,10 +14,10 @@
                     <p class="text-center">Are You Sure Want To Delete ?</p>
                 </div>
                 <div class="modal-footer">
-                    <center>
+
                         <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
                         <button type="submit" name="" class="btn btn-danger btnDelete" data-dismiss="modal" >Yes, Delete</button>
-                    </center>
+
                 </div>
             </div>
         </form>

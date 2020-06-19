@@ -21,4 +21,8 @@ class Room extends Model
         return $this->belongsToMany(Attendee::class);
     }
 
+    public function files()
+    {
+        return $this->morphMany(Files::class,'meetingable');
+    }
 }

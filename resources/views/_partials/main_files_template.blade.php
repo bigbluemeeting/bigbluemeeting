@@ -1,7 +1,8 @@
-<!-- The template to display files available for upload -->
-<script id="template-upload" type="text/x-tmpl">
+<!-- The template to display files available for upload -->\
 
+<script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
+
     <tr class="template-upload fade show">
         <td>
 
@@ -14,6 +15,10 @@
 
             </span>
        </td>
+       <td>
+            <p class="name">{%=moment(new Date()).format("YYYY-MM-DD hh:mm A")%}</p>
+            <strong class="error text-danger"></strong>
+        </td>
         <td>
             <p class="name">{%=file.name%}</p>
             <strong class="error text-danger"></strong>
@@ -24,25 +29,31 @@
         </td>
         <td>
             {% if (!i && !o.options.autoUpload) { %}
-                <button class="btn btn-primary start" disabled>
+                <button class="btn btn-primary start ml-2" disabled>
                     <i class="fa fa-upload"></i>
                     <span>Start</span>
                 </button>
             {% } %}
             {% if (!i) { %}
-                <button class="btn btn-warning cancel">
+
+              <button  type="button" class="btn btn-warning cancel">
+
                     <i class="fa fa-ban"></i>
                     <span>Cancel</span>
                 </button>
+
             {% } %}
         </td>
     </tr>
+
 {% } %}
+
+
+
 </script>
 <!-- The template to display files available for download -->
 
 <script id="template-download" type="text/x-tmpl">
-
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="template-download fade show">
 
@@ -68,22 +79,34 @@
             <span class="size">{%=file.size%}</span>
         </td>
         <td>
-            {% if (file.deleteUrl) { %}
-                    <button class="btn btn-danger-outline delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
-                    <i class="fa fa-trash"></i>
-                    <span>Delete</span>
-                </button>
-
-
-            {% } else { %}
-                    <button class="btn btn-warning cancel">
-                    <i class="fa fa-ban"></i>
-                    <span>Cancel</span>
-                    </button>
-            {% } %}
+           <span href="" data-toggle="modal"
+                 data-target="#DeleteModal" class="btn  btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Meeting
+           </span>
         </td>
-    </tr>
-{% } %}
+          <td>
+              <a href="{%=file.setDefaultUrl%}" class="btn  btn-secondary boxes">
+                 <i class="fa fa-square" ></i>
+                 Set as Default
+              </a>
+        </td>
+
+        <td>
+        {% if (file.deleteUrl) { %}
+        <button class="btn btn-danger-outline delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+        <i class="fa fa-trash"></i>
+        <span>Delete</span>
+        </button>
+
+
+        {% } else { %}
+        <button class="btn btn-warning cancel">
+        <i class="fa fa-ban"></i>
+        <span>Cancel</span>
+        </button>
+        {% } %}
+        </td>
+        </tr>
+        {% } %}
 
 
 </script>

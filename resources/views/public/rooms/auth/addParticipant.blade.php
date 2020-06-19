@@ -135,11 +135,11 @@
                                     <thead>
                                     <tr>
                                         <th class="bg-light  form-header" colspan="5">
-
                                             <form id="fileupload" action="{{ route('files.store') }}" method="post" enctype="multipart/form-data">
                                                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                                                 <div class="row fileupload-buttonbar">
                                                     <div class="col-lg-7">
+                                                        <input type="hidden" name="meeting" value="{{$meeting->id}}">
                                                         <!-- The fileinput-button span is used to style the file input field as button -->
                                                         <span class="btn btn-success fileinput-button text-white ">
                                                             <i class="fa fa-plus"></i>
@@ -173,42 +173,44 @@
                                                     </tbody>
                                                 </table>
                                             </form>
-                                            <!-- The blueimp Gallery widget -->
+
                                         </th>
                                     </tr>
                                     @if(count($files)>0)
-                                    <tr>
-                                        <th>File</th>
-                                        <th>Date</th>
-                                        <th>Mime</th>
-                                        <th>Size</th>
-                                        <td>Action</td>
-                                    </tr>
+                                        <tr>
+                                            <th>File</th>
+                                            <th>Date</th>
+                                            <th>Mime</th>
+                                            <th>Size</th>
+                                            <td>Action</td>
+                                        </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($files as $file)
-                                    <tr>
-                                        <td><a href="{{$file->url}}">{{$file->name}}</a></td>
-                                        <td>{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
-                                        <td>{{$file->type}}</td>
-                                        <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
-                                        <td>
-                                             <span href="javascript:;" data-toggle="modal"  data-item = {{$file->id}}
+                                        <tr class="row-data-{{$file->id}}">
+                                            <td><a href="{{\App\Files::Folder.$file->name}}">{{$file->name}}</a></td>
+                                            <td>{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
+                                            <td>{{$file->type}}</td>
+                                            <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
+                                            <td>
+                                             <span href="" data-toggle="modal"  data-item = {{$file->id}}
                                                      data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
 
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                     </tbody>
+
                                     @endif
                                 </table>
                             </div>
                         </div>
 
+                        <div class="col-sm-6 col-sm-offset-5 ml-3 paginate">
+                            {{$files->links()}}
 
-                            <div class="col-sm-6 col-sm-offset-5 ml-3">
-                                {{$files->links()}}
-                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -254,7 +256,34 @@
 
         </div>
     </div>
-    @include('public.rooms.deleteRoomModal');
+    {{-- DELETE MODAL   --}}
+
+    <div id="DeleteModal" class="modal fade text-danger" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                    <div class="modal-header bg-danger">
+
+                        <h4 class="modal-title text-center">DELETE CONFIRMATION</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+                        <p class="text-center">Are You Sure Want To Delete ?</p>
+                    </div>
+                    <div class="modal-footer">
+
+                        <input type="hidden" value="" name="task" class="task-input ">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                        <button type="button" name="" class="btn btn-danger btnDelete" data-dismiss="modal">Yes, Delete</button>
+
+                    </div>
+                </div>
+
+        </div>
+    </div>
+
 @stop
 
 @section('script')
@@ -266,33 +295,22 @@
         var slug = $('#room').val();
         var postUrl = '{{route("roomAttendees")}}';
         var  url =  "{{ route('invite-participant',":slug")}}";
-        var csrf = '{{csrf_token()}}'
+        var csrf = '{{csrf_token()}}';
+        action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
+        currentUrl ="{{url()->current()}}";
+
 
     </script>
 
     <script src="{{asset('js/ip.js')}}"></script>
-    <script>
 
-        action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
-        $('.btnDeleteConfirm').on('click', function () {
-
-            id = $(this).data('item');
-            deleteData(id);
-        });
-        function deleteData(id) {
-            url = action.replace(':id', id);
-            $("#deleteForm").prop('action', url);
-        }
-        $('.btnDelete').on('click', function () {
-            $("#deleteForm").submit();
-        });
-    </script>
 
 @stop
 
 @section('js')
 
-    @include('_partials.x-template')
+    @include('_partials.x-template')1
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.11.0/js/tmpl.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.17.0/load-image.all.min.js"></script>

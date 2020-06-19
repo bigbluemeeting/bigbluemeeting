@@ -28,6 +28,7 @@ class CreateRoomsTable extends Migration
             $table->text('attendee_password')->nullable();
             $table->tinyInteger('mute_on_join')->default(0);
             $table->tinyInteger('require_moderator_approval')->default(0);
+
             $table->timestamps();
 
         });

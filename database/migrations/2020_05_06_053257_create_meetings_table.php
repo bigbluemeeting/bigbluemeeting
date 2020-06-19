@@ -29,6 +29,7 @@ class CreateMeetingsTable extends Migration
             $table->text('attendee_password')->nullable();
             $table->unsignedBigInteger('user_id');
 
+
             $table->timestamps();
 
             // $table->string('attendee_password');

@@ -11,7 +11,6 @@ $(function(){
     // fileupload() related actions
     if ($().fileupload) {
 
-
         // Initialize the jQuery File Upload widget:
         $('#fileupload').fileupload({
             // Uncomment the following to send cross-domain cookies:
@@ -24,8 +23,6 @@ $(function(){
                 .test(window.navigator.userAgent),
             maxFileSize: 100000000,
 
-
-
             // acceptFileTypes: /(\.|\/)(gif|jpe?g|png|zip)$/i
         });
 
@@ -36,7 +33,9 @@ $(function(){
             window.location.href.replace(
                 /\/[^\/]*$/,
                 '/cors/result.html?%s'
-            )
+            ),
+
+
         );
 
         // Load existing files:
@@ -50,6 +49,7 @@ $(function(){
         }).always(function () {
             $(this).removeClass('fileupload-processing');
         }).done(function (result) {
+
             $(this).fileupload('option', 'done')
                 .call(this, $.Event('done'), {result: result});
         });
