@@ -30,7 +30,7 @@ class Meeting extends Model
 
     public function files()
     {
-        return $this->morphMany(Files::class,'meetingable');
+        return $this->belongsToMany(Files::class);
     }
 
 

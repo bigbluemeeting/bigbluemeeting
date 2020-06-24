@@ -3,6 +3,7 @@
 @section('pagename', $pageName)
 @section('css')
 
+
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/css/blueimp-gallery.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload-ui.min.css">
@@ -13,60 +14,44 @@
             border-bottom: none !important;
 
         }
-        .boxes {
-            background:#f6f6f6 !important;
-        }
 
-        /*Checkboxes styles*/
-        input[type="checkbox"] { display: none; }
-
-        input[type="checkbox"] + label {
-            display: block;
-            position: relative;
-            padding-left: 27px;
-            margin-bottom: 20px;
-            font: 14px/20px 'Open Sans', Arial, sans-serif;
-            /*color: #ddd;*/
-            cursor: pointer;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-        }
-
-        input[type="checkbox"] + label:last-child { margin-bottom: 0; }
-
-        input[type="checkbox"] + label:before {
-            content: '';
-            display: block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #78BD2E;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: .6;
-            -webkit-transition: all .12s, border-color .08s;
-            transition: all .12s, border-color .08s;
-        }
-
-        input[type="checkbox"]:checked + label:before {
-            width: 10px;
-            top: -5px;
-            left: 5px;
-            border-radius: 0;
-            opacity: 1;
-            border-top-color: transparent;
-            border-left-color: transparent;
-            -webkit-transform: rotate(45deg);
-            transform: rotate(45deg);
-        }
     </style>
 @stop
 @section('content')
 
     <div class="container-fluid">
-        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;{{$pageName}}</h5>
+        <h5><i class="fa fa-upload"></i>&nbsp;&nbsp;{{$pageName}}</h5>
     </div>
+
+
+    @error('rooms')
+    <div class="col-lg-12 mt-4">
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{$message }}
+        </div>
+    </div>
+    @enderror
+
+    <div class="col-lg-12 mt-4">
+        @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+            @if(Session::has($msg))
+                <div class="alert alert-{{ $msg }}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ session($msg) }}
+                </div>
+            @endif
+        @endforeach
+    </div>
+    @error('meetings')
+    <div class="col-lg-12 mt-4">
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            {{$message }}
+        </div>
+    </div>
+    @enderror
+
     <div class="main-container">
         <div class="row mt-3">
             <div class="col-md-12">
@@ -117,23 +102,24 @@
                 </div>
             </div>
         </div>
+        <hr>
 
         <div class="container-fluid mt-2">
-            <h5><i class="fa fa-users"></i>&nbsp;&nbsp;{{$pageName}}</h5>
+            <h5><i class="fa fa-files-o" style="color: black"></i>&nbsp;&nbsp Your Files</h5>
         </div>
+
         <div class="row mt-3">
             <div class="col-md-12">
                 <div class="card bg-white">
+                    <div class="table-responsive">
                     <div class="card-body">
-                        <div class="table-responsive">
-
-                            <table class="table table-hover">
+                        <table class="table table-hover" id="table">
                                 <thead>
                                 @if(count($files)>0)
                                     <tr>
                                         <th>File</th>
-                                        <th>Date</th>
-                                        <th>Mime</th>
+                                        <th >Date</th>
+                                        <th >Mime</th>
                                         <th>Size</th>
 
                                     </tr>
@@ -142,36 +128,61 @@
                                 @foreach($files as $file)
                                     <tr class="row-data-{{$file->id}}">
                                         <td><a href="{{\App\Files::Folder.$file->name}}">{{$file->name}}</a></td>
-                                        <td>{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
+                                        <td width="200px">{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
                                         <td>{{$file->type}}</td>
-                                        <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
+                                        <td  width="100px">{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
                                         <td>
-                                        <span href="" data-toggle="modal"  data-item = {{$file->id}}
-                                                data-target="#DeleteModal" class="btn  btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Meeting</span>
-                                        </td>
-                                        <td>
-                                           <a href="{{route('setDefault',$file->id)}}" class="btn  btn-secondary boxes">
 
-                                                <i class="fa {{$file->setDefault? 'fa-check-square text-danger':'fa-square'}}"></i> Set as Default
-                                            </a>
+                                            <span href=""   class="btn btn-sm btn-primary-outline btnAddMeeting"
+                                                  data-task="{{$file->name}}"
+                                                  data-item = {{encrypt($file->id)}}>
+                                                <i class="fa fa-plus"></i> Add to Meeting
+                                            </span>
                                         </td>
                                         <td>
-                                            <span href="" data-toggle="modal"  data-item = {{$file->id}}
-                                                    data-target="#DeleteModal" class="btn btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
+
+                                            <span href=""  class="btn btn-sm btn-info-outline btnAddRoom" data-task="{{$file->name}}" data-item = {{encrypt($file->id)}} >
+                                                <i class="fa fa-plus"></i> Add to Room
+                                            </span>
+                                        </td>
+                                        <td>
+                                           <a href="{{route('setDefault',$file->id)}}" class="btn btn-sm btn-secondary boxes">
+                                               <i class="fa {{$file->setDefault? 'fa-check-square text-danger':'fa-square'}}"></i>{{ $file->setDefault ? ' Set Default':' Set as Default'}}
+                                           </a>
+                                        </td>
+                                        <td>
+                                            <span href=""  class="btn btn-sm btn-danger-outline btnDeleteConfirm"
+                                                  data-item = {{$file->id}}>
+                                                <i class="fa fa-trash"></i> Delete
+                                            </span>
                                         </td>
 
                                     </tr>
                                 @endforeach
                                 </tbody>
+                                @else
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="card">
+                                            <div class="card-body" style="background: #fff8a0;">
+                                                <div class="col-md-7">
+                                                    <p class="text-danger m-0">We're sorry,you dont have any files.</p>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <p class="text-danger pt-1">To Create a new files,press the "Add Files" button</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 @endif
                             </table>
                         </div>
-
                         <div class="col-sm-6 col-sm-offset-5 ml-3 paginate">
                             {{$files->links()}}
-
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -181,99 +192,149 @@
 
 
 
-    {{-- Add Participant Modal   --}}
-{{--    <div id="myModal" class="modal fade" role="dialog">--}}
-{{--        <div class="modal-dialog modal-dialog-centered">--}}
-
-{{--            <!-- Modal content-->--}}
-{{--            <div class="modal-content">--}}
-
-{{--                <div class="modal-body">--}}
-{{--                    <div class="card-body p-sm-6">--}}
-{{--                        <div class="card-title">--}}
-{{--                            <h3 class="text-center">Invite Participants</h3>--}}
-{{--                            <h3 class="update-only" style="display:none !important">Room Settings</h3>--}}
-{{--                        </div>--}}
-{{--                        <div class="alert alert-danger errorClass" style="display: none">--}}
-{{--                        </div>--}}
-{{--                        <div class="input-icon mb-2">--}}
-{{--                            <input id="testInput" >--}}
-{{--                        </div>--}}
-{{--                        <div class="row">--}}
-{{--                            <div class="mt-3 ml-3">--}}
-{{--                                <input type="submit" value="Add Participants" class="create-only btn btn-primary btn-block" id="addPar" >--}}
-{{--                                <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--                <input type="hidden" id="room" value="{{$meeting->url}}">--}}
-{{--                <div class="modal-footer bg-light">--}}
-{{--                    <p class="text-primary"><strong> Info ! </strong> Participants need to singup if he's not member of this site. Invitational mail will be sent to his email </p>--}}
-
-{{--                </div>--}}
-{{--            </div>--}}
-
-{{--        </div>--}}
-{{--    </div>--}}
-{{--    --}}{{-- DELETE MODAL   --}}
-
-    <div id="DeleteModal" class="modal fade text-danger" role="dialog">
+    <div id="roomFilesAddModal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
             <div class="modal-content">
-                <div class="modal-header bg-danger">
-
-                    <h4 class="modal-title text-center">DELETE CONFIRMATION</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
                 <div class="modal-body">
-                    {{ csrf_field() }}
-                    {{ method_field('DELETE') }}
-                    <p class="text-center">Are You Sure Want To Delete ?</p>
-                </div>
-                <div class="modal-footer">
+                    <div class="card-title">
+                        <h5 class="text-center d-inline-block roomHeader"></h5>
+                    </div>
 
-                    <input type="hidden" value="" name="task" class="task-input ">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
-                    <button type="button" name="" class="btn btn-danger btnDelete" data-dismiss="modal">Yes, Delete</button>
+                    <hr>
+
+                    {!! Form::open(['method' => 'Post','route' => ['addFileToRoom'],'class'=>'form-horizontal']) !!}
+
+                    <div class="form-group">
+                        <input type="hidden" class="room-file-name" value="" name="file">
+                        <lable for="rooms">Rooms</lable>
+{{--                        {!!Form::select('rooms',[''=>'Choose Option']+$rooms,null, ['class'=>'form-control'])!!}--}}
+                        <select name="rooms" id="" class="form-control mt-2">
+                            <option value="">Choose Room</option>
+                            @foreach($rooms as $room)
+                                <option value="{{encrypt($room->id)}}">{{$room->name}}</option>
+                            @endforeach
+
+                        </select>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        {!! Form::submit('Add file to Room ',['class'=>'btn btn-info']) !!}
+                    </div>
+
+                    {!! Form::close() !!}
+
 
                 </div>
+
             </div>
 
         </div>
+    </div>
+
+
+        {{--  Add Files to Meeting Modal  --}}
+
+    <div id="meetingFilesAddModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="card-title">
+                        <h5 class="text-center d-inline-block meetingHeader"></h5>
+                    </div>
+
+                    <hr>
+
+                    {!! Form::open(['method' => 'Post','route' => ['addFileToMeeting'],'class'=>'form-horizontal']) !!}
+
+                    <div class="form-group">
+                        <input type="hidden" class="meeting-file-name" value="" name="file">
+                        <lable for="rooms">Meetings</lable>
+                        <select name="meetings" id="" class="form-control mt-2">
+                            <option value="">Choose Meeting</option>
+                            @foreach($meetings as $meeting)
+                                <option value="{{encrypt($meeting->id)}}">{{$meeting->name}}</option>
+                            @endforeach
+
+                        </select>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        {!! Form::submit('Add file to Meeting ',['class'=>'btn btn-primary']) !!}
+                    </div>
+
+                    {!! Form::close() !!}
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div id="DeleteModal" class="modal fade text-danger" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header bg-danger">
+
+                        <h4 class="modal-title text-center">DELETE CONFIRMATION</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        {{ csrf_field() }}
+                        {{ method_field('DELETE') }}
+                        <p class="text-center">Are You Sure Want To Delete ?</p>
+                    </div>
+                    <div class="modal-footer">
+
+                        <input type="hidden" value="" name="task" class="task-input ">
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Cancel</button>
+                        <button type="button" name="" class="btn btn-danger btnDelete" data-dismiss="modal">Yes, Delete</button>
+
+                    </div>
+                </div>
+
+            </div>
 {{--    </div>--}}
 
 @stop
 
 @section('script')
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-    <script>
-    $('.main-container').on('click','.checkbox',function () {
-        console.log('sfkjbhsdjfghj')
-        {{--url ="{{\Illuminate\Support\Facades\URL::route('setDefault')}}";--}}
-        {{--csrf ={{csrf_token()}}--}}
-        {{--$.ajax({--}}
-        {{--    type:'POST',--}}
-        {{--    url:url,--}}
-        {{--    datatype:'json',--}}
-        {{--    data:{--}}
+                <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
-        {{--        file:$('.checkbox').data('task'),--}}
-        {{--        value:$('.checkbox').val(),--}}
+                <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+                <script>
+                    action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
+                    currentUrl ="{{url()->current()}}";
+                </script>
+                <script src="{{asset('js/bbb-delete.js')}}"></script>
+                    <script>
+                        $('.btnAddMeeting').on('click',function () {
 
-        {{--    },success:function (data) {--}}
+                            $('.meeting-file-name').val($(this).data('item'))
+                            $('.meetingHeader').html($(this).data('task'))
+                            $('#meetingFilesAddModal').modal('show')
 
-        {{--    },--}}
+                        });
+                        $('.btnAddRoom').on('click',function () {
 
-        {{--});--}}
+                            $('.room-file-name').val($(this).data('item'))
+                            $('.roomHeader').html($(this).data('task'))
+                            $('#roomFilesAddModal').modal('show')
+                        });
+                        $('.btnDeleteConfirm').on('click',function () {
+                         $('#DeleteModal').modal('show')
+                        });
+                    </script>
 
 
-    })
-    </script>
 
 @stop
 

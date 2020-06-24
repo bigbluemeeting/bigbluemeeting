@@ -20,7 +20,7 @@
 
     <div class="container-fluid">
 
-        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Meeting Information</h5>
+        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Room Information</h5>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -139,7 +139,7 @@
                                                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                                                 <div class="row fileupload-buttonbar">
                                                     <div class="col-lg-7">
-                                                        <input type="hidden" name="meeting" value="{{$meeting->id}}">
+                                                        <input type="hidden" name="rooms" value="{{$meeting->id}}">
                                                         <!-- The fileinput-button span is used to style the file input field as button -->
                                                         <span class="btn btn-success fileinput-button text-white ">
                                                             <i class="fa fa-plus"></i>
@@ -294,7 +294,7 @@
 
         var slug = $('#room').val();
         var postUrl = '{{route("roomAttendees")}}';
-        var  url =  "{{ route('invite-participant',":slug")}}";
+        var  url =  "{{ route('showDetails',":slug")}}";
         var csrf = '{{csrf_token()}}';
         action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
         currentUrl ="{{url()->current()}}";
@@ -303,6 +303,7 @@
     </script>
 
     <script src="{{asset('js/ip.js')}}"></script>
+    <script src="{{asset('js/bbb-delete.js')}}"></script>
 
 
 @stop
@@ -310,7 +311,6 @@
 @section('js')
 
     @include('_partials.x-template')1
-
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.11.0/js/tmpl.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.17.0/load-image.all.min.js"></script>

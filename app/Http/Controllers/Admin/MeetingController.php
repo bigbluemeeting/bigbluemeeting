@@ -31,6 +31,13 @@ class MeetingController extends Controller
     protected $meetingUrl,$meetingName,$attendeePassword,$moderatorPassword;
     protected $autoJoin;
 
+    public function __construct()
+    {
+
+        $this->middleware('auth', ['only' => [
+            'update','index','edit','destroy','store'
+        ]]);
+    }
 
     /**
      * Meeting List
@@ -75,6 +82,7 @@ class MeetingController extends Controller
     public function store(Request $request)
     {
         //
+
 
         $this->middleware('auth');
         $request->validate([
@@ -166,7 +174,10 @@ class MeetingController extends Controller
      */
     public function show($url)
     {
+
+
         $room = Meeting::where('url',$url)->firstOrFail();
+
         $pageName = ucwords($room->user->username);
         $response = Gate::allows('view',$room);
         if (!$response)
@@ -187,6 +198,17 @@ class MeetingController extends Controller
 
     }
 
+    public  function showDetails($url)
+    {
+        $pageName = "Meeting Details";
+        $meeting = Meeting::where('url',$url)
+            ->firstOrFail();
+
+        $files = $meeting->files()->paginate(10);
+
+        return view('admin.meetings.single',compact('pageName','meeting','files'));
+    }
+
 
 
     /**
@@ -197,7 +219,6 @@ class MeetingController extends Controller
      */
     public function edit(Meeting $meeting)
     {
-        ///// /return response()->json(['result'=>$meeting]);
 
         return view('admin.meetings.editMeetingModal',compact('meeting'));
     }
@@ -212,6 +233,7 @@ class MeetingController extends Controller
     public function update(Request $request, Meeting $meeting)
     {
         //
+
         $request->validate([
             'name' => 'required|max:50',
         ]);
@@ -281,40 +303,62 @@ class MeetingController extends Controller
         $meeting  = Meeting::where('url',$url)->firstOrFail();
         $bbb = new BigBlueButton();
 
-
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters($url,$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+        $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+        $this->meetingsParams = [
+            'meetingUrl' => $meeting->url,
+            'meetingName' =>  $meeting->name,
+            'attendeePassword' => decrypt($meeting->attendee_password),
+            'moderatorPassword' => $user->password,
+            'username' => $user->name,
+            'muteAllUser' => $meeting->mute_on_join,
+            'moderator_approval' =>$meeting->require_moderator_approval,
+            'logoutUrl' => $this->logoutUrl,
+            'setRecord' => true,
+        ];
+        $files =  Auth::user()
+            ->meetings()
+            ->where('url',$meeting->url)
+            ->whereHas('files')
+            ->with('files')
+            ->get()
+            ->pluck('files')
+            ->collapse();
+
+        if (count($files) < 1)
+        {
+            $files = $user->files()
+                ->where('setDefault',1)
+                ->get();
+        }
+        if (count($files) > 0)
+        {
+            foreach ($files as $file)
+            {
+                $this->meetingsParams['files'][] =$file->name;
+
+            }
+        }
+
+        else{
+
+            $this->meetingsParams['files'] =[];
+        }
 
         if ($response->getReturnCode() == 'FAILED') {
-
-            $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
-            $this->meetingsParams = [
-                'meetingUrl' => $meeting->url,
-                'meetingName' =>  $meeting->name,
-                'attendeePassword' => decrypt($meeting->attendee_password),
-                'moderatorPassword' => $user->password,
-                'username' => $user->name,
-                'muteAllUser' => $meeting->mute_on_join,
-                'moderator_approval' =>$meeting->require_moderator_approval,
-                'logoutUrl' => $this->logoutUrl,
-                'setRecord' => true,
-            ];
 
             return $this->createMeeting();
 
         } else {
 
+            $endMeetingParams = new EndMeetingParameters($room->url,$user->password);
+            $endMeetingResponse = $bbb->endMeeting($endMeetingParams);
 
-            $joinMeetingParams = [
+            return $this->createMeeting();
 
-                'meetingId'  => $url,
-                'username'   => $user->name,
-                'password'   => $user->password
-            ];
 
-            $url = Helper::joinMeeting($joinMeetingParams);
-            return redirect()->to($url);
         }
     }
 

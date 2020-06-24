@@ -20,7 +20,7 @@
                     <input type="text"  name="access_code" class="form-control join-form h-25" placeholder="Enter Room Access Code" autofocus="autofocus" type="text">
                     <input type="hidden" value="{{encrypt($room->url)}}" name="room">
                     <span class="input-group-append">
-                                <button class="btn btn-primary btn-sm px-5 form-control join-form" type="submit">
+                                <button class="btn btn-primary btn-sm px-5  join-form" type="submit">
                                     Enter
                                 </button>
                             </span>

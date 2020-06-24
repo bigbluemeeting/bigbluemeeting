@@ -65,7 +65,7 @@
                                         <th>Start</th>
                                         <th>End</th>
                                         <th>Recorded</th>
-                                        <th>Invitation</th>
+                                        <th>Details</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -78,7 +78,7 @@
                                             <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>
                                             <td>{{$list->meeting_record ? 'Yes':'No'}}</td>
                                             <td>
-                                                <a href="{{route('invite-participant',$list->url)}}" class="btn btn-sm  btn-info">Add Participant</a>
+                                                <a href="{{route('showDetails',$list->url)}}" class="btn btn-sm  btn-info">Show Details</a>
                                             </td>
                                             <td>
                                                 <span data-task="{{$list->id}}"  class="btn btn-sm btn-info-outline btn-manage"><i class="fa fa-edit"></i> Edit</span>

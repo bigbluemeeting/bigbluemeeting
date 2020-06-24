@@ -52,7 +52,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
 
 });
 
-Route::resource('/files','Admin\FilesController');
+
 /**
  * Login & SignUp Route
  */
@@ -72,18 +72,28 @@ Route::get('/', function () {
 /**
  * Public Routes
  */
+Route::group(['middleware'=>'auth'],function(){
 
-Route::get('rooms/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
-Route::get('rooms/invite-participant/{url}','PublicControllers\Rooms\RoomsController@inviteParticipant')->name('invite-participant');
+    Route::get('rooms/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+    Route::get('rooms/details/{url}','PublicControllers\Rooms\RoomsController@showDetails')->name('showDetails');
+
+    Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
+    Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
+    Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
+    Route::resource('/files','Admin\FilesController');
+    Route::get('/files/setDefault/{val}','Admin\FilesController@setDefault')->name('setDefault');
+    Route::post('/files/addFilesToRoom','Admin\FilesController@addFileToRoom')->name('addFileToRoom');
+    Route::post('/files/addFilesToMeeting','Admin\FilesController@addFileToMeeting')->name('addFileToMeeting');
+    Route::get('/meetings/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
+});
+
 Route::resource('rooms','PublicControllers\Rooms\RoomsController');
-Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
-Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
-Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
 Route::resource('/meetings','Admin\MeetingController');
-Route::get('/meetings/access/{url}','PublicControllers\Meetings\AttendeesMeetingController@checkCode')->name('checkCode');
+
+Route::get('/rooms/{url}',  'PublicControllers\Rooms\RoomsController@show');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');
-Route::get('/files/setDefault/{val}','Admin\FilesController@setDefault')->name('setDefault');
+
 
 /**
  * Routes For Ajax Call

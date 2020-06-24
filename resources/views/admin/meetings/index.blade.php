@@ -123,6 +123,7 @@
                                         <th>Create Date</th>
                                         <th>Created By</th>
                                         <th>Invite Participants</th>
+                                        <th>Details</th>
                                         <th>Action</th>
                                     </tr>
                                     </thead>
@@ -133,7 +134,8 @@
                                             <td>{{$list->created_at->diffForHumans()}}</td>
                                             <td>{{$list->user->name}}</td>
                                             <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
-                                            <td >
+                                            <td><a href="{{route('showMeetingDetails',$list->url)}}" class="btn btn-sm btn-info">Show Details</a></td>
+                                            <td>
                                                 <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-sm  btn-primary-outline ">Start</a>
                                                 |
                                                 <span data-task="{{$list->id}}"  class="btn btn-sm btn-info-outline btn-manage">

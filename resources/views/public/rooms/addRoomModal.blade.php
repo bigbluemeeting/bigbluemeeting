@@ -95,8 +95,8 @@
                         <div class="col-md-6">
                             <label>Record This Room</label>
                             <select name="meeting_record"  class="form-control">
-                                <option value="Don't Record">No,don't record it.</option>
-                                <option value="Record">Record it.</option>
+                                <option value="0">No,don't record it.</option>
+                                <option value="1">Record it.</option>
                             </select>
                         </div>
 
@@ -126,16 +126,16 @@
                         </div>
 
 
-                        <div class="row mt-2">
-                            <div class="col-sm-8">
-                                <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                                    Require moderator approval before joining
-                                </label>
-                            </div>
-                            <div class="col-sm-3  mt-4">
-                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="room_require_moderator_approval" autocomplete="off" >
-                            </div>
-                        </div>
+{{--                        <div class="row mt-2">--}}
+{{--                            <div class="col-sm-8">--}}
+{{--                                <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">--}}
+{{--                                    Require moderator approval before joining--}}
+{{--                                </label>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-sm-3  mt-4">--}}
+{{--                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="room_require_moderator_approval" autocomplete="off" >--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
 
 

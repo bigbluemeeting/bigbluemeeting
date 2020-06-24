@@ -15,4 +15,13 @@ class Files extends Model
     {
         return $this->morphTo();
     }
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class);
+    }
+    public function meetings()
+    {
+        return $this->belongsToMany(Meeting::class);
+    }
+
 }

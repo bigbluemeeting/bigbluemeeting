@@ -3,8 +3,7 @@
 @section('css')
 
     <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.min.css')}}">
-    <link rel="stylesheet" href="{{asset('css/front.css')}}">
-
+    <link rel="stylesheet" href="{{asset('css/front.css?var=time()')}}">
 @stop
 @section('content')
     <div class="container-fluid mt-4">
@@ -29,7 +28,7 @@
                     <div class="input-group">
                         <input   class="form-control join-form h-25" placeholder="Enter your name!" value="" autofocus="autofocus" type="text" name="name">
                         <span class="input-group-append">
-                            <button class="btn btn-primary btn-sm px-5 form-control join-form" type="submit">
+                            <button class="btn btn-primary btn-sm px-5  join-form" type="submit">
                                Join
                             </button>
                         </span>

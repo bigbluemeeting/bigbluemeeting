@@ -32,7 +32,7 @@
             @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
 
 
-        <div class="card card-block sameheight-item">
+        <div class="card card-block sameheight-item mt-2">
 
             <section class="example">
                 <div class="row">
@@ -94,7 +94,18 @@
                                 </tr>
                             @endforeach
                             @else
-                                No Recording Found.
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <div class="card">
+                                            <div class="card-body" style="background: #fff8a0;">
+                                                <div class="col-md-7">
+                                                    <p class="text-danger m-0">We're sorry,you don have any recording.</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
 
                             </tbody>
@@ -108,12 +119,11 @@
 
     {{-- Rooms Recordings List --}}
 
-            <div class="container-fluid mt-3">
+            <div class="container-fluid mt-4">
                 <h5>My Meetings Recordings</h5>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card card-block sameheight-item">
+            <div class="col-lg-12">
+                    <div class="card card-block sameheight-item mt-3">
                         <section class="example">
                             @if (count($meetingRecordings) > 0)
 
@@ -158,7 +168,18 @@
                                             </tr>
                                         @endforeach
                                         @else
-                                            No Recording Found.
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <div class="card">
+                                                        <div class="card-body" style="background: #fff8a0;">
+                                                            <div class="col-md-7">
+                                                                <p class="text-danger m-0">We're sorry,you don have any recording.</p>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         @endif
 
                                         </tbody>
@@ -172,9 +193,7 @@
                         </section>
                     </div>
 
-
                 </div>
-            </div>
 
 
 

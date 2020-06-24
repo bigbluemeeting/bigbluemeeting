@@ -92,9 +92,7 @@ $('#createRoom').on('click', function () {
 $('.btn-manage').on('click', function () {
     var id = $(this).data('task');
 
-
     url = url.replace(':id', id);
-
 
     $('.manageForm')[0].reset();
     $.get(url, function (data) {
@@ -127,7 +125,6 @@ $('.btn-manage').on('click', function () {
             if ($(this).val() == data.result.meeting_record) $(this).attr("selected", "selected");
         });
 
-        url = url.replace(id,':id');
         $('#editModal').modal('show');
     });
 });

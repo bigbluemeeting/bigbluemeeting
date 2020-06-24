@@ -26,7 +26,7 @@
                                     <div class="input-group">
                                         <input   class="form-control join-form h-25" placeholder="Enter your name!" value="" autofocus="autofocus" type="text" name="name">
                                         <span class="input-group-append">
-                                <button class="btn btn-primary btn-sm px-5 form-control join-form" type="submit">
+                                <button class="btn btn-primary btn-sm px-5  join-form" type="submit">
                                     @if($room->all_join_moderator)
                                         Start
                                     @elseif($room->anyone_can_start)

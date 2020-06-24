@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
 class RoomsController extends Controller
@@ -31,10 +32,18 @@ class RoomsController extends Controller
     protected $logoutUrl = '/rooms/';
     protected $meetingsParams = [];
 
+    public function __construct()
+    {
+
+        $this->middleware('auth', ['only' => [
+            'update','index','edit','destroy','store'
+        ]]);
+    }
     public function index()
     {
 //        https://c38e6.bigbluemeeting.com/bigbluebutton/
 //       QFCwDfZr6PqO9Utwd82LcUJMfAJt5OjfsftlrPiRrQ
+
         $pageName='Rooms List';
 
         $user = User::findOrFail(Auth::id());
@@ -56,10 +65,12 @@ class RoomsController extends Controller
 
 
         return view('public.rooms.index',compact('pageName','upComingMeetings','pastMeetings'));
+
     }
 
     public function store(Request $request)
     {
+
 
 
         $rules = [
@@ -86,6 +97,7 @@ class RoomsController extends Controller
     }
     public function edit(Room $room)
     {
+
         return response()->json(['result' =>$room]);
 
     }
@@ -131,11 +143,15 @@ class RoomsController extends Controller
         $data['end_date'] = $end_date;
         $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
 
+
+
         $room = Room::create($data);
         $user = User::findOrFail(Auth::id());
         $room->url =strtolower($user->name).'-'.Str::random(3).'-'.$room->id.Str::random(2);
         $room->save();
         $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
+
+
         $this->meetingsParams = [
             'meetingUrl' =>  $room->url,
             'meetingName' => $request->input('name'),
@@ -148,6 +164,11 @@ class RoomsController extends Controller
             'moderator_approval' => $request->has('require_moderator_approval') ? true :false
 
         ];
+
+
+
+
+
 
     }
 
@@ -171,6 +192,7 @@ class RoomsController extends Controller
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
 
         $this->logoutUrl = url($this->logoutUrl.'/'.$room->url);
+
         $this->meetingsParams = [
             'meetingUrl' =>  $room->url,
             'meetingName' => $request->input('name'),
@@ -198,6 +220,7 @@ class RoomsController extends Controller
 
     public function createMeeting($name=null)
     {
+
 
         Helper::setMeetingParams($this->meetingsParams);
         $response = Helper::createMeeting();
@@ -232,6 +255,7 @@ class RoomsController extends Controller
     public function show($url)
     {
 
+
         $room = Room::where('url',$url)->firstOrFail();
         if (Auth::check())
         {
@@ -257,46 +281,74 @@ class RoomsController extends Controller
 
     public function join(Request $request)
     {
+
         $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
         $bbb = new BigBlueButton();
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+        $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
+        $this->meetingsParams = [
+            'meetingUrl' =>  $room->url,
+            'meetingName' => $room->name,
+            'attendeePassword' => decrypt($room->attendee_password),
+            'moderatorPassword' => $user->password,
+            'welcome_message' =>$room->welcome_message,
+            'setRecord' =>$room->meeting_record,
+            'logoutUrl' => $this->logoutUrl,
+            'username' => $user->name
+
+
+        ];
+
+          $files =  Auth::user()
+              ->rooms()
+              ->where('url',$room->url)
+              ->whereHas('files')
+              ->with('files')
+              ->get()
+              ->pluck('files')
+              ->collapse();
+
+          if (count($files) < 1)
+          {
+              $files = $user->files()
+                  ->where('setDefault',1)
+                  ->get();
+          }
+
+          if (count($files) > 0)
+          {
+              foreach ($files as $file)
+              {
+                  $this->meetingsParams['files'][] =$file->name;
+
+              }
+          }
+
+          else{
+
+              $this->meetingsParams['files'] =[];
+          }
+
         if ($response->getReturnCode() == 'FAILED') {
 
-            $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
-            $this->meetingsParams = [
-                'meetingUrl' =>  $room->url,
-                'meetingName' => $room->name,
-                'attendeePassword' => decrypt($room->attendee_password),
-                'moderatorPassword' => $user->password,
-                'welcome_message' =>$room->welcome_message,
-                'setRecord' =>$room->meeting_record,
-                'logoutUrl' => $this->logoutUrl,
-                'username' => $user->name
-
-
-            ];
             return $this->createMeeting();
 
         } else {
 
-            $joinMeetingParams = [
+            $endMeetingParams = new EndMeetingParameters($room->url,$user->password);
+            $endMeetingResponse = $bbb->endMeeting($endMeetingParams);
 
-                'meetingId'  =>  decrypt($request->input('room')),
-                'username'   =>  $user->name,
-                'password'   =>  $user->password
-            ];
+            return $this->createMeeting();
 
-            $url = Helper::joinMeeting($joinMeetingParams);
-            return redirect()->to($url);
 
         }
     }
 
     public function inviteAttendee()
     {
-        $pageName ='Invited Meetings';
+        $pageName ='Invited Rooms';
         $user = User::findOrFail(Auth::id());
         $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 
@@ -317,7 +369,7 @@ class RoomsController extends Controller
 
     }
 
-    public function inviteParticipant($url)
+    public function showDetails($url)
     {
         $pageName = "Invite Participants";
         $meeting = Room::where('url',$url)
@@ -328,6 +380,7 @@ class RoomsController extends Controller
             ->paginate(10);
 
 
+//        $files = [];
         $files = $meeting->files()->paginate(10);
 
         return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees','files'));

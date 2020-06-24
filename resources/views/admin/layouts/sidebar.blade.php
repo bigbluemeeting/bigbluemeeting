@@ -97,6 +97,17 @@
                     </ul>
                 </li>
 
+
+                <li>
+                    <a href="{{ route('files.index') }}">
+
+                        <i class="fa fa-files-o"></i> Files
+                        <i class="fa arrow"></i>
+                    </a>
+{{--                    <a href="{{ route('files.index') }}">--}}
+{{--                        <i class="fa fa-files-o"></i> Files </a>--}}
+                </li>
+
                 <li>
                     <a href="{{ route('admin::change_password') }}">
                         <i class="fa fa-key"></i> Change Password </a>

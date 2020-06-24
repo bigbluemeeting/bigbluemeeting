@@ -19,9 +19,9 @@ class CreateFilesTable extends Migration
             $table->timestamp('upload_date');
             $table->string('type');
             $table->string('size');
+            $table->unsignedBigInteger('user_id')->default(0);
             $table->tinyInteger('setDefault')->default(0);
-            $table->unsignedBigInteger('meetingable_id')->default(0);
-            $table->string('meetingable_type')->nullable();
+
             $table->timestamps();
         });
     }

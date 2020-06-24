@@ -6,6 +6,7 @@ namespace App\Exceptions;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Whoops\Exception\ErrorException;
 
 
 class Handler extends ExceptionHandler
@@ -61,6 +62,11 @@ class Handler extends ExceptionHandler
         {
             return response()->view('errors.404');
         }
+
+
+        $url = url()->current();
+        return response()->view('errors.connectionLost',compact('url'));
+//        return redirect()->back()->with(['danger'=>'Your Internet not connected or slow please try later']);
 
 
         return parent::render($request, $exception);

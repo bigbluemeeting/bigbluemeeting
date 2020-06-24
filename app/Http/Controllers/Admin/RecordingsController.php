@@ -39,6 +39,8 @@ class RecordingsController extends Controller
         //
         $pageName ="Recordings List";
 
+
+
         $rooms = Auth::user()
             ->rooms()
             ->where('meeting_record',1)
@@ -52,10 +54,12 @@ class RecordingsController extends Controller
 
         foreach ($rooms as $room)
         {
-            $this->recordings($this->meetingsParams = [
+            $this->meetingsParams = [
                 'url' => $room->url,
                 'rooms' => true,
-            ]);
+            ];
+
+            $this->recordings();
         }
 
 
@@ -153,10 +157,12 @@ class RecordingsController extends Controller
     {
 
 
+
         $recordingParams = new GetRecordingsParameters();
         $recordingParams->setMeetingId($this->meetingsParams['url']);
         $bbb = new BigBlueButton();
         $response = $bbb->getRecordings($recordingParams);
+
         if ($response->getMessageKey() == null) {
 
             foreach ($response->getRawXml()->recordings->recording as $recording) {

@@ -73,7 +73,18 @@
                                @endforeach
 
                                @else
-                                   No Recording Found.
+                                   <div class="card bg-light">
+                                       <div class="card-body">
+                                           <div class="card">
+                                               <div class="card-body" style="background: #fff8a0;">
+                                                   <div class="col-md-7">
+                                                       <p class="text-danger m-0">We're sorry,you dont have any recording.</p>
+                                                   </div>
+
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
                                @endif
 
                                </tbody>

@@ -69,22 +69,28 @@
                 <div class="text-danger"><span >Error</span> {%=file.error%}</div>
             {% } %}
         </td>
-        <td>
+        <td width="200px">
             <span >{%=file.upload_date%}</span>
         </td>
         <td>
             <span >{%=file.type%}</span>
         </td>
-        <td>
+        <td width="100px">
             <span class="size">{%=file.size%}</span>
         </td>
         <td>
            <span href="" data-toggle="modal"
-                 data-target="#DeleteModal" class="btn  btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Meeting
+                 data-target="#DeleteModal" class="btn  btn-sm btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Meeting
+           </span>
+        </td>
+
+        <td>
+           <span href="" data-toggle="modal"
+                 data-target="#DeleteModal" class="btn  btn-sm btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Room
            </span>
         </td>
           <td>
-              <a href="{%=file.setDefaultUrl%}" class="btn  btn-secondary boxes">
+              <a href="{%=file.setDefaultUrl%}" class="btn btn-sm btn-secondary boxes">
                  <i class="fa fa-square" ></i>
                  Set as Default
               </a>
@@ -92,7 +98,7 @@
 
         <td>
         {% if (file.deleteUrl) { %}
-        <button class="btn btn-danger-outline delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+        <button class="btn btn-sm btn-danger-outline delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
         <i class="fa fa-trash"></i>
         <span>Delete</span>
         </button>

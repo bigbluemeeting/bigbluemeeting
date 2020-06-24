@@ -1,0 +1,2 @@
+"bkwld/croppa": "^4.6"
+"gargron/fileupload": "^1.4",
