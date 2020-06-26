@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 
@@ -160,7 +161,8 @@ class RecordingsController extends Controller
 
         $recordingParams = new GetRecordingsParameters();
         $recordingParams->setMeetingId($this->meetingsParams['url']);
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $response = $bbb->getRecordings($recordingParams);
 
         if ($response->getMessageKey() == null) {
@@ -182,7 +184,8 @@ class RecordingsController extends Controller
      */
     public function publishedRecording(Request $request)
     {
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
 
         $request->published ? $publish = true : $publish = false;
         $publishRecording  = new PublishRecordingsParameters($request->recording,$publish);
@@ -253,7 +256,8 @@ class RecordingsController extends Controller
     public function destroy($id)
     {
 
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $deleteRecordingsParams= new DeleteRecordingsParameters($id); // get from "Get Recordings"
         $response = $bbb->deleteRecordings($deleteRecordingsParams);
         if ($response->getReturnCode() == 'SUCCESS') {

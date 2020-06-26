@@ -31,6 +31,7 @@
                         </li>
                     </ul>
                 </li>
+
                 @endcan
                 @can('users_manage')
                 <li class="{{ (Request::is('admin/users*') || Request::is('admin/roles*')) ? 'active open' : '' }}">

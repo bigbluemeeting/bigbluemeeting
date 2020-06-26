@@ -4,6 +4,7 @@ namespace App\Http\Controllers\PublicControllers\Rooms;
 
 use App\Attendee;
 use App\Files;
+use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AttendeeMail;
@@ -24,6 +25,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use QCod\AppSettings\Setting\AppSettings;
 
 class RoomsController extends Controller
 {
@@ -41,6 +43,14 @@ class RoomsController extends Controller
     }
     public function index()
     {
+
+
+
+
+
+
+//        BBB_SERVER_BASE_URL=https://5df16.bigbluemeeting.com/bigbluebutton/
+//BBB_SECRET=RwV0gEfEJBt4ThETSes79B9ROZqprM7uafKqrx0wICU
 //        https://c38e6.bigbluemeeting.com/bigbluebutton/
 //       QFCwDfZr6PqO9Utwd82LcUJMfAJt5OjfsftlrPiRrQ
 
@@ -187,7 +197,8 @@ class RoomsController extends Controller
         $request->has('require_moderator_approval') ? $data['require_moderator_approval'] :$data['require_moderator_approval'] =0 ;
         $room->update($data);
         $user = Auth::user();
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $getMeetingInfoParams = new GetMeetingInfoParameters($room->url,$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
 
@@ -222,8 +233,8 @@ class RoomsController extends Controller
     {
 
 
-        Helper::setMeetingParams($this->meetingsParams);
-        $response = Helper::createMeeting();
+        bbbHelpers::setMeetingParams($this->meetingsParams);
+        $response = bbbHelpers::createMeeting();
         if ($response->getReturnCode() == 'FAILED') {
             return 'Can\'t create room! please contact our administrator.';
 
@@ -242,7 +253,7 @@ class RoomsController extends Controller
                     'password'   => $this->meetingsParams['moderatorPassword']
                 ];
 
-                $apiUrl = Helper::joinMeeting($joinMeetingParams);
+                $apiUrl =bbbHelpers::joinMeeting($joinMeetingParams);
                 return redirect()->to($apiUrl);
 
             }
@@ -273,7 +284,7 @@ class RoomsController extends Controller
 
         }else{
 
-            $roomsRecordingList = Helper::recordingLists($url);
+            $roomsRecordingList = bbbHelpers::recordingLists($url);
             $pageName = ucwords($room->user->username);
             return view('public.rooms.notauth.join',compact('pageName','room','roomsRecordingList'));
         }
@@ -283,7 +294,8 @@ class RoomsController extends Controller
     {
 
         $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);

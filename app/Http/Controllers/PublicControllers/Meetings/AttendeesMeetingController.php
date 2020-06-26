@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicControllers\Meetings;
 
 use App\bigbluebutton\src\Parameters\CreateMeetingParameters;
+use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Admin\MeetingController;
 use App\Http\Controllers\Controller;
@@ -38,7 +39,7 @@ class  AttendeesMeetingController extends Controller
             ->first();
         if (!empty($room))
         {
-            $recordingList = Helper::recordingLists(decrypt($request->input('room')));
+            $recordingList = bbbHelpers::recordingLists(decrypt($request->input('room')));
             return view('includes.meetingJoinForm',compact('room','recordingList'));
 
         }
@@ -66,7 +67,8 @@ class  AttendeesMeetingController extends Controller
 
 
         $room = Meeting::where('url',decrypt($request->input('room')))->firstOrFail();
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $ismeetingRunningParams =  new IsMeetingRunningParameters(decrypt($request->input('room')));
         $response =$bbb->isMeetingRunning($ismeetingRunningParams);
 
@@ -81,7 +83,7 @@ class  AttendeesMeetingController extends Controller
                 'username'   => $request->input('name'),
                 'password'   => decrypt($room->attendee_password)
             ];
-           $url = Helper::joinMeeting($joinMeetingParams);
+           $url = bbbHelpers::joinMeeting($joinMeetingParams);
            return response()->json(['url'=>$url]);
 
 
@@ -111,14 +113,14 @@ class  AttendeesMeetingController extends Controller
 
         ];
 
-            $response = Helper::createMeeting($meetingsParams);
+            $response = bbbHelpers::createMeeting($meetingsParams);
             $joinMeetingParams = [
                     'meetingId'  => decrypt($request->input('room')),
                     'username'   => $request->input('name'),
                     'password'   => decrypt($meeting->attendee_password)
                 ];
 
-            $apiUrl = Helper::joinMeeting($joinMeetingParams);
+            $apiUrl = bbbHelpers::joinMeeting($joinMeetingParams);
             return redirect()->to($apiUrl);
 
     }
@@ -142,7 +144,7 @@ class  AttendeesMeetingController extends Controller
             'logoutUrl' =>  $this->logoutUrl,
             'setRecord' => true,
         ];
-        $response  = Helper::createMeeting($meetingsParams);
+        $response  = bbbHelpers::createMeeting($meetingsParams);
         $joinMeetingParams = [
 
             'meetingId'  => decrypt($request->input('room')),
@@ -150,7 +152,7 @@ class  AttendeesMeetingController extends Controller
             'password'   => $meeting->user->password
         ];
 
-        $apiUrl = Helper::joinMeeting($joinMeetingParams);
+        $apiUrl = bbbHelpers::joinMeeting($joinMeetingParams);
         return redirect()->to($apiUrl);
 
 

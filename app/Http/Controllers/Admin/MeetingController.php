@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\bigbluebutton\tests\TestCase;
+use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Meeting;
@@ -133,8 +134,8 @@ class MeetingController extends Controller
     private function createMeeting($name=null)
     {
 
-        Helper::setMeetingParams($this->meetingsParams);
-        $response = Helper::createMeeting();
+        bbbHelpers::setMeetingParams($this->meetingsParams);
+        $response = bbbHelpers::createMeeting();
         if ($response->getReturnCode() == 'FAILED') {
             return 'Can\'t create room! please contact our administrator.';
         } else {
@@ -150,14 +151,14 @@ class MeetingController extends Controller
             {
                 if ($this->autoJoin)
                 {
-                    $url = Helper::joinMeeting($joinMeetingParams);
+                    $url = bbbHelpers::joinMeeting($joinMeetingParams);
                     return redirect()->to($url);
                 }
                 return $this->index();
             }
             else
             {
-                $url = Helper::joinMeeting($joinMeetingParams);
+                $url = bbbHelpers::joinMeeting($joinMeetingParams);
                 return redirect()->to($url);
             }
 
@@ -188,7 +189,7 @@ class MeetingController extends Controller
             }
             else{
 
-                $recordingList = Helper::recordingLists($url);
+                $recordingList = bbbHelpers::recordingLists($url);
                 return view('public.meetings.join',compact('pageName','room','recordingList'));
             }
         }
@@ -266,7 +267,8 @@ class MeetingController extends Controller
             'username' => $user->username,
 
         ];
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $getMeetingInfoParams = new GetMeetingInfoParameters($meeting->url,$user->password);
         $response = $bbb->getMeetingInfo($getMeetingInfoParams);
 
@@ -301,7 +303,8 @@ class MeetingController extends Controller
 
 
         $meeting  = Meeting::where('url',$url)->firstOrFail();
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
 
         $user = User::findOrFail(Auth::id());
         $getMeetingInfoParams = new GetMeetingInfoParameters($url,$user->password);

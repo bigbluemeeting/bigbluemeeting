@@ -64,8 +64,8 @@ class Handler extends ExceptionHandler
         }
 
 
-        $url = url()->current();
-        return response()->view('errors.connectionLost',compact('url'));
+//        $url = url()->current();
+//        return response()->view('errors.connectionLost',compact('url'));
 //        return redirect()->back()->with(['danger'=>'Your Internet not connected or slow please try later']);
 
 

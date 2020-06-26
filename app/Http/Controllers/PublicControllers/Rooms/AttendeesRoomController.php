@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\PublicControllers\Rooms;
 
+use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Meeting;
@@ -34,7 +35,8 @@ class AttendeesRoomController extends Controller
 
 
         $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),decrypt($room->attendee_password));
         $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
 
@@ -59,7 +61,7 @@ class AttendeesRoomController extends Controller
                     'password'  => decrypt($room->attendee_password)
                 ];
 
-                $url = Helper::joinMeeting($joinMeetingParams);
+                $url = bbbHelpers::joinMeeting($joinMeetingParams);
                 return response()->json(['url'=>$url]);
             }
             else{
@@ -79,7 +81,8 @@ class AttendeesRoomController extends Controller
 
         $room = Room::where('url',$request->meeting)->firstOrFail();
 
-        $bbb = new BigBlueButton();
+        $credentials = bbbHelpers::setCredentials();
+        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
 
         $getMeetingInfoParams = new GetMeetingInfoParameters($request->meeting,decrypt($room->attendee_password));
         $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
@@ -101,7 +104,7 @@ class AttendeesRoomController extends Controller
                     'username'  => Auth::user()->username,
                     'password'  => decrypt($room->attendee_password)
                 ];
-                $url = Helper::joinMeeting($joinMeetingParams);
+                $url = bbbHelpers::joinMeeting($joinMeetingParams);
                 return response()->json(['url'=>$url]);
             }
             else{

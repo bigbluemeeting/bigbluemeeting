@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title> @yield('pagename') | {{ env('APP_NAME') }} </title>
+    <title> @yield('pagename') | {{ AppSettings::get('app_name', 'default value') }} </title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,9 +47,18 @@
                         </a>
                         <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
                             <a class="dropdown-item" href="#">
-                                <i class="fa fa-user icon"></i> Profile </a>
-                            <a class="dropdown-item" href="#">
-                                <i class="fa fa-gear icon"></i> Settings </a>
+                                <i class="fa fa-user icon"></i> Profile
+                            </a>
+
+
+
+                            @if( Gate::check('users_manage') || Gate::check('master_manage'))
+
+                            <a class="dropdown-item" href="{{ \Illuminate\Support\Facades\URL::to('settings') }}"">
+                                <i class="fa fa-gear icon"></i>  Settings
+
+                            </a>
+                            @endif
                             <div class="dropdown-divider"></div>
                             <form id="frm-logout" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 {{ csrf_field() }}
@@ -58,7 +67,11 @@
                                 <i class="fa fa-power-off icon"></i> Logout </a>
                         </div>
                     </li>
+
                 </ul>
+
+
+
             </div>
         </header>
 
@@ -71,11 +84,11 @@
 
         <footer class="footer">
             <div class="footer-block buttons">
-                &copy; 2013-2020 {{ env('APP_NAME') }}
+                &copy; 2013-2020 {{AppSettings::get('app_name', 'default value') }}
             </div>
             <div class="footer-block author">
                 <ul>
-                    <li> Created by
+                    <li > Created by
                         <a href="https://etopian.com" target="_blank">Etopian Inc.</a>
                     </li>
                 </ul>

@@ -87,6 +87,9 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/meetings/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
 });
 
+
+//Route::get('/settings','Admin\Settings@index');
+
 Route::resource('rooms','PublicControllers\Rooms\RoomsController');
 Route::resource('/meetings','Admin\MeetingController');
 
