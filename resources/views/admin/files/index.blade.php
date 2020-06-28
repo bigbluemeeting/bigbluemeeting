@@ -166,10 +166,10 @@
                                         <div class="card">
                                             <div class="card-body" style="background: #fff8a0;">
                                                 <div class="col-md-7">
-                                                    <p class="text-danger m-0">We're sorry,you dont have any files.</p>
+                                                    <p class="text-danger m-0">We're sorry, you don't have any files.</p>
                                                 </div>
                                                 <div class="col-md-5">
-                                                    <p class="text-danger pt-1">To Create a new files,press the "Add Files" button</p>
+                                                    <p class="text-danger pt-1">To upload new files, press the "Add Files" button.</p>
                                                 </div>
                                             </div>
                                         </div>
