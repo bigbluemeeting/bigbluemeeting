@@ -4,10 +4,31 @@ return [
 
     // All the sections for the settings page
     'sections' => [
-        'app' => [
+        'generalSettings' => [
+          'title' => 'General Settings',
+            'descriptions' => 'Application General Settings.', // (optional)
+            'icon' => 'fa fa-cogs  ml-3', // (optional)
+            'id' =>'generalSettings',
+            'inputs' => [
+
+                [
+                    'name' => 'app_name', // unique key for setting
+                    'type' => 'text', // type of input can be text, number, textarea, select, boolean, checkbox etc.
+                    'label' => 'App Name', // label for input
+                    // optional properties
+                    'placeholder' => 'Enter Your App Name', // placeholder for input
+                    'class' => 'form-control', // override global input_class
+                    'style' => '', // any inline styles
+                    'rules' => 'required', // validation rules for this input
+                    'value' => '', // any default value
+                    'hint' => 'You can set your app name here' // help block text for input
+                ]
+            ]
+        ],
+        'bbbServerSettings' => [
             'title' => 'BBB Server  Settings',
             'descriptions' => 'Application BBB Server Settings.', // (optional)
-            'icon' => 'fa fa-cog ml-3', // (optional)
+            'icon' => 'fa fa-server ml-3', // (optional)
             'id' =>'bbbServerSettings',
 
             'inputs' => [
@@ -43,21 +64,47 @@ return [
             'title' => 'Email Settings',
             'descriptions' => 'How app email will be sent.',
             'icon' => 'fa fa-envelope ml-3',
-            'id' =>'generalSettings',
+            'id' =>'emailSettings',
             'inputs' => [
                 [
-                    'name' => 'from_email',
-                    'type' => 'email',
-                    'label' => 'From Email',
-                    'placeholder' => 'Application from email',
-                    'rules' => 'required|email',
+                    'name'=>'email_host',
+                    'type' =>'text',
+                    'label' => 'Email Host',
+                    'placeholder' => 'Your Email Host',
+                    'rules' => 'required',
+                    'hint' => 'Copy email host from your host site & paste here'
+
                 ],
                 [
-                    'name' => 'from_name',
-                    'type' => 'text',
-                    'label' => 'Email from Name',
-                    'placeholder' => 'Email from Name',
-                ]
+                    'name'=>'email_port',
+                    'type' =>'number',
+                    'label' => 'Email Port',
+                    'placeholder' => 'Your Email Host',
+                    'rules' => 'required|integer',
+                    'hint' => 'Copy email host from your host site & paste here'
+
+                ],
+                [
+                    'name'=>'email_username',
+                    'type' =>'text',
+                    'label' => 'Email Username',
+                    'placeholder' => 'Your Email Username',
+                    'rules' => 'required',
+                    'hint' => 'Copy email host from your host site & paste here'
+
+                ],
+                [
+                    'name'=>'email_password',
+                    'type' =>'text',
+                    'label' => 'Email Password',
+                    'placeholder' => 'Your Email Password',
+                    'rules' => 'required',
+                    'hint' => 'Copy email host from your host site & paste here'
+
+                ],
+
+
+
             ]
         ]
     ],

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "564ceb411a344055576dd0844c4f6d50",
+    "content-hash": "e60e11c5ce7666499945be11623d32e6",
     "packages": [
         {
             "name": "bkwld/croppa",
@@ -454,6 +454,64 @@
             "time": "2020-02-22T01:51:47+00:00"
         },
         {
+            "name": "fomvasss/laravel-str-tokens",
+            "version": "1.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fomvasss/laravel-str-tokens.git",
+                "reference": "9aecd6c49ac25f38c861124783c8f7b40fada51e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fomvasss/laravel-str-tokens/zipball/9aecd6c49ac25f38c861124783c8f7b40fada51e",
+                "reference": "9aecd6c49ac25f38c861124783c8f7b40fada51e",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.6.*|5.7.*|5.8.*|^6.0|^7.0",
+                "nesbot/carbon": "^1.25|^1.26.3|^2.0",
+                "php": ">=7.0.0"
+            },
+            "type": "composer-package",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Fomvasss\\LaravelStrTokens\\ServiceProvider"
+                    ],
+                    "aliases": {
+                        "StrToken": "Fomvasss\\LaravelStrTokens\\Facades\\StrToken"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fomvasss\\LaravelStrTokens\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fomin Vasyl",
+                    "email": "fomvasss@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A package to manage and generate string with tokens (shortcodes) (for Eloquent Models)",
+            "homepage": "https://github.com/fomvasss/laravel-str-tokens",
+            "keywords": [
+                "drupal",
+                "laravel",
+                "shortcodes",
+                "string",
+                "tag",
+                "token"
+            ],
+            "time": "2020-04-16T07:09:31+00:00"
+        },
+        {
             "name": "gargron/fileupload",
             "version": "v1.5.1",
             "source": {
@@ -485,6 +543,56 @@
             ],
             "description": "File uploading library capable of handling large/chunked/multiple file uploads",
             "time": "2019-02-14T10:12:34+00:00"
+        },
+        {
+            "name": "jackiedo/timezonelist",
+            "version": "5.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JackieDo/Timezone-List.git",
+                "reference": "2c56729b13ff5b21db8203a6234f661f80614f94"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JackieDo/Timezone-List/zipball/2c56729b13ff5b21db8203a6234f661f80614f94",
+                "reference": "2c56729b13ff5b21db8203a6234f661f80614f94",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=5.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Jackiedo\\Timezonelist\\TimezonelistServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jackiedo\\Timezonelist\\": "src/Jackiedo/Timezonelist"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jackie Do",
+                    "email": "anhvudo@gmail.com"
+                }
+            ],
+            "description": "A small package use to create a timezone list box in Laravel",
+            "keywords": [
+                "laravel",
+                "timezone",
+                "timezonelist",
+                "timezones"
+            ],
+            "time": "2020-04-12T17:09:47+00:00"
         },
         {
             "name": "laravel/framework",

@@ -106,6 +106,7 @@ class bbbHelpers
                 $roomsRecordingList [] = $recording;
             }
         }
+
         return $roomsRecordingList;
     }
 
@@ -115,8 +116,9 @@ class bbbHelpers
         if (!empty(settings()->get('bbb_url')) && !empty(settings()->get('bbb_secret')))
         {
 
-            $base_url = setting()->get('bbb_url');
-            $secret = setting()->get('bbb_secret');
+
+            $base_url = \config('global.bbb_url');
+            $secret = \config('global.bbb_secret');
             return [
                 'base_url' =>$base_url,
                 'secret' =>$secret,];

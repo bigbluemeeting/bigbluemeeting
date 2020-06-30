@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -435,8 +436,11 @@ class RoomsController extends Controller
             $attendee->rooms()->attach($room->id);
         }
         $when = now()->addSeconds(5);
-        foreach ($notAuthUser as $userEmail)
-        {
+
+
+
+
+            foreach ($notAuthUser as $userEmail) {
             $user = User::findOrFail(Auth::id());
             Notification::route('mail',$userEmail)
                 ->notify((new InviteParticipantMail(
@@ -446,11 +450,11 @@ class RoomsController extends Controller
                         'meetingName'=>  $room->name,
                         'meeting_id' => encrypt($room->id)
                    ]
+//
                 ))->delay($when));
-        }
+            }
 
-        return response()->json(['result'=>['success'=>200]]);
-
+            return response()->json(['result'=>['success'=>200]]);
 
     }
 
