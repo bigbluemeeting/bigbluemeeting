@@ -7,7 +7,7 @@ This project is currently under development and attempting to reach a release in
 
 ## Sponsorship
 
-Big Blue Meeting CE is completely funded by Big Blue Meeting (https://www.bigbluemeeting.com).
+Big Blue Meeting CE is completely funded by Big Blue Meeting (https://www.bigbluemeeting.com) and Etopian Inc. (https://www.etopian.com)
 
 First release will be called: 
 - Lockdown
