@@ -1,5 +1,8 @@
 ## Big Blue Meeting Community Edition
 
+![big blue meeting screenshot](https://raw.githubusercontent.com/bigbluemeeting/bigbluemeeting/dev/screenshot/Screenshot_2020-07-01%20Meetings%20List%20(1).png)
+
+
 Big Blue Meeting CE is an opensource, free PHP-based frontend for BigBlueButton similar to Greenlight written in Laravel 7.
 
 ## Usage
