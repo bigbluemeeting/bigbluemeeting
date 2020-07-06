@@ -48,7 +48,7 @@ class RecordingsController extends Controller
             ->get();
 
 
-//        dd(Cache::pull('posts.count'));
+//        dd($rooms);
         $meetings = Auth::user()
             ->meetings()
             ->get();
@@ -74,6 +74,7 @@ class RecordingsController extends Controller
         }
 
 
+
         $this->recordingList = Helper::paginate(
             $this->recordingList,
             10,
@@ -81,6 +82,7 @@ class RecordingsController extends Controller
             [
                 'path' =>'recordings'
             ]);
+
 
 
         $this->meetingsRecordings = Helper::paginate(
@@ -164,6 +166,7 @@ class RecordingsController extends Controller
         $credentials = bbbHelpers::setCredentials();
         $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
         $response = $bbb->getRecordings($recordingParams);
+
 
         if ($response->getMessageKey() == null) {
 

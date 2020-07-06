@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\PublicControllers\Rooms;
 
 use App\Attendee;
+use App\EmailTemplate;
 use App\Files;
 use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
@@ -390,6 +391,7 @@ class RoomsController extends Controller
 
 
         $attendees = $meeting->attendees()
+            ->latest()
             ->paginate(10);
 
 
@@ -406,8 +408,7 @@ class RoomsController extends Controller
             return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
         }
         $validEmails=[];
-        $authUsers = [];
-        $notAuthUser = [];
+        $sendEmails=[];
         $room = Room::where('url',$request->room)->firstOrFail();
         foreach ($request->emails as $email)
         {
@@ -421,38 +422,85 @@ class RoomsController extends Controller
         foreach ($validEmails as $email)
         {
             $user = User::where('email',$email)->first();
-            if (!empty($user))
+            $attendeeCount = Attendee::where('email',$email)->count();
+            if (!$attendeeCount > 0)
             {
-                $authUsers[] = $user;
 
-            }else{
+                $sendEmails[] = $email;
+                $attendee = Attendee::create(['email'=>!empty($user) ? $user->email : $email,'user_id'=>!empty($user) ? $user->id :'0']);
+                $attendee->rooms()->attach($room->id);
 
-                $notAuthUser[] = $email;
             }
+
         }
-        foreach ($authUsers as $user)
-        {
-            $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
-            $attendee->rooms()->attach($room->id);
-        }
+
+
+
+
+
+        $emailTem = EmailTemplate::whereUserId(\auth()->id())->first();
+
+
+        $url =url('/').'/rooms/'.$room->url;
+        $user = \auth()->user();
+        $header = nl2br(str_replace([
+            '[meeting:name]',
+            '[user:email]',
+            '[meeting:url]',
+            '[meeting:start]',
+            '[meeting:end]'],
+
+            [
+                $room->name,
+                '<a href="">'.$user->email. '</a>',
+                '<div style="text-align: center; margin-top: 20px; "><a href='.$url.'  style="color: #FFFFFF; font-size: 20px; background-color: #83C36D; border-radius: 4px; border: 8px solid #83C36D;"> Join Meeting Here</a></div>',
+                \Carbon\Carbon::parse($room->start_date)->format(' D M d  g:i A yy'),
+                \Carbon\Carbon::parse($room->end_date)->format(' D M d g:i A yy')
+            ],
+            $emailTem['invite_participants']));
+
+
+
+        $footer =  nl2br($emailTem['mail_footer']);
+
+
+        $mailSubject = str_replace(['[meeting:name]','[user:email]'],
+                                    [$room->name,$user->email],
+            $emailTem['mail_subject']);
+
+        $mailParams = [
+
+            'from'    =>  $emailTem['mail_from_name'],
+            'header'  =>  $header,
+            'subject' =>  $mailSubject,
+            'footer'  =>  $footer
+
+        ];
+
+
+
+
+
+
+
         $when = now()->addSeconds(5);
 
+        foreach ($sendEmails as $userEmail) {
 
 
-
-            foreach ($notAuthUser as $userEmail) {
             $user = User::findOrFail(Auth::id());
             Notification::route('mail',$userEmail)
                 ->notify((new InviteParticipantMail(
                    [
-                        'toEmail' => encrypt($userEmail),
-                        'from' => $user,
-                        'meetingName'=>  $room->name,
-                        'meeting_id' => encrypt($room->id)
+                        'toEmail'    => encrypt($userEmail),
+                        'mailParams' => $mailParams,
+                        'meeting_id' => encrypt($room->id),
+                       'meeting' => $room,
                    ]
 //
                 ))->delay($when));
             }
+
 
             return response()->json(['result'=>['success'=>200]]);
 
@@ -463,6 +511,20 @@ class RoomsController extends Controller
 
         $room->delete();
         return redirect()->back()->with(['success'=>'Room Deleted Successfully !!']);
+    }
+
+    /**
+     * Delete attendees From Meetings
+     */
+
+    public function deleteAttendee($id)
+    {
+        $attendee = Attendee::findOrFail($id);
+
+        $attendee->delete();
+
+        return redirect()->back()->with(['success'=>'Participant deleted from this meeting']);
+
     }
 
 

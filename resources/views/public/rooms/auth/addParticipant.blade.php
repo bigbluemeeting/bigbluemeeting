@@ -22,6 +22,18 @@
 
         <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Room Information</h5>
     </div>
+
+    <div class="col-lg-12">
+
+        @foreach (['danger', 'warning', 'success', 'info'] as $msg)
+            @if(Session::has($msg))
+                <div class="alert alert-{{ $msg }}">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    {{ session($msg) }}
+                </div>
+            @endif
+        @endforeach
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="card bg-white">
@@ -84,23 +96,30 @@
                                     <div class="card-body">
                                         <div class="table-responsive">
                                         <table class="table table-bordered">
-                                            <thead>
+                                            <thead >
                                             <tr>
                                                 <th>Email</th>
                                                 <th>Created At</th>
+                                                <th width="200px" class="text-center">Action</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody >
                                             @foreach($attendees as $attendee)
                                                 <tr>
                                                     <td>{{$attendee->email}}</td>
                                                     <td>{{$attendee->created_at->diffForHumans()}}</td>
+                                                    <td  class="text-center"><a href="{{route('deleteAttendee',$attendee->id)}}" class="btn btn-danger-outline"><i class="fa fa-remove"></i> Remove</a></td>
                                                 </tr>
                                             @endforeach
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
+
+                                        <div class="col-sm-6 col-sm-offset-5">
+                                            {{$attendees->links()}}
+                                        </div>
+
                             </div>
                             @else
                                 <div class="card bg-light">

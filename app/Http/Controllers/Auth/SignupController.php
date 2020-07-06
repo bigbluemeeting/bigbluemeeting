@@ -31,8 +31,10 @@ class SignupController extends Controller
     {
 
 
+
         if (!empty($userEmail))
         {
+
             try{
 
                 $userEmail = decrypt($userEmail);
@@ -41,15 +43,28 @@ class SignupController extends Controller
             {
                 $userEmail = 'N/A Or Modified';
 
+
             }
+
         }
+        $user = User::where('email',$userEmail)->first();
+
+
+        if ($user) {
+            return redirect()->route('login');
+
+        }
+
         return view('auth.singup',compact('meeting'),compact('meeting','userEmail'));
+
     }
 
 
     public function store(Request $request)
     {
 //
+
+
         $massage = [
             'name.required' => 'Name Field Required',
             'name.max' =>'Name Field Contains Maximum 50 Characters',
@@ -74,6 +89,7 @@ class SignupController extends Controller
 
 
 
+
       if ($request->has('meeting_id'))
       {
           try{
@@ -84,6 +100,12 @@ class SignupController extends Controller
           }
 
       }
+
+
+
+
+
+
 
         $user = new User;
         $user->name = $request->input('name');
@@ -99,11 +121,8 @@ class SignupController extends Controller
         if ($request->has('meeting_id'))
         {
 
-
-
-            $attendee = Attendee::create(['email'=>$user->email,'user_id'=>$user->id]);
-
-            $attendee->rooms()->attach($meeting_id);
+            $attendee  = Attendee::where('email',$request->input('email'))->first();
+            $attendee = $attendee->update(['user_id'=>$user->id]);
 
         }
 

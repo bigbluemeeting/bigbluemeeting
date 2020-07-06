@@ -77,7 +77,7 @@ Route::group(['middleware'=>'auth'],function(){
 
     Route::get('rooms/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
     Route::get('rooms/details/{url}','PublicControllers\Rooms\RoomsController@showDetails')->name('showDetails');
-
+    Route::get('rooms/attendee/{url}','PublicControllers\Rooms\RoomsController@deleteAttendee')->name('deleteAttendee');
     Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
     Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
     Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
@@ -115,8 +115,9 @@ Route::middleware('ajax.check')->group(function ()
 
 });
 
-Route::get('/tem','Admin\EmailTemplate@index');
-Route::post('/tem','Admin\EmailTemplate@store')->name('emailStore');
+Route::resource('/tem','Admin\EmailTemplateController');
+Route::get('/exa','Admin\EmailTemplateController@showTem');
+//Route::post('/tem','Admin\EmailTemplate@store')->name('emailStore');
 //Route::get('/tem',function (){
 //
 //    $str = StrToken::setText('
@@ -125,6 +126,7 @@ Route::post('/tem','Admin\EmailTemplate@store')->name('emailStore');
 //            Generated token at: [config:global.app_name], [date:raw]
 //            Length: [var:length];
 //            Width: [var:width];
+
 //            Price: [var:price]
 //        ')
 //        ->setDate(\Carbon\Carbon::tomorrow())

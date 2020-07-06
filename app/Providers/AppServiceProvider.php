@@ -23,12 +23,14 @@ class AppServiceProvider extends ServiceProvider
 
     ]);
 
+
+
         Config::set('mail.host',\config('global.email_host'));
         Config::set('mail.port',\config('global.email_port'));
         Config::set('mail.username',\config('global.email_username'));
         Config::set('mail.password',\config('global.email_password'));
 
-
+//
     }
 
     /**
