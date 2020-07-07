@@ -67,6 +67,15 @@ return [
             'id' =>'emailSettings',
             'inputs' => [
                 [
+                    'name'=>'config_type',
+                    'type' =>'text',
+                    'label' => 'Email Config Type',
+                    'placeholder' => 'Enter Your Email Config Type',
+                    'rules' => 'required',
+                    'hint' => 'Copy email config type from your host site & paste here'
+
+                ],
+                [
                     'name'=>'email_host',
                     'type' =>'text',
                     'label' => 'Email Host',
@@ -81,7 +90,7 @@ return [
                     'label' => 'Email Port',
                     'placeholder' => 'Your Email Host',
                     'rules' => 'required|integer',
-                    'hint' => 'Copy email host from your host site & paste here'
+                    'hint' => 'Copy email port from your host site & paste here'
 
                 ],
                 [
@@ -90,18 +99,37 @@ return [
                     'label' => 'Email Username',
                     'placeholder' => 'Your Email Username',
                     'rules' => 'required',
-                    'hint' => 'Copy email host from your host site & paste here'
+
 
                 ],
+
                 [
                     'name'=>'email_password',
                     'type' =>'text',
                     'label' => 'Email Password',
                     'placeholder' => 'Your Email Password',
                     'rules' => 'required',
-                    'hint' => 'Copy email host from your host site & paste here'
 
                 ],
+                [
+                    'name'=>'from_email',
+                    'type' =>'text',
+                    'label' => 'From Email',
+                    'placeholder' => 'Enter Your From Email',
+                    'rules' => 'required|email',
+
+
+                ],
+                [
+                    'name'=>'from_name',
+                    'type' =>'text',
+                    'label' => 'From Name',
+                    'placeholder' => 'Enter Your From Name',
+                    'rules' => 'required',
+
+
+                ],
+
 
 
 

@@ -34,7 +34,7 @@
 
 
                     <div class="col-md-12">
-                        <form action="{{route('tem.store')}}" method="Post">
+                        <form action="{{route('mail.store')}}" method="Post">
                             @csrf
                             <div class="row ml-2">
 
@@ -186,6 +186,7 @@
                         </form>
                     </div>
 
+                    <a href="{{route('subscribe',1)}}">{{route('subscribe',2)}}</a>
 
                 </div>
 

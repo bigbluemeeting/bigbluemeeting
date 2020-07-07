@@ -84,7 +84,7 @@
 
         <footer class="footer">
             <div class="footer-block buttons">
-                &copy; 2013-2020 {{AppSettings::get('app_name', 'default value') }}
+                &copy; 2013-2020 {{config('global.app_name') }}
             </div>
             <div class="footer-block author">
                 <ul>

@@ -2,32 +2,25 @@
 
 namespace App\Notifications;
 
-use App\Helpers\GenerateICS;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class InviteParticipantMail extends Notification implements ShouldQueue
+class AddParticipantMail extends Notification implements ShouldQueue
 {
     use Queueable;
 
-   protected $url;
-   protected $emailParams =[];
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-//    $emailParams
+    protected $emailParams =[];
     public function __construct($emailParams)
     {
-
-
+        //
         $this->emailParams = $emailParams;
-        $this->url =url('signup/' .$emailParams['meeting_id']. '/' . $emailParams['toEmail']);
-
-
     }
 
     /**
@@ -49,8 +42,6 @@ class InviteParticipantMail extends Notification implements ShouldQueue
      */
     public function toMail($notifiable)
     {
-
-
 
         $filename = "meeting.ics";
         $meetingStartStamp = strtotime( $this->emailParams['meeting']['start_date']. " UTC");
@@ -91,15 +82,11 @@ class InviteParticipantMail extends Notification implements ShouldQueue
         header("text/calendar");
         file_put_contents($filename, $mail);
 
-
-
         return (new MailMessage)
-
-            ->subject($this->emailParams['mailParams']['subject'])
+            ->subject('Meeting Confirmation For '.$this->emailParams['meeting']['name'])
             ->from(config('global.from_email'),config('global.from_name'))
             ->attach($filename, array('mime' => "text/calendar"))
-            ->view('admin.email.invite_participants_mail',with(['meetingParams'=>$this->emailParams,'url'=>$this->url]));
-
+            ->view('admin.email.add_participants_mail',with(['meetingParams'=>$this->emailParams]));
     }
 
     /**

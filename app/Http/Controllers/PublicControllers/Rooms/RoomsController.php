@@ -10,6 +10,7 @@ use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\AttendeeMail;
 use App\Meeting;
+use App\Notifications\AddParticipantMail;
 use App\Notifications\InviteParticipantMail;
 use App\Room;
 use App\User;
@@ -484,11 +485,39 @@ class RoomsController extends Controller
 
 
         $when = now()->addSeconds(5);
+//        $user = User::findOrFail(Auth::id());
+
+
+
+
+        $modMailParams = [
+
+            'modMailHeader' =>nl2br(str_replace('[site:url]','<a href="'.\url('/').'">'.url('/').'</a>',$emailTem['mod_mail'])),
+            'modMailFooter' =>nl2br(str_replace(['[subscribe:link]','[unsubscribe:link]'],
+                [
+//                    '.route('subscribe',\auth()->user()->email).'
+//                '.route('unsubscribe',\auth()->user()->email).'
+                    '<a href="">'.route('subscribe',\auth()->user()->email). '</a>',
+                    '<a href="">'.route('unsubscribe',\auth()->user()->email). '</a>'
+                ],
+                $emailTem['mod_mail_footer']))
+        ];
+
+
 
         foreach ($sendEmails as $userEmail) {
 
 
-            $user = User::findOrFail(Auth::id());
+            Notification::route('mail',\auth()->user()->email)
+                ->notify((new AddParticipantMail(
+                    [
+                        'mailParams' => $modMailParams,
+                        'meeting' => $room
+                    ]
+                ))
+                    ->delay($when));
+
+
             Notification::route('mail',$userEmail)
                 ->notify((new InviteParticipantMail(
                    [
@@ -500,6 +529,7 @@ class RoomsController extends Controller
 //
                 ))->delay($when));
             }
+
 
 
             return response()->json(['result'=>['success'=>200]]);

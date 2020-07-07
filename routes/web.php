@@ -86,7 +86,12 @@ Route::group(['middleware'=>'auth'],function(){
     Route::post('/files/addFilesToRoom','Admin\FilesController@addFileToRoom')->name('addFileToRoom');
     Route::post('/files/addFilesToMeeting','Admin\FilesController@addFileToMeeting')->name('addFileToMeeting');
     Route::get('/meetings/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
+    Route::resource('/mail','Admin\EmailTemplateController');
 });
+
+Route::get('/mail/unsubscribe/{mail}','Admin\EmailTemplateController@unSubscribe')->name('unsubscribe');
+Route::get('/mail/subscribe/{mail}','Admin\EmailTemplateController@subscribe')->name('subscribe');
+
 
 
 //Route::get('/settings','Admin\Settings@index');
@@ -115,8 +120,8 @@ Route::middleware('ajax.check')->group(function ()
 
 });
 
-Route::resource('/tem','Admin\EmailTemplateController');
-Route::get('/exa','Admin\EmailTemplateController@showTem');
+
+
 //Route::post('/tem','Admin\EmailTemplate@store')->name('emailStore');
 //Route::get('/tem',function (){
 //
