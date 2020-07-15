@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\EmailTemplate;
 use App\Http\Controllers\Controller;
 use App\Room;
+use App\User;
 use DateTimeZone;
 use Fomvasss\LaravelStrTokens\Facades\StrToken;
 use Illuminate\Http\Request;
@@ -55,13 +56,24 @@ class EmailTemplateController extends Controller
 
    public function subscribe($mail)
    {
+       $user = User::where('email',$mail)->first();
 
-       dd($mail);
+       $user->send_email = 1;
+       $user->save();
+
+       return redirect('admin/dashboard');
+
    }
 
     public function unSubscribe($mail)
     {
 
-        dd($mail);
+       $user = User::where('email',$mail)->first();
+
+       $user->send_email = 0;
+       $user->save();
+
+        return redirect('admin/dashboard');
+
     }
 }

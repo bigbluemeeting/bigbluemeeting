@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale(config('app.locale'));
         Schema::defaultStringLength(191);
+
         config([
             'global' => settings()->all()
 
@@ -31,9 +32,8 @@ class AppServiceProvider extends ServiceProvider
         Config::set('mail.port',\config('global.email_port'));
         Config::set('mail.username',\config('global.email_username'));
         Config::set('mail.password',\config('global.email_password'));
-//        dd(\config());
 
-//
+
     }
 
     /**

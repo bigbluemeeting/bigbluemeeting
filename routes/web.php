@@ -87,18 +87,13 @@ Route::group(['middleware'=>'auth'],function(){
     Route::post('/files/addFilesToMeeting','Admin\FilesController@addFileToMeeting')->name('addFileToMeeting');
     Route::get('/meetings/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
     Route::resource('/mail','Admin\EmailTemplateController');
+    Route::resource('/plans','Admin\PlansController');
 });
 
 Route::get('/mail/unsubscribe/{mail}','Admin\EmailTemplateController@unSubscribe')->name('unsubscribe');
 Route::get('/mail/subscribe/{mail}','Admin\EmailTemplateController@subscribe')->name('subscribe');
-
-
-
-//Route::get('/settings','Admin\Settings@index');
-
 Route::resource('rooms','PublicControllers\Rooms\RoomsController');
 Route::resource('/meetings','Admin\MeetingController');
-
 Route::get('/rooms/{url}',  'PublicControllers\Rooms\RoomsController@show');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');

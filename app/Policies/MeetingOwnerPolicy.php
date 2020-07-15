@@ -31,6 +31,7 @@ class MeetingOwnerPolicy
     public function view(User $user, Meeting $meeting)
     {
         //
+
         return $user->id === $meeting->user_id;
 
     }

@@ -404,6 +404,10 @@ class RoomsController extends Controller
 
     public function roomAttendees(Request $request)
     {
+
+
+
+
         if(empty($request->emails))
         {
             return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
@@ -440,6 +444,14 @@ class RoomsController extends Controller
 
 
         $emailTem = EmailTemplate::whereUserId(\auth()->id())->first();
+
+        if (!$emailTem)
+        {
+            $emailTem = EmailTemplate::first();
+
+        }
+
+
 
 
         $url =url('/').'/rooms/'.$room->url;
@@ -490,6 +502,8 @@ class RoomsController extends Controller
 
 
 
+
+
         $modMailParams = [
 
             'modMailHeader' =>nl2br(str_replace('[site:url]','<a href="'.\url('/').'">'.url('/').'</a>',$emailTem['mod_mail'])),
@@ -497,8 +511,8 @@ class RoomsController extends Controller
                 [
 //                    '.route('subscribe',\auth()->user()->email).'
 //                '.route('unsubscribe',\auth()->user()->email).'
-                    '<a href="">'.route('subscribe',\auth()->user()->email). '</a>',
-                    '<a href="">'.route('unsubscribe',\auth()->user()->email). '</a>'
+                    '<a href="'.route('subscribe',\auth()->user()->email).'">'.route('subscribe',\auth()->user()->email). '</a>',
+                    '<a href="'.route('unsubscribe',\auth()->user()->email).'">'.route('unsubscribe',\auth()->user()->email). '</a>'
                 ],
                 $emailTem['mod_mail_footer']))
         ];
@@ -508,14 +522,18 @@ class RoomsController extends Controller
         foreach ($sendEmails as $userEmail) {
 
 
-            Notification::route('mail',\auth()->user()->email)
-                ->notify((new AddParticipantMail(
-                    [
-                        'mailParams' => $modMailParams,
-                        'meeting' => $room
-                    ]
-                ))
-                    ->delay($when));
+
+            if (\auth()->user()->send_email)
+            {
+                Notification::route('mail',\auth()->user()->email)
+                    ->notify((new AddParticipantMail(
+                        [
+                            'mailParams' => $modMailParams,
+                            'meeting' => $room
+                        ]
+                    ))
+                        ->delay($when));
+            }
 
 
             Notification::route('mail',$userEmail)

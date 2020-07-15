@@ -31,11 +31,11 @@ Thanks.',
 
 If they reply to any of the invites via e-mail their replies will be sent to you.
 
-Fifteen (15) minutes before the meeting login to Big Blue Manager at  to start and join the meeting {site_url}.',
+Fifteen (15) minutes before the meeting login to Big Blue Manager at  to start and join the meeting [site:url].',
 
-            'mod_mail_footer'=>'If you do not wish to receive ANY messages from us including any future invites please click this link: {unsubscribe_link}
+            'mod_mail_footer'=>'If you do not wish to receive ANY messages from us including any future invites please click this link: [unsubscribe:link]
 
-If you have asked us to stopped sending you mail but now have changed your mind click here: {subscribe_link}'
+If you have asked us to stopped sending you mail but now have changed your mind click here: [subscribe:link]',
         ]);
     }
 }
