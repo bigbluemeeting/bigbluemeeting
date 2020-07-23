@@ -61,102 +61,11 @@
 
                             </tbody>
                         </table>
-                        <hr >
-                        <div class="container-fluid">
-                            <h5><i class="fa fa-user"></i>&nbsp;&nbsp;Meeting Participants</h5>
-                        </div>
+
 
                     </div>
 
-                    <div class="row">
-                        <div class="container mt-3">
 
-                            <h5><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Files</h5>
-                        </div>
-
-                        <div class="table-responsive">
-                            <div class="col-md-12">
-                                <table class="table table-hover table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th class="bg-light  form-header" colspan="5">
-                                            <form id="fileupload" action="{{ route('files.store') }}" method="post" enctype="multipart/form-data">
-                                                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-                                                <div class="row fileupload-buttonbar">
-                                                    <div class="col-lg-7">
-                                                        <input type="hidden" name="meeting" value="{{$meeting->id}}">
-                                                        <!-- The fileinput-button span is used to style the file input field as button -->
-                                                        <span class="btn btn-success fileinput-button text-white ">
-                                                            <i class="fa fa-plus"></i>
-                                                            <span>Add files...</span>
-                                                            <input type="file" name="files[]" multiple>
-                                                        </span>
-                                                        <button type="submit" class="btn btn-primary start">
-                                                            <i class="fa fa-upload"></i>
-                                                            <span>Start upload</span>
-                                                        </button>
-                                                        <button type="reset" class="btn btn-warning cancel text-white">
-                                                            <i class="fa fa-ban"></i>
-                                                            <span>Cancel upload</span>
-                                                        </button>
-                                                        <span class="fileupload-process"></span>
-                                                    </div>
-                                                    <!-- The global progress state -->
-                                                    <div class="col-lg-5 fileupload-progress fade">
-                                                        <!-- The global progress bar -->
-                                                        <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                                                            <div class="progress-bar progress-bar-success" style="width:0%;"></div>
-                                                        </div>
-                                                        <!-- The extended global progress state -->
-                                                        <div class="progress-extended">&nbsp;</div>
-                                                    </div>
-                                                </div>
-                                                <!-- The table listing the files available for upload/download -->
-                                                <table role="presentation" class="table inner-table mt-2">
-                                                    <tbody class="files">
-
-                                                    </tbody>
-                                                </table>
-                                            </form>
-
-                                        </th>
-                                    </tr>
-                                    @if(count($files)>0)
-                                        <tr>
-                                            <th>File</th>
-                                            <th>Date</th>
-                                            <th>Mime</th>
-                                            <th>Size</th>
-                                            <td>Action</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($files as $file)
-                                        <tr class="row-data-{{$file->id}}">
-                                            <td><a href="{{\App\Files::Folder.$file->name}}">{{$file->name}}</a></td>
-                                            <td>{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
-                                            <td>{{$file->type}}</td>
-                                            <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
-                                            <td>
-                                             <span href="" data-toggle="modal"  data-item = {{$file->id}}
-                                                     data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
-
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-
-                                    @endif
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="col-sm-6 col-sm-offset-5 ml-3 paginate">
-                            {{$files->links()}}
-
-                        </div>
-
-                    </div>
                 </div>
             </div>
         </div>

@@ -22,14 +22,20 @@ class RolesController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+
+            $roles = Role::all();
+            $pageName = 'Roles';
+
+            return view('admin.roles.index', compact('roles', 'pageName'));
+        }catch (\Exception $exception)
+        {
+            return view('errors.500')->with(['danger'=>$exception->getMessage()]);
         }
 
-        $roles = Role::all();
-        $pageName = 'Roles';
-
-        return view('admin.roles.index', compact('roles', 'pageName'));
     }
 
     /**
@@ -39,13 +45,19 @@ class RolesController extends Controller
      */
     public function create()
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        $permissions = Permission::get()->pluck('name', 'name');
-        $pageName = 'Add Roles';
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $permissions = Permission::get()->pluck('name', 'name');
+            $pageName = 'Add Roles';
 
-        return view('admin.roles.create', compact('permissions', 'pageName'));
+            return view('admin.roles.create', compact('permissions', 'pageName'));
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
     }
 
     /**
@@ -56,18 +68,25 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        $request->validate([
-            'name' => 'required|max:50',
-            'permission' => 'required|exists:permissions,name',
-        ]);
-        $role = Role::create($request->except('permission'));
-        $permissions = $request->input('permission') ? $request->input('permission') : [];
-        $role->givePermissionTo($permissions);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $request->validate([
+                'name' => 'required|max:50',
+                'permission' => 'required|exists:permissions,name',
+            ]);
+            $role = Role::create($request->except('permission'));
+            $permissions = $request->input('permission') ? $request->input('permission') : [];
+            $role->givePermissionTo($permissions);
 
-        return redirect()->route('admin::roles.index')->with(['success' => 'Role created successfully']);
+            return redirect()->route('admin::roles.index')->with(['success' => 'Role created successfully']);
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
     }
 
 
@@ -79,15 +98,22 @@ class RolesController extends Controller
      */
     public function edit($id)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $permissions = Permission::get()->pluck('name', 'name');
+            $pageName = 'Edit Roles';
+
+            $role = Role::findOrFail($id);
+
+            return view('admin.roles.edit', compact('role', 'permissions', 'pageName'));
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
-        $permissions = Permission::get()->pluck('name', 'name');
-        $pageName = 'Edit Roles';
 
-        $role = Role::findOrFail($id);
-
-        return view('admin.roles.edit', compact('role', 'permissions', 'pageName'));
     }
 
     /**
@@ -98,19 +124,26 @@ class RolesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        $request->validate([
-            'name' => 'required|max:50',
-            'permission' => 'required|exists:permissions,name',
-        ]);
-        $role = Role::findOrFail($id);
-        $role->update($request->except('permission'));
-        $permissions = $request->input('permission') ? $request->input('permission') : [];
-        $role->syncPermissions($permissions);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $request->validate([
+                'name' => 'required|max:50',
+                'permission' => 'required|exists:permissions,name',
+            ]);
+            $role = Role::findOrFail($id);
+            $role->update($request->except('permission'));
+            $permissions = $request->input('permission') ? $request->input('permission') : [];
+            $role->syncPermissions($permissions);
 
-        return redirect()->route('admin::roles.index')->with(['success' => 'Role updated successfully']);
+            return redirect()->route('admin::roles.index')->with(['success' => 'Role updated successfully']);
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
     }
 
 
@@ -122,6 +155,7 @@ class RolesController extends Controller
      */
     public function destroy($id)
     {
+
         if (! Gate::allows('users_manage')) {
             return abort(401);
         }

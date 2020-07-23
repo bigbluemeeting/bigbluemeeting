@@ -56,7 +56,7 @@ $('.btn-manage').on('click',function () {
             if ($(this).val()== data.result.meeting_record)
                 $(this).attr("selected","selected");
         });
-
+        url = url.replace(id,':id');
 
         $('#editModal').modal('show');
 
@@ -88,23 +88,7 @@ function dateTimePickers() {
 
     });
 
-    $('.clockpicker1').clockpicker({
-        autoclose: true,
-        twelvehour: true,
-        placement: 'bottom',
-        align: 'left',
-        vibrate:true,
 
-    });
-
-    $('.clockpicker2').clockpicker({
-        autoclose: true,
-        twelvehour: true,
-        placement: 'top',
-        align: 'left',
-        vibrate:true,
-
-    });
 }
 $('.btnDeleteConfirm').on('click',function () {
 
@@ -114,8 +98,8 @@ $('.btnDeleteConfirm').on('click',function () {
 });
 function deleteData(id)
 {
-    url = action.replace(':id', id);
-    $("#deleteForm").prop('action', url);
+    action = action.replace(':id', id);
+    $("#deleteForm").prop('action', action);
 }
 $('.btnDelete').on('click',function () {
     $("#deleteForm").submit();

@@ -5,9 +5,8 @@
 @section('css')
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="{{asset('css/bootstrap-clockpicker.css')}}">
-    <link rel="stylesheet" href="{{asset('css/rooms.css')}}">
+    <link rel="stylesheet" href="{{asset('css/rooms.css?version=')}}{{time()}}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css" />
 
 
 @stop
@@ -16,6 +15,7 @@
     <div class="title-block">
         <h3 class="title"> {{ $pageName }} </h3>
     </div>
+
 
     <div class="col-lg-12">
 
@@ -29,7 +29,7 @@
         @endforeach
     </div>
     <div class="container-fluid">
-        <h5>In-Progress and Upcoming Rooms</h5>
+        <h5>In-Progress and Upcoming Meetings</h5>
         <div class="row" id="error">
             <div class="col-md-12">
                 @include('includes.form-errors')
@@ -44,9 +44,13 @@
                     <div class="input-group">
                         <div class="input-group-prepend" >
                             <div class="col-md-12">
-                                         <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom">
-                                             <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Rooms </i>
-                                         </span>
+                                <div class="title-block"  data-toggle="modal" id="createRoom">
+                                    <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i>Meeting</button></a>
+                                </div>
+
+{{--                                <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom">--}}
+{{--                                             <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Rooms </i>--}}
+{{--                                </span>--}}
                             </div>
 
                         </div>
@@ -62,7 +66,7 @@
                                 <table class="table table-bordered table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Room Name</th>
+                                        <th>Meeting Name</th>
                                         <th>Start</th>
                                         <th>End</th>
                                         <th>Recorded</th>
@@ -74,7 +78,7 @@
                                     @foreach($upComingMeetings as $list)
                                         <tr>
 {{--                                            <td class="text-center"><input type="checkbox" name="rooms[]" value="{{$list->id}}"></td>--}}
-                                            <td><a href="{{route('rooms.show',$list->url)}}">{{$list->name}}</a></td>
+                                            <td><a href="{{route('meetings.show',$list->url)}}">{{$list->name}}</a></td>
                                             <td>{{\Carbon\Carbon::parse($list->start_date)->format('M d,yy g:i A')}}</td>
                                             <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>
                                             <td>{{$list->meeting_record ? 'Yes':'No'}}</td>
@@ -106,10 +110,10 @@
                                 <div class="card">
                                     <div class="card-body" id="warning-dev">
                                         <div class="col-md-7">
-                                            <p class="text-danger m-0">We're sorry,you don't have any in-progress rooms or upcoming rooms.</p>
+                                            <p class="text-danger m-0">We're sorry,you don't have any in-progress meetings or upcoming meetings.</p>
                                         </div>
                                         <div class="col-md-5">
-                                            <p class="text-danger pt-1">To Create a new room,press the "Room" button</p>
+                                            <p class="text-danger pt-1">To Create a new meeting,press the "Meeting" button</p>
                                         </div>
                                     </div>
                                 </div>
@@ -137,7 +141,7 @@
 
     {{--Table For Meetings List--}}
     <div class="container-fluid mt-3">
-        <h5>Past Rooms</h5>
+        <h5>Past Meetings</h5>
     </div>
 
     <div class="row">
@@ -158,7 +162,7 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                 <tr>
-                                    <th>Room Name</th>
+                                    <th>Meeting Name</th>
                                     <th>Start</th>
                                     <th>End</th>
                                     <th>Recorded</th>
@@ -195,7 +199,7 @@
                                 <div class="card">
                                     <div class="card-body" id="warning-dev">
                                         <div class="col-md-7">
-                                            <p class="text-danger m-0">We're sorry,you don't have any past rooms.</p>
+                                            <p class="text-danger m-0">We're sorry,you don't have any past meetings.</p>
                                         </div>
 
                                     </div>
@@ -215,25 +219,43 @@
 
         </div>
     </div>
-
-
-
-
-
-@endsection
-@section('script')
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
     <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
-    <script src="{{asset('js/jquery-clockpicker.js')}}"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
+
+    <script type="text/javascript">
+
+            $('#datetimepicker1').datetimepicker({
+                format: 'LT',
+
+
+            });
+            $('#datetimepicker2').datetimepicker({
+                format: 'LT',
+
+            });
+            $('#datetimepicker3').datetimepicker({
+                format: 'LT',
+
+            });
+            $('#datetimepicker4').datetimepicker({
+                format: 'LT',
+
+            });
+
+    </script>
+
+@endsection
+
+@section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
 
     <script>
-        url = '{{URL::to('rooms/:id/edit')}}';
-        action =  "{{\Illuminate\Support\Facades\URL::to('rooms')}}/:id";
+        url = '{{URL::to('meetings/:id/edit')}}';
+        action =  "{{\Illuminate\Support\Facades\URL::to('meetings')}}/:id";
     </script>
-    <script src="{{asset('js/rooms.js')}}"></script>
+    <script src="{{asset('js/rooms.js?version=')}}{{time()}} "></script>
 
 @stop
 

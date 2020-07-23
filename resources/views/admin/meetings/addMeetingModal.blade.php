@@ -7,16 +7,16 @@
             <div class="modal-body">
                 <div class="card-body p-sm-6">
                     <div class="card-title">
-                        <h3 class="text-center">Create New Meeting</h3>
+                        <h3 class="text-center">Create New Room</h3>
                         <h3 class="update-only" style="display:none !important">Room Settings</h3>
                     </div>
-                    {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal addForm']) !!}
+                    {!! Form::open(['method' => 'POST', 'route' => ['rooms.store'], 'class'=>'form-horizontal addForm']) !!}
 
                     <div class="input-icon mb-2">
                             <span class="input-icons">
                                 <i class="fa fa-desktop icon ml-2"></i>
                             </span>
-                        <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Meeting name..." autocomplete="off" type="text" name=" name">
+                        <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Room name..." autocomplete="off" type="text" name=" name">
 
                     </div>
 
@@ -41,17 +41,7 @@
                         </div>
                     </div>
 
-{{--                    <div class="row mt-2">--}}
-{{--                        <div class="col-sm-8">--}}
-{{--                            <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">--}}
-{{--                                <span class="custom-switch-description">Require moderator approval before joining</span>--}}
-{{--                            </label>--}}
 
-{{--                        </div>--}}
-{{--                        <div class="col-sm-3 ml-4 mt-4">--}}
-{{--                            <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" id="room_require_moderator_approval">--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
                     <div class="row  mt-2">
                         <div class="col-sm-8">
                             <label for="room_anyone_can_start" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
@@ -85,7 +75,7 @@
                         </div>
                     </div>
                     <div class="mt-4">
-                        <input type="submit" value="Create Meeting" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
+                        <input type="submit" value="Create Room" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
                         <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
                     </div>
                     {!! Form::close() !!}

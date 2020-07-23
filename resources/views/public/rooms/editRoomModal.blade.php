@@ -1,11 +1,11 @@
 <div id="editModal" class="modal fade" role="dialog">
-    <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-dialog  modal-dialog-centered modal-lg">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-body">
                 <div class="card-body p-sm-6">
                     <div class="card-title">
-                        <h3 class="text-center">Edit Your Room</h3>
+                        <h3 class="text-center">Edit Your Meeting</h3>
                     </div>
 
                     {!! Form::open(['method' => 'PATCH', 'class'=>'form-horizontal manageForm']) !!}
@@ -38,14 +38,25 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="mt-2 col-md-1">at</p>
-                        <div class="col-sm-5 clockpicker1">
-                            <div class="input-group">
-                                <input type="text" name="startTime" class="form-control startTime" id="">
-                                <div class="input-group-append">
-                                            <span type="button" id="toggle3" class="input-group-text">
-                                                <i class="fa fa-clock-o"></i>
-                                            </span>
+                        <p class="mt-2 ml-3">at</p>
+{{--                        <div class="col-sm-5 clockpicker1">--}}
+{{--                            <div class="input-group">--}}
+{{--                                <input type="text" name="startTime" class="form-control startTime" id="">--}}
+{{--                                <div class="input-group-append">--}}
+{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
+{{--                                                <i class="fa fa-clock-o"></i>--}}
+{{--                                            </span>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
+                                    <input type="text" name="startTime"  class="form-control datetimepicker-input startTime" data-target="#datetimepicker4" id="editEndTime"/>
+                                    <div class="input-group-append" data-target="#datetimepicker4" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -63,14 +74,26 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="mt-2  col-md-1">at</p>
-                        <div class="col-sm-5 clockpicker2">
-                            <div class="input-group">
-                                <input type="text" name="endTime" class="form-control endTime" id="" >
-                                <div class="input-group-append">
-                                            <span type="button" id="toggle3" class="input-group-text">
-                                                <i class="fa fa-clock-o"></i>
-                                            </span>
+                        <p class="mt-2 ml-3">at</p>
+{{--                        <div class="col-sm-5 clockpicker2">--}}
+{{--                            <div class="input-group">--}}
+{{--                                <input type="text" name="endTime" class="form-control endTime" id="" >--}}
+{{--                                <div class="input-group-append">--}}
+{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
+{{--                                                <i class="fa fa-clock-o"></i>--}}
+{{--                                            </span>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <div class="input-group date" id="datetimepicker3" data-target-input="nearest">
+                                    <input type="text" name="endTime"  class="form-control datetimepicker-input endTime" data-target="#datetimepicker3" id="editStartTime"/>
+                                    <div class="input-group-append" data-target="#datetimepicker3" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -139,7 +162,7 @@
                     <div class="row">
                         <div class="mt-3 ml-3">
 {{--                            <input type="submit" value="Schedule Room" class="create-only btn btn-info btn-block" data-disable-with="Create Room">--}}
-                            <input type="submit" name="commit" value="Update Room" class="update-only btn btn-info btn-block" data-disable-with="Update Room" >
+                            <input type="submit" name="commit" value="Update Meeting" class="update-only btn btn-info btn-block" data-disable-with="Update Room" >
                         </div>
                     </div>
 

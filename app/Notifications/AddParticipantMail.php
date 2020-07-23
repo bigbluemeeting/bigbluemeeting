@@ -80,14 +80,14 @@ class AddParticipantMail extends Notification implements ShouldQueue
         $mail[19] = "END:VCALENDAR";
         $mail = implode("\r\n", $mail);
         header("text/calendar");
-        file_put_contents($filename, $mail);
+file_put_contents($filename, $mail);
 
-        return (new MailMessage)
-            ->subject('Meeting Confirmation For '.$this->emailParams['meeting']['name'])
-            ->from(config('global.from_email'),config('global.from_name'))
-            ->attach($filename, array('mime' => "text/calendar"))
-            ->view('admin.email.add_participants_mail',with(['meetingParams'=>$this->emailParams]));
-    }
+return (new MailMessage)
+->subject('Meeting Confirmation For '.$this->emailParams['meeting']['name'])
+->from(config('global.from_email'),config('global.from_name'))
+->attach($filename, array('mime' => "text/calendar"))
+->view('admin.email.add_participants_mail',with(['meetingParams'=>$this->emailParams]));
+}
 
     /**
      * Get the array representation of the notification.

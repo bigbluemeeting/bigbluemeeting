@@ -16,13 +16,15 @@ class DashboardController extends Controller
 
     public function index()
     {
-        $data = [
-            'pageName' => 'Dashboard',
-        ];
-//
-//
-//
+        try{
+            $data = [
+                'pageName' => 'Dashboard',
+            ];
+            return view('admin.dashboard.index', $data);
+        }catch (\Exception $exception)
+        {
+            return view('errors.500')->with(['danger'=>$exception->getMessage()]);
+        }
 
-        return view('admin.dashboard.index', $data);
     }
 }

@@ -10,7 +10,7 @@
 
         <div class="container-fluid">
 
-        <h5>My Rooms Recordings</h5>
+        <h5>My Meeting Recordings</h5>
         <div class="row" id="error">
             <div class="col-md-12">
                 @include('includes.form-errors')
@@ -120,7 +120,7 @@
     {{-- Rooms Recordings List --}}
 
             <div class="container-fluid mt-4">
-                <h5>My Meetings Recordings</h5>
+                <h5>My Room Recordings</h5>
             </div>
             <div class="col-lg-12">
                     <div class="card card-block sameheight-item mt-3">

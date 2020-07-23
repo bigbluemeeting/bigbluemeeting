@@ -39,27 +39,34 @@ class AttendeeController extends Controller
     public function joinAttendee(Request $request)
     {
 
-        $meeting = Meeting::where('url',$request->meeting)->firstOrFail();
-        $bbb = new BigBlueButton();
-        $user = User::findOrFail(Auth::id());
-        $ismeetingRunningParams =  new IsMeetingRunningParameters($request->meeting);
-        $response =$bbb->isMeetingRunning($ismeetingRunningParams);
-        if ($response->getRawXml()->running == 'false')
+        try{
+            $meeting = Meeting::where('url',$request->meeting)->firstOrFail();
+            $bbb = new BigBlueButton();
+            $user = User::findOrFail(Auth::id());
+            $ismeetingRunningParams =  new IsMeetingRunningParameters($request->meeting);
+            $response =$bbb->isMeetingRunning($ismeetingRunningParams);
+            if ($response->getRawXml()->running == 'false')
+            {
+                return response()->json(['notStart'=>true]);
+            }else
+            {
+
+                $joinMeetingParams = [
+
+                    'meetingId'  => $request->meeting,
+                    'username'   => $user->name,
+                    'password'   => decrypt(decrypt($meeting->attendee_password))
+                ];
+
+                $url = Helper::joinMeeting($joinMeetingParams);
+                return response()->json(['url'=>$url]);
+            }
+        }catch (\Exception $exception)
         {
-            return response()->json(['notStart'=>true]);
-        }else
-        {
-
-            $joinMeetingParams = [
-
-                'meetingId'  => $request->meeting,
-                'username'   => $user->name,
-                'password'   => decrypt(decrypt($meeting->attendee_password))
-            ];
-
-            $url = Helper::joinMeeting($joinMeetingParams);
-            return response()->json(['url'=>$url]);
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
+
+
 
     }
 }

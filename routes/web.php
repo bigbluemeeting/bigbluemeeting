@@ -45,7 +45,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
     Route::patch('/change_password', 'Admin\ChangePasswordController@changePassword')->name('change_password');
 
     Route::get('/dashboard', 'Admin\DashboardController@index')->name('dashboard');
-    Route::get('/recordings/invited-rooms-recordings','Admin\RecordingsController@invitedRoomsRecordings')->name('invitedRoomsRecordings');
+    Route::get('/recordings/invited-meeting-recordings','Admin\RecordingsController@invitedRoomsRecordings')->name('invitedRoomsRecordings');
     Route::get('/recordings/cache','Admin\RecordingsController@cache');
     Route::resource('/recordings','Admin\RecordingsController');
     Route::resource('/attendees','Admin\AttendeeController');
@@ -75,25 +75,30 @@ Route::get('/', function () {
  */
 Route::group(['middleware'=>'auth'],function(){
 
-    Route::get('rooms/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
-    Route::get('rooms/details/{url}','PublicControllers\Rooms\RoomsController@showDetails')->name('showDetails');
-    Route::get('rooms/attendee/{url}','PublicControllers\Rooms\RoomsController@deleteAttendee')->name('deleteAttendee');
-    Route::post('/rooms/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
+    Route::get('meetings/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+    Route::get('meetings/details/{url}','PublicControllers\Rooms\RoomsController@showDetails')->name('showDetails');
+    Route::get('meetings/attendee/{url}','PublicControllers\Rooms\RoomsController@deleteAttendee')->name('deleteAttendee');
+    Route::post('/meetings/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
     Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
-    Route::get('/meetings/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
+    Route::get('/rooms/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
     Route::resource('/files','Admin\FilesController');
     Route::get('/files/setDefault/{val}','Admin\FilesController@setDefault')->name('setDefault');
     Route::post('/files/addFilesToRoom','Admin\FilesController@addFileToRoom')->name('addFileToRoom');
     Route::post('/files/addFilesToMeeting','Admin\FilesController@addFileToMeeting')->name('addFileToMeeting');
-    Route::get('/meetings/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
+    Route::get('/rooms/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
     Route::resource('/mail','Admin\EmailTemplateController');
     Route::resource('/plans','Admin\PlansController');
 });
 
 Route::get('/mail/unsubscribe/{mail}','Admin\EmailTemplateController@unSubscribe')->name('unsubscribe');
 Route::get('/mail/subscribe/{mail}','Admin\EmailTemplateController@subscribe')->name('subscribe');
-Route::resource('rooms','PublicControllers\Rooms\RoomsController');
-Route::resource('/meetings','Admin\MeetingController');
+
+/**
+ *  Room <=> MeetingController
+ *  Meeting <=> RoomController
+ */
+Route::resource('/meetings','PublicControllers\Rooms\RoomsController');
+Route::resource('/rooms','Admin\MeetingController');
 Route::get('/rooms/{url}',  'PublicControllers\Rooms\RoomsController@show');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');

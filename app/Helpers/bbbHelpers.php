@@ -18,46 +18,53 @@ class bbbHelpers
     public static function setMeetingParams($params)
     {
 
-        self::$createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
-        self::$createMeetingParams->setAttendeePassword($params['attendeePassword']);
-        self::$createMeetingParams->setModeratorPassword($params['moderatorPassword']);
-        self::$createMeetingParams->setLogoutUrl($params['logoutUrl']);
+        try{
+            self::$createMeetingParams = new CreateMeetingParameters($params['meetingUrl'] , $params['meetingName']);
+            self::$createMeetingParams->setAttendeePassword($params['attendeePassword']);
+            self::$createMeetingParams->setModeratorPassword($params['moderatorPassword']);
+            self::$createMeetingParams->setLogoutUrl($params['logoutUrl']);
 
-        if (isset($params['files']))
-        {
-            foreach ($params['files'] as $file)
+
+            if (isset($params['files']))
             {
-                self::$createMeetingParams->addPresentation($file);
+                foreach ($params['files'] as $file)
+                {
+                    self::$createMeetingParams->addPresentation($file);
+
+                }
+            }
+
+
+
+            if (isset($params['muteAllUser']))
+            {
+
+
+                self::$createMeetingParams->setMuteOnStart($params['muteAllUser']);
+                self::$createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
 
             }
-        }
+            if (isset($params['moderator_approval']))
+            {
 
 
+                $params['moderator_approval'] ? self::$createMeetingParams->setGuestPolicyAskModerator() : self::$createMeetingParams->setGuestPolicyAlwaysAccept();
 
-        if (isset($params['muteAllUser']))
+            }
+            if (isset($params['setRecord']))
+            {
+                self::$createMeetingParams->setRecord($params['setRecord']);
+                self::$createMeetingParams->setAllowStartStopRecording($params['setRecord']);
+            }
+            if (isset($params['welcome_message']))
+            {
+                self::$createMeetingParams->setWelcomeMessage($params['welcome_message']);
+            }
+        }catch (\Exception $exception)
         {
-
-
-            self::$createMeetingParams->setMuteOnStart($params['muteAllUser']);
-            self::$createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
-
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
-        if (isset($params['moderator_approval']))
-        {
 
-
-            $params['moderator_approval'] ? self::$createMeetingParams->setGuestPolicyAskModerator() : self::$createMeetingParams->setGuestPolicyAlwaysAccept();
-
-        }
-        if (isset($params['setRecord']))
-        {
-            self::$createMeetingParams->setRecord($params['setRecord']);
-            self::$createMeetingParams->setAllowStartStopRecording($params['setRecord']);
-        }
-        if (isset($params['welcome_message']))
-        {
-            self::$createMeetingParams->setWelcomeMessage($params['welcome_message']);
-        }
 
     }
     public static function createMeeting()
@@ -124,7 +131,9 @@ class bbbHelpers
                 'secret' =>$secret,];
         }
         else{
-            return redirect()->to(URL::to('bbbsettings'));
+
+            return false;
+
         }
 
 

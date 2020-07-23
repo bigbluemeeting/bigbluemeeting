@@ -23,15 +23,21 @@ class UsersController extends Controller
      */
     public function index()
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+
+            $users = User::paginate(10);
+
+            $pageName = 'Users';
+
+            return view('admin.users.index', compact('users','pageName'));
+        }catch (\Exception $exception)
+        {
+            return view('errors.500')->with(['danger'=>$exception->getMessage()]);
         }
 
-        $users = User::paginate(10);
-
-        $pageName = 'Users';
-
-        return view('admin.users.index', compact('users','pageName'));
     }
 
     /**
@@ -41,13 +47,19 @@ class UsersController extends Controller
      */
     public function create()
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        $roles = Role::get()->pluck('name', 'name');
-        $pageName = 'Add User';
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $roles = Role::get()->pluck('name', 'name');
+            $pageName = 'Add User';
 
-        return view('admin.users.create', compact('roles', 'pageName'));
+            return view('admin.users.create', compact('roles', 'pageName'));
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
     }
 
     /**
@@ -57,32 +69,38 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        $request->validate([
-            'name' => 'required|max:50',
-            'username' => 'required|max:20|unique:users,username',
-            'email' => 'required|email|max:50',
-            'password' => 'required|min:6',
-            'roles' => 'required|exists:roles,name',
-        ]);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $request->validate([
+                'name' => 'required|max:50',
+                'username' => 'required|max:20|unique:users,username',
+                'email' => 'required|email|max:50',
+                'password' => 'required|min:6',
+                'roles' => 'required|exists:roles,name',
+            ]);
 
-        $user = new User;
-        $user->name = $request->input('name');
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
-        $user->admin_unique_key = $this->_random_str(60);
+            $user = new User;
+            $user->name = $request->input('name');
+            $user->username = $request->input('username');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
+            $user->admin_unique_key = $this->_random_str(60);
 
 //        dd($user);
-        $user->save();
+            $user->save();
 
-        $roles = $request->input('roles') ? $request->input('roles') : ['attendee'];
-        $user->assignRole($roles);
+            $roles = $request->input('roles') ? $request->input('roles') : ['attendee'];
+            $user->assignRole($roles);
 
 
-        return redirect()->route('admin::users.index')->with(['success' => 'User created successfully']);
+            return redirect()->route('admin::users.index')->with(['success' => 'User created successfully']);
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
 
     }
 
@@ -95,15 +113,21 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $roles = Role::get()->pluck('name', 'name');
+
+            $user = User::findOrFail($id);
+            $pageName = 'Edit Users';
+
+            return view('admin.users.edit', compact('user', 'roles', 'pageName'));
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
-        $roles = Role::get()->pluck('name', 'name');
 
-        $user = User::findOrFail($id);
-        $pageName = 'Edit Users';
-
-        return view('admin.users.edit', compact('user', 'roles', 'pageName'));
     }
 
     /**
@@ -114,27 +138,34 @@ class UsersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $request->validate([
+                'name' => 'required|max:50',
+                'username' => 'required|max:20|unique:users,username,'.$id,
+                'email' => 'required|email|max:50',
+                'password' => 'required|min:6',
+                'roles' => 'required|exists:roles,name',
+            ]);
+
+            $user = User::findOrFail($id);
+            $user->name = $request->input('name');
+            $user->username = $request->input('username');
+            $user->email = $request->input('email');
+            $user->password = Hash::make($request->input('password'));
+            $user->save();
+            $roles = $request->input('roles') ? $request->input('roles') : [];
+            $user->syncRoles($roles);
+
+            return redirect()->route('admin::users.index')->with(['success' => 'User updated successfully']);
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
-        $request->validate([
-            'name' => 'required|max:50',
-            'username' => 'required|max:20|unique:users,username,'.$id,
-            'email' => 'required|email|max:50',
-            'password' => 'required|min:6',
-            'roles' => 'required|exists:roles,name',
-        ]);
 
-        $user = User::findOrFail($id);
-        $user->name = $request->input('name');
-        $user->username = $request->input('username');
-        $user->email = $request->input('email');
-        $user->password = Hash::make($request->input('password'));
-        $user->save();
-        $roles = $request->input('roles') ? $request->input('roles') : [];
-        $user->syncRoles($roles);
-
-        return redirect()->route('admin::users.index')->with(['success' => 'User updated successfully']);
     }
 
     /**
@@ -145,13 +176,20 @@ class UsersController extends Controller
      */
     public function destroy($id)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        $user = User::findOrFail($id);
-        $user->delete();
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
+            }
+            $user = User::findOrFail($id);
+            $user->delete();
 
-        return redirect()->route('admin::users.index')->with(['success' => 'User deleted successfully']);
+            return redirect()->route('admin::users.index')->with(['success' => 'User deleted successfully']);
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
     }
 
     /**
@@ -161,20 +199,28 @@ class UsersController extends Controller
      */
     public function massDestroy(Request $request)
     {
-        if (! Gate::allows('users_manage')) {
-            return abort(401);
-        }
-        if ($request->input('ids')) {
-            $entries = User::whereIn('id', $request->input('ids'))->get();
 
-            foreach ($entries as $entry) {
-                $entry->delete();
+        try{
+            if (! Gate::allows('users_manage')) {
+                return abort(401);
             }
+            if ($request->input('ids')) {
+                $entries = User::whereIn('id', $request->input('ids'))->get();
+
+                foreach ($entries as $entry) {
+                    $entry->delete();
+                }
+            }
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
+
     }
 
     protected function _random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
     {
+
         $str = '';
         $max = mb_strlen($keyspace, '8bit') - 1;
         for ($i = 0; $i < $length; ++$i) {

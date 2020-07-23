@@ -22,55 +22,66 @@ class AttendeesRoomController extends Controller
     public function join(Request $request)
     {
 
-        $validator = Validator::make($request->all(),[
-            'name' =>'required'
-        ],[
-            'name.required' =>'Name Required'
-        ]);
+        try{
+            $validator = Validator::make($request->all(),[
+                'name' =>'required'
+            ],[
+                'name.required' =>'Name Required'
+            ]);
 
-        if ($validator->fails())
-        {
-            return response()->json(['error'=>$validator->errors()->all()]);
-        }
-
-
-        $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
-        $credentials = bbbHelpers::setCredentials();
-        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
-        $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),decrypt($room->attendee_password));
-        $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
-
-
-        $ismeetingRunningParams =  new IsMeetingRunningParameters(decrypt($request->input('room')));
-        $response =$bbb->isMeetingRunning($ismeetingRunningParams);
-
-        if ($response->getRawXml()->running == 'false')
-        {
-
-            return response()->json(['notStart'=>true]);
-
-        }
-        else{
-
-            if ($room->maximum_people > $participant->getRawXml()->participantCount )
+            if ($validator->fails())
             {
-                $joinMeetingParams = [
+                return response()->json(['error'=>$validator->errors()->all()]);
+            }
 
-                    'meetingId' => decrypt($request->input('room')),
-                    'username'  => $request->input('name'),
-                    'password'  => decrypt($room->attendee_password)
-                ];
 
-                $url = bbbHelpers::joinMeeting($joinMeetingParams);
-                return response()->json(['url'=>$url]);
+            $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
+            $credentials = bbbHelpers::setCredentials();
+
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
+            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+            $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),decrypt($room->attendee_password));
+            $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
+
+
+            $ismeetingRunningParams =  new IsMeetingRunningParameters(decrypt($request->input('room')));
+            $response =$bbb->isMeetingRunning($ismeetingRunningParams);
+
+            if ($response->getRawXml()->running == 'false')
+            {
+
+                return response()->json(['notStart'=>true]);
+
             }
             else{
 
-                return response()->json(['full'=>true]);
+                if ($room->maximum_people > $participant->getRawXml()->participantCount )
+                {
+                    $joinMeetingParams = [
+
+                        'meetingId' => decrypt($request->input('room')),
+                        'username'  => $request->input('name'),
+                        'password'  => decrypt($room->attendee_password)
+                    ];
+
+                    $url = bbbHelpers::joinMeeting($joinMeetingParams);
+                    return response()->json(['url'=>$url]);
+                }
+                else{
+
+                    return response()->json(['full'=>true]);
+
+                }
+
 
             }
 
-
+        }catch (\Exception $exception)
+        {
+            return redirect()->json(['danger'=>$exception->getMessage()]);
         }
 
 
@@ -79,43 +90,54 @@ class AttendeesRoomController extends Controller
     public function authAttendeeJoin(Request $request)
     {
 
-        $room = Room::where('url',$request->meeting)->firstOrFail();
+        try{
+            $room = Room::where('url',$request->meeting)->firstOrFail();
 
-        $credentials = bbbHelpers::setCredentials();
-        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+            $credentials = bbbHelpers::setCredentials();
 
-        $getMeetingInfoParams = new GetMeetingInfoParameters($request->meeting,decrypt($room->attendee_password));
-        $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
-
-        $ismeetingRunningParams =  new IsMeetingRunningParameters($request->meeting);
-        $response =$bbb->isMeetingRunning($ismeetingRunningParams);
-
-        if ($response->getRawXml()->running == 'false')
-        {
-
-            return response()->json(['notStart'=>true]);
-        }
-        else{
-
-            if ($room->maximum_people > $participant->getRawXml()->participantCount )
+            if (!$credentials)
             {
-                $joinMeetingParams = [
-                    'meetingId' => $request->meeting,
-                    'username'  => Auth::user()->username,
-                    'password'  => decrypt($room->attendee_password)
-                ];
-                $url = bbbHelpers::joinMeeting($joinMeetingParams);
-                return response()->json(['url'=>$url]);
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
+            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+
+            $getMeetingInfoParams = new GetMeetingInfoParameters($request->meeting,decrypt($room->attendee_password));
+            $participant = $bbb->getMeetingInfo($getMeetingInfoParams);
+
+            $ismeetingRunningParams =  new IsMeetingRunningParameters($request->meeting);
+            $response =$bbb->isMeetingRunning($ismeetingRunningParams);
+
+            if ($response->getRawXml()->running == 'false')
+            {
+
+                return response()->json(['notStart'=>true]);
             }
             else{
 
-                return response()->json(['full'=>true]);
+                if ($room->maximum_people > $participant->getRawXml()->participantCount )
+                {
+                    $joinMeetingParams = [
+                        'meetingId' => $request->meeting,
+                        'username'  => Auth::user()->username,
+                        'password'  => decrypt($room->attendee_password)
+                    ];
+                    $url = bbbHelpers::joinMeeting($joinMeetingParams);
+                    return response()->json(['url'=>$url]);
+                }
+                else{
+
+                    return response()->json(['full'=>true]);
+                }
+
+
+
             }
 
 
-
+        }catch (\Exception $exception)
+        {
+            return redirect()->json(['danger'=>$exception->getMessage()]);
         }
-
 
     }
 }

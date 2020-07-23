@@ -97,10 +97,13 @@
                     <div class="input-group">
                         <div class="input-group-prepend" >
                             <div class="col-md-12">
-                                         <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom" data-target="#myModal">
-                                             <i class="fa fa-plus-circle text-center text-white pr-3"> &nbsp;Meeting
-                                             </i>
-                                         </span>
+                                <div class="title-block"  data-toggle="modal" id="createRoom" data-target="#myModal">
+                                    <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i> Rooms</button></a>
+                                </div>
+{{--                                         <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom"  >--}}
+{{--                                             <i class="fa fa-plus-circle text-center text-white pr-3"> &nbsp;Meeting--}}
+{{--                                             </i>--}}
+{{--                                         </span>--}}
                             </div>
 
                         </div>
@@ -145,8 +148,6 @@
                                                 <span href="javascript:;" data-toggle="modal"  data-item = {{$list->id}} data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm">
                                                     <i class="fa fa-trash"></i> Delete
                                                 </span>
-
-
                                             </td>
 
                                         </tr>
@@ -167,10 +168,10 @@
                                 <div class="card">
                                     <div class="card-body" style="background: #fff8a0;">
                                         <div class="col-md-7">
-                                            <p class="text-danger m-0">We're sorry,you don have any meeting.</p>
+                                            <p class="text-danger m-0">We're sorry,you don have any rooms.</p>
                                         </div>
                                         <div class="col-md-5">
-                                            <p class="text-danger pt-1">To Create a new meeting,press the "Meeting" button</p>
+                                            <p class="text-danger pt-1">To Create a new room,press the "Room" button</p>
                                         </div>
                                     </div>
                                 </div>
@@ -204,8 +205,9 @@
 @section('script')
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
-        url = '{{URL::to('meetings/:id/edit')}}';
-        action =  "{{URL::to('meetings')}}/:id";
+        url = '{{URL::to('rooms/:id/edit')}}';
+
+        action =  "{{URL::to('rooms')}}/:deleteId";
     </script>
     <script>
         $(document).ready(function () {
@@ -265,8 +267,6 @@
                 var id = $(this).data('task');
                 url = url.replace(':id', id);
 
-
-
                 $.get(url, function (data) {
                     $('#editModal').empty().append(data);
                    $('#editModal').modal('show');
@@ -282,8 +282,8 @@
             });
             function deleteData(id)
             {
-                url = action.replace(':id', id);
-                $("#deleteForm").prop('action', url);
+                action = action.replace(':deleteId', id);
+                $("#deleteForm").prop('action', action);
             }
             $('.btnDelete').on('click',function () {
                 $("#deleteForm").submit();

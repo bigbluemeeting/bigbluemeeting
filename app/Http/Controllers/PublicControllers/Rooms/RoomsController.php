@@ -34,7 +34,8 @@ class RoomsController extends Controller
 {
     //
 
-    protected $logoutUrl = '/rooms/';
+
+    protected $logoutUrl = '/meetings/';
     protected $meetingsParams = [];
 
     public function __construct()
@@ -48,6 +49,36 @@ class RoomsController extends Controller
     {
 
 
+        try{
+            $pageName='Meetingss List';
+
+            $user = User::findOrFail(Auth::id());
+            $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+
+            $pastMeetings =$user->rooms()
+                ->where('end_date','<',$currentDate)
+                ->orderBy('id','DESC')
+                ->paginate(10);
+
+
+
+
+            $upComingMeetings =  $user->rooms()
+                ->where('end_date','>=',$currentDate)
+                ->orderBy('id','DESC')
+                ->paginate(10);
+
+
+
+            return view('public.rooms.index',compact('pageName','upComingMeetings','pastMeetings'));
+
+
+
+
+        }catch (\Exception $exception)
+        {
+            return view('errors.500')->with(['danger'=>$exception->getMessage()]);
+        }
 
 
 
@@ -57,127 +88,157 @@ class RoomsController extends Controller
 //        https://c38e6.bigbluemeeting.com/bigbluebutton/
 //       QFCwDfZr6PqO9Utwd82LcUJMfAJt5OjfsftlrPiRrQ
 
-        $pageName='Rooms List';
-
-        $user = User::findOrFail(Auth::id());
-        $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
-
-        $pastMeetings =$user->rooms()
-            ->where('end_date','<',$currentDate)
-            ->orderBy('id','DESC')
-            ->paginate(10);
-
-
-
-
-        $upComingMeetings =  $user->rooms()
-            ->where('end_date','>=',$currentDate)
-            ->orderBy('id','DESC')
-            ->paginate(10);
-
-
-
-        return view('public.rooms.index',compact('pageName','upComingMeetings','pastMeetings'));
 
     }
 
     public function store(Request $request)
     {
 
+//        dd($request->all());
+
+        try{
+
+            $rules = [
+                'name' => 'required|max:50',
+                'maximum_people' => 'required|integer|min:2',
+                'meeting_description' =>'required',
+                'welcome_message' =>'required',
+//            'startTime' => 'date_format:h:i A'
+            ];
+            $message =[
+                'name.required' =>'Meeting Name Required',
+                'name.max' =>'Maximum 50 Characters Allowed For Meeting Name',
+                'maximum_people.required' =>'Maximum People Required',
+                'maximum_people.integer' =>'Only Numbers Accepted',
+                'maximum_people.min' =>'Minimum Two Person Required For Meeting',
+                'meeting_description.required' =>'Meeting Description Required',
+                'welcome_message.required' =>'Welcome Message Required For Meeting'
+
+            ];
+
+            $request->validate($rules,$message);
+            $credentials = bbbHelpers::setCredentials();
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
+
+            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+
+            $response = $bbb->getMeetings();
+
+            $this->saveRoomToDb($request);
+            return $this->createMeeting('create');
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
 
 
-        $rules = [
-            'name' => 'required|max:50',
-            'maximum_people' => 'required|integer|min:2',
-            'meeting_description' =>'required',
-            'welcome_message' =>'required',
-            'startTime' => 'date_format:h:i A'
-        ];
-        $message =[
-            'name.required' =>'Meeting Name Required',
-            'name.max' =>'Maximum 50 Characters Allowed For Meeting Name',
-            'maximum_people.required' =>'Maximum People Required',
-            'maximum_people.integer' =>'Only Numbers Accepted',
-            'maximum_people.min' =>'Minimum Two Person Required For Meeting',
-            'meeting_description.required' =>'Meeting Description Required',
-            'welcome_message.required' =>'Welcome Message Required For Meeting'
 
-        ];
 
-        $request->validate($rules,$message);
-        $this->saveRoomToDb($request);
-        return $this->createMeeting('create');
     }
-    public function edit(Room $room)
+    public function edit($room)
     {
 
-        return response()->json(['result' =>$room]);
+        try{
+            $room = Room::findOrFail($room);
+
+            return response()->json(['result' =>$room]);
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
 
     }
 
-    public function update(Request $request,Room $room)
+    public function update(Request $request,$room)
     {
 
-        $rules = [
-            'name' => 'required|max:50',
-            'maximum_people' => 'required|integer|min:2',
-            'meeting_description' =>'required',
-            'welcome_message' =>'required',
+        try{
+            $rules = [
+                'name' => 'required|max:50',
+                'maximum_people' => 'required|integer|min:2',
+                'meeting_description' =>'required',
+                'welcome_message' =>'required',
 
-        ];
-        $message =[
-            'name.required' =>'Meeting Name Required',
-            'name.max' =>'Maximum 50 Characters Allowed For Meeting Name',
-            'maximum_people.required' =>'Maximum People Required',
-            'maximum_people.integer' =>'Only Numbers Accepted',
-            'maximum_people.min' =>'Minimum Two Person Required For Meeting',
-            'meeting_description.required' =>'Meeting Description Required',
-            'welcome_message.required' =>'Welcome Message Required For Meeting'
+            ];
+            $message =[
+                'name.required' =>'Meeting Name Required',
+                'name.max' =>'Maximum 50 Characters Allowed For Meeting Name',
+                'maximum_people.required' =>'Maximum People Required',
+                'maximum_people.integer' =>'Only Numbers Accepted',
+                'maximum_people.min' =>'Minimum Two Person Required For Meeting',
+                'meeting_description.required' =>'Meeting Description Required',
+                'welcome_message.required' =>'Welcome Message Required For Meeting'
 
-        ];
-        $request->validate($rules,$message);
-        $this->updateRooms($request,$room);
+            ];
+            $room = Room::findOrFail($room);
+            $request->validate($rules,$message);
+            $credentials = bbbHelpers::setCredentials();
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
 
-        return redirect()->back()->with(['success'=>'Room Updated Successfully']);
+            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+
+            $response = $bbb->getMeetings();
+
+            $this->updateRooms($request,$room);
+
+            return redirect()->back()->with(['success'=>'Meeting Updated Successfully']);
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
 
     }
 
     public function saveRoomToDb($request)
     {
-        $startDate = Carbon::createFromFormat('yy-m-d',$request->input('start_date'))->toDateString();
-        $startTime =Carbon::parse($request->input('startTime'))->format('H:i');
-        $start_date = $startDate.' '.$startTime;
-        $endDate =  Carbon::createFromFormat('yy-m-d',$request->input('end_date'))->toDateString();
-        $endTime =  Carbon::parse($request->input('endTime'))->format('H:i');
-        $end_date = $endDate.' '.$endTime;
-        $data= $request->except('startTime','endTime');
-        $data['user_id'] = Auth::id();
-        $data['start_date'] = $start_date;
-        $data['end_date'] = $end_date;
-        $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
+
+        try{
+            $startDate = Carbon::createFromFormat('yy-m-d',$request->input('start_date'))->toDateString();
+            $startTime =Carbon::parse($request->input('startTime'))->format('H:i');
+            $start_date = $startDate.' '.$startTime;
+            $endDate =  Carbon::createFromFormat('yy-m-d',$request->input('end_date'))->toDateString();
+            $endTime =  Carbon::parse($request->input('endTime'))->format('H:i');
+            $end_date = $endDate.' '.$endTime;
+            $data= $request->except('startTime','endTime');
+            $data['user_id'] = Auth::id();
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
+            $data['attendee_password'] = encrypt(Auth::id().Str::random(2).'attendeePassword');
 
 
 
-        $room = Room::create($data);
-        $user = User::findOrFail(Auth::id());
-        $room->url =strtolower($user->name).'-'.Str::random(3).'-'.$room->id.Str::random(2);
-        $room->save();
-        $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
+            $room = Room::create($data);
+            $user = User::findOrFail(Auth::id());
+            $room->url =strtolower($user->name).'-'.Str::random(3).'-'.$room->id.Str::random(2);
+            $room->save();
+            $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
 
 
-        $this->meetingsParams = [
-            'meetingUrl' =>  $room->url,
-            'meetingName' => $request->input('name'),
-            'attendeePassword' => decrypt($data['attendee_password']),
-            'moderatorPassword' => $user->password,
-            'welcome_message' =>$request->input('welcome_message'),
-            'setRecord' =>$room->meeting_record,
-            'logoutUrl' => $this->logoutUrl,
-            'muteAllUser' =>  $request->has('mute_on_join') ? true :false,
-            'moderator_approval' => $request->has('require_moderator_approval') ? true :false
+            $this->meetingsParams = [
+                'meetingUrl' =>  $room->url,
+                'meetingName' => $request->input('name'),
+                'attendeePassword' => decrypt($data['attendee_password']),
+                'moderatorPassword' => $user->password,
+                'welcome_message' =>$request->input('welcome_message'),
+                'setRecord' =>$room->meeting_record,
+                'logoutUrl' => $this->logoutUrl,
+                'muteAllUser' =>  $request->has('mute_on_join') ? true :false,
+                'moderator_approval' => $request->has('require_moderator_approval') ? true :false
 
-        ];
+            ];
+        }catch (\Exception $exception)
 
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
 
 
 
@@ -187,47 +248,57 @@ class RoomsController extends Controller
 
     public function updateRooms($request,$room)
     {
-        $startDate = Carbon::createFromFormat('yy-m-d',$request->input('start_date'))->toDateString();
-        $startTime =Carbon::parse($request->input('startTime'))->format('H:i');
-        $start_date = $startDate.' '.$startTime;
-        $endDate =  Carbon::createFromFormat('yy-m-d',$request->input('end_date'))->toDateString();
-        $endTime =  Carbon::parse($request->input('endTime'))->format('H:i');
-        $end_date = $endDate.' '.$endTime;
-        $data= $request->except('startTime','endTime','commit');
-        $data['start_date'] = $start_date;
-        $data['end_date'] = $end_date;
-        $request->has('mute_on_join') ? $data['mute_on_join'] :$data['mute_on_join'] = 0;
-        $request->has('require_moderator_approval') ? $data['require_moderator_approval'] :$data['require_moderator_approval'] =0 ;
-        $room->update($data);
-        $user = Auth::user();
-        $credentials = bbbHelpers::setCredentials();
-        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
-        $getMeetingInfoParams = new GetMeetingInfoParameters($room->url,$user->password);
-        $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+        try{
+            $startDate = Carbon::createFromFormat('yy-m-d',$request->input('start_date'))->toDateString();
+            $startTime =Carbon::parse($request->input('startTime'))->format('H:i');
+            $start_date = $startDate.' '.$startTime;
+            $endDate =  Carbon::createFromFormat('yy-m-d',$request->input('end_date'))->toDateString();
+            $endTime =  Carbon::parse($request->input('endTime'))->format('H:i');
+            $end_date = $endDate.' '.$endTime;
+            $data= $request->except('startTime','endTime','commit');
+            $data['start_date'] = $start_date;
+            $data['end_date'] = $end_date;
+            $request->has('mute_on_join') ? $data['mute_on_join'] :$data['mute_on_join'] = 0;
+            $request->has('require_moderator_approval') ? $data['require_moderator_approval'] :$data['require_moderator_approval'] =0 ;
+            $room->update($data);
+            $user = Auth::user();
+            $credentials = bbbHelpers::setCredentials();
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
+            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+            $getMeetingInfoParams = new GetMeetingInfoParameters($room->url,$user->password);
+            $response = $bbb->getMeetingInfo($getMeetingInfoParams);
 
-        $this->logoutUrl = url($this->logoutUrl.'/'.$room->url);
+            $this->logoutUrl = url($this->logoutUrl.'/'.$room->url);
 
-        $this->meetingsParams = [
-            'meetingUrl' =>  $room->url,
-            'meetingName' => $request->input('name'),
-            'attendeePassword' => decrypt($room->attendee_password),
-            'moderatorPassword' => $user->password,
-            'welcome_message' =>$request->input('welcome_message'),
-            'setRecord' =>$room->meeting_record,
-            'logoutUrl' => $this->logoutUrl,
-            'muteAllUser' =>  $request->has('mute_on_join') ? true :false,
-            'moderator_approval' => $request->has('require_moderator_approval') ? true :false
+            $this->meetingsParams = [
+                'meetingUrl' =>  $room->url,
+                'meetingName' => $request->input('name'),
+                'attendeePassword' => decrypt($room->attendee_password),
+                'moderatorPassword' => $user->password,
+                'welcome_message' =>$request->input('welcome_message'),
+                'setRecord' =>$room->meeting_record,
+                'logoutUrl' => $this->logoutUrl,
+                'muteAllUser' =>  $request->has('mute_on_join') ? true :false,
+                'moderator_approval' => $request->has('require_moderator_approval') ? true :false
 
-        ];
-        if ($response->getReturnCode() == 'FAILED')
+            ];
+            if ($response->getReturnCode() == 'FAILED')
+            {
+                return $this->createMeeting('create');
+            }
+            else{
+
+                $endMeetingParams = new EndMeetingParameters($room->url,$user->password);
+                $response = $bbb->endMeeting($endMeetingParams);
+                return $this->createMeeting('create');
+            }
+
+        }catch (\Exception $exception)
         {
-            return $this->createMeeting('create');
-        }
-        else{
-
-            $endMeetingParams = new EndMeetingParameters($room->url,$user->password);
-            $response = $bbb->endMeeting($endMeetingParams);
-            return $this->createMeeting('create');
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
 
     }
@@ -236,32 +307,40 @@ class RoomsController extends Controller
     {
 
 
-        bbbHelpers::setMeetingParams($this->meetingsParams);
-        $response = bbbHelpers::createMeeting();
-        if ($response->getReturnCode() == 'FAILED') {
-            return 'Can\'t create room! please contact our administrator.';
+        try{
+            bbbHelpers::setMeetingParams($this->meetingsParams);
+            $response = bbbHelpers::createMeeting();
+            if ($response->getReturnCode() == 'FAILED') {
+                return 'Can\'t create room! please contact our administrator.';
 
-        } else {
+            } else {
 
-            if ($name== 'create')
-            {
-                return $this->index();
+                if ($name== 'create')
+                {
+                    return $this->index();
+                }
+                else
+                {
+                    $joinMeetingParams = [
+
+                        'meetingId'  => $this->meetingsParams['meetingUrl'],
+                        'username'   => $this->meetingsParams['username'],
+                        'password'   => $this->meetingsParams['moderatorPassword']
+                    ];
+
+                    $apiUrl =bbbHelpers::joinMeeting($joinMeetingParams);
+                    return redirect()->to($apiUrl);
+
+                }
+
             }
-            else
-            {
-                $joinMeetingParams = [
 
-                    'meetingId'  => $this->meetingsParams['meetingUrl'],
-                    'username'   => $this->meetingsParams['username'],
-                    'password'   => $this->meetingsParams['moderatorPassword']
-                ];
 
-                $apiUrl =bbbHelpers::joinMeeting($joinMeetingParams);
-                return redirect()->to($apiUrl);
-
-            }
-
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
+
 
 
     }
@@ -270,136 +349,166 @@ class RoomsController extends Controller
     {
 
 
-        $room = Room::where('url',$url)->firstOrFail();
-        if (Auth::check())
-        {
-            $response = Gate::allows('view',$room);
-            if ($response)
+        try{
+            $room = Room::where('url',$url)->firstOrFail();
+            if (Auth::check())
             {
-                $pageName = ucwords($room->name);
-                return view('public.rooms.auth.single',compact('pageName','room'));
-            }
-            else{
-                return redirect()->to(route('invitedMeetings'));
+                $response = Gate::allows('view',$room);
+                if ($response)
+                {
+                    $pageName = ucwords($room->name);
+                    return view('public.rooms.auth.single',compact('pageName','room'));
+                }
+                else{
+                    return redirect()->to(route('invitedMeetings'));
 //                return $this->inviteAttendee();
+                }
+
+
+            }else{
+
+                $roomsRecordingList = bbbHelpers::recordingLists($url);
+                $pageName = ucwords($room->user->username);
+                return view('public.rooms.notauth.join',compact('pageName','room','roomsRecordingList'));
             }
-
-
-        }else{
-
-            $roomsRecordingList = bbbHelpers::recordingLists($url);
-            $pageName = ucwords($room->user->username);
-            return view('public.rooms.notauth.join',compact('pageName','room','roomsRecordingList'));
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
+
     }
 
     public function join(Request $request)
     {
 
-        $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
-        $credentials = bbbHelpers::setCredentials();
-        $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
-        $user = User::findOrFail(Auth::id());
-        $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),$user->password);
-        $response = $bbb->getMeetingInfo($getMeetingInfoParams);
-        $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
-        $this->meetingsParams = [
-            'meetingUrl' =>  $room->url,
-            'meetingName' => $room->name,
-            'attendeePassword' => decrypt($room->attendee_password),
-            'moderatorPassword' => $user->password,
-            'welcome_message' =>$room->welcome_message,
-            'setRecord' =>$room->meeting_record,
-            'logoutUrl' => $this->logoutUrl,
-            'username' => $user->name
+        try{
+            $room = Room::where('url',decrypt($request->input('room')))->firstOrFail();
+            $credentials = bbbHelpers::setCredentials();
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
+            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
+            $user = User::findOrFail(Auth::id());
+            $getMeetingInfoParams = new GetMeetingInfoParameters(decrypt($request->input('room')),$user->password);
+            $response = $bbb->getMeetingInfo($getMeetingInfoParams);
+            $this->logoutUrl = url($this->logoutUrl).'/'.$room->url;
+            $this->meetingsParams = [
+                'meetingUrl' =>  $room->url,
+                'meetingName' => $room->name,
+                'attendeePassword' => decrypt($room->attendee_password),
+                'moderatorPassword' => $user->password,
+                'welcome_message' =>$room->welcome_message,
+                'setRecord' =>$room->meeting_record,
+                'logoutUrl' => $this->logoutUrl,
+                'username' => $user->name
 
 
-        ];
+            ];
 
-          $files =  Auth::user()
-              ->rooms()
-              ->where('url',$room->url)
-              ->whereHas('files')
-              ->with('files')
-              ->get()
-              ->pluck('files')
-              ->collapse();
+            $files =  Auth::user()
+                ->rooms()
+                ->where('url',$room->url)
+                ->whereHas('files')
+                ->with('files')
+                ->get()
+                ->pluck('files')
+                ->collapse();
 
-          if (count($files) < 1)
-          {
-              $files = $user->files()
-                  ->where('setDefault',1)
-                  ->get();
-          }
+            if (count($files) < 1)
+            {
+                $files = $user->files()
+                    ->where('setDefault',1)
+                    ->get();
+            }
 
-          if (count($files) > 0)
-          {
-              foreach ($files as $file)
-              {
-                  $this->meetingsParams['files'][] =$file->name;
+            if (count($files) > 0)
+            {
+                foreach ($files as $file)
+                {
+                    $this->meetingsParams['files'][] =$file->name;
 
-              }
-          }
+                }
+            }
 
-          else{
+            else{
 
-              $this->meetingsParams['files'] =[];
-          }
+                $this->meetingsParams['files'] =[];
+            }
 
-        if ($response->getReturnCode() == 'FAILED') {
+            if ($response->getReturnCode() == 'FAILED') {
 
-            return $this->createMeeting();
+                return $this->createMeeting();
 
-        } else {
+            } else {
 
-            $endMeetingParams = new EndMeetingParameters($room->url,$user->password);
-            $endMeetingResponse = $bbb->endMeeting($endMeetingParams);
+                $endMeetingParams = new EndMeetingParameters($room->url,$user->password);
+                $endMeetingResponse = $bbb->endMeeting($endMeetingParams);
 
-            return $this->createMeeting();
+                return $this->createMeeting();
 
 
+            }
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
+
     }
 
     public function inviteAttendee()
     {
-        $pageName ='Invited Rooms';
-        $user = User::findOrFail(Auth::id());
-        $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+        try{
+            $pageName ='Invited Rooms';
+            $user = User::findOrFail(Auth::id());
+            $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 
-        $roomList = $user->attendees()
-            ->whereHas('rooms')
-            ->with('rooms')
-            ->get()
-            ->pluck('rooms')
-            ->collapse()
-            ->where('end_date' ,'>=',$currentDate)
-            ->sort();
+            $roomList = $user->attendees()
+                ->whereHas('rooms')
+                ->with('rooms')
+                ->get()
+                ->pluck('rooms')
+                ->collapse()
+                ->where('end_date' ,'>=',$currentDate)
+                ->sort();
 
-        $roomList = Helper::paginate($roomList,10,null,[
-            'path' =>'invite-meetings'
-        ]);
+            $roomList = Helper::paginate($roomList,10,null,[
+                'path' =>'invite-meetings'
+            ]);
 
-        return view('public.rooms.auth.invitedMeetings',compact('pageName','roomList'));
+            return view('public.rooms.auth.invitedMeetings',compact('pageName','roomList'));
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
 
     }
 
     public function showDetails($url)
     {
-        $pageName = "Invite Participants";
-        $meeting = Room::where('url',$url)
-            ->firstOrFail();
+        try{
+            $pageName = "Invite Participants";
+            $meeting = Room::where('url',$url)
+                ->firstOrFail();
 
 
-        $attendees = $meeting->attendees()
-            ->latest()
-            ->paginate(10);
+            $attendees = $meeting->attendees()
+                ->latest()
+                ->paginate(10);
 
 
+//        dd($meeting->files);
 //        $files = [];
-        $files = $meeting->files()->paginate(10);
+            $files = $meeting->files()->paginate(10);
 
-        return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees','files'));
+            return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees','files'));
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
     }
 
     public function roomAttendees(Request $request)
@@ -407,96 +516,96 @@ class RoomsController extends Controller
 
 
 
-
-        if(empty($request->emails))
-        {
-            return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
-        }
-        $validEmails=[];
-        $sendEmails=[];
-        $room = Room::where('url',$request->room)->firstOrFail();
-        foreach ($request->emails as $email)
-        {
-            if(filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                /**
-                 * Valid Emails
-                 */
-                $validEmails[] = $email;
-            }
-        }
-        foreach ($validEmails as $email)
-        {
-            $user = User::where('email',$email)->first();
-            $attendeeCount = Attendee::where('email',$email)->count();
-            if (!$attendeeCount > 0)
+        try{
+            if(empty($request->emails))
             {
+                return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
+            }
+            $validEmails=[];
+            $sendEmails=[];
+            $room = Room::where('url',$request->room)->firstOrFail();
+            foreach ($request->emails as $email)
+            {
+                if(filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    /**
+                     * Valid Emails
+                     */
+                    $validEmails[] = $email;
+                }
+            }
+            foreach ($validEmails as $email)
+            {
+                $user = User::where('email',$email)->first();
+                $attendeeCount = Attendee::where('email',$email)->count();
+                if (!$attendeeCount > 0)
+                {
 
-                $sendEmails[] = $email;
-                $attendee = Attendee::create(['email'=>!empty($user) ? $user->email : $email,'user_id'=>!empty($user) ? $user->id :'0']);
-                $attendee->rooms()->attach($room->id);
+                    $sendEmails[] = $email;
+                    $attendee = Attendee::create(['email'=>!empty($user) ? $user->email : $email,'user_id'=>!empty($user) ? $user->id :'0']);
+                    $attendee->rooms()->attach($room->id);
+
+                }
 
             }
 
-        }
 
 
 
 
+            $emailTem = EmailTemplate::whereUserId(\auth()->id())->first();
 
-        $emailTem = EmailTemplate::whereUserId(\auth()->id())->first();
+            if (!$emailTem)
+            {
+                $emailTem = EmailTemplate::first();
 
-        if (!$emailTem)
-        {
-            $emailTem = EmailTemplate::first();
-
-        }
-
+            }
 
 
 
-        $url =url('/').'/rooms/'.$room->url;
-        $user = \auth()->user();
-        $header = nl2br(str_replace([
-            '[meeting:name]',
-            '[user:email]',
-            '[meeting:url]',
-            '[meeting:start]',
-            '[meeting:end]'],
 
-            [
-                $room->name,
-                '<a href="">'.$user->email. '</a>',
-                '<div style="text-align: center; margin-top: 20px; "><a href='.$url.'  style="color: #FFFFFF; font-size: 20px; background-color: #83C36D; border-radius: 4px; border: 8px solid #83C36D;"> Join Meeting Here</a></div>',
-                \Carbon\Carbon::parse($room->start_date)->format(' D M d  g:i A yy'),
-                \Carbon\Carbon::parse($room->end_date)->format(' D M d g:i A yy')
-            ],
-            $emailTem['invite_participants']));
+            $url =url('/').'/rooms/'.$room->url;
+            $user = \auth()->user();
+            $header = nl2br(str_replace([
+                '[meeting:name]',
+                '[user:email]',
+                '[meeting:url]',
+                '[meeting:start]',
+                '[meeting:end]'],
 
-
-
-        $footer =  nl2br($emailTem['mail_footer']);
+                [
+                    $room->name,
+                    '<a href="">'.$user->email. '</a>',
+                    '<div style="text-align: center; margin-top: 20px; "><a href='.$url.'  style="color: #FFFFFF; font-size: 20px; background-color: #83C36D; border-radius: 4px; border: 8px solid #83C36D;"> Join Meeting Here</a></div>',
+                    \Carbon\Carbon::parse($room->start_date)->format(' D M d  g:i A yy'),
+                    \Carbon\Carbon::parse($room->end_date)->format(' D M d g:i A yy')
+                ],
+                $emailTem['invite_participants']));
 
 
-        $mailSubject = str_replace(['[meeting:name]','[user:email]'],
-                                    [$room->name,$user->email],
-            $emailTem['mail_subject']);
 
-        $mailParams = [
+            $footer =  nl2br($emailTem['mail_footer']);
 
-            'from'    =>  $emailTem['mail_from_name'],
-            'header'  =>  $header,
-            'subject' =>  $mailSubject,
-            'footer'  =>  $footer
 
-        ];
+            $mailSubject = str_replace(['[meeting:name]','[user:email]'],
+                [$room->name,$user->email],
+                $emailTem['mail_subject']);
 
+            $mailParams = [
+
+                'from'    =>  $emailTem['mail_from_name'],
+                'header'  =>  $header,
+                'subject' =>  $mailSubject,
+                'footer'  =>  $footer
+
+            ];
 
 
 
 
 
 
-        $when = now()->addSeconds(5);
+
+            $when = now()->addSeconds(5);
 //        $user = User::findOrFail(Auth::id());
 
 
@@ -504,61 +613,74 @@ class RoomsController extends Controller
 
 
 
-        $modMailParams = [
+            $modMailParams = [
 
-            'modMailHeader' =>nl2br(str_replace('[site:url]','<a href="'.\url('/').'">'.url('/').'</a>',$emailTem['mod_mail'])),
-            'modMailFooter' =>nl2br(str_replace(['[subscribe:link]','[unsubscribe:link]'],
-                [
+                'modMailHeader' =>nl2br(str_replace('[site:url]','<a href="'.\url('/').'">'.url('/').'</a>',$emailTem['mod_mail'])),
+                'modMailFooter' =>nl2br(str_replace(['[subscribe:link]','[unsubscribe:link]'],
+                    [
 //                    '.route('subscribe',\auth()->user()->email).'
 //                '.route('unsubscribe',\auth()->user()->email).'
-                    '<a href="'.route('subscribe',\auth()->user()->email).'">'.route('subscribe',\auth()->user()->email). '</a>',
-                    '<a href="'.route('unsubscribe',\auth()->user()->email).'">'.route('unsubscribe',\auth()->user()->email). '</a>'
-                ],
-                $emailTem['mod_mail_footer']))
-        ];
+                        '<a href="'.route('subscribe',\auth()->user()->email).'">'.route('subscribe',\auth()->user()->email). '</a>',
+                        '<a href="'.route('unsubscribe',\auth()->user()->email).'">'.route('unsubscribe',\auth()->user()->email). '</a>'
+                    ],
+                    $emailTem['mod_mail_footer']))
+            ];
 
 
 
-        foreach ($sendEmails as $userEmail) {
+            foreach ($sendEmails as $userEmail) {
 
 
 
-            if (\auth()->user()->send_email)
-            {
-                Notification::route('mail',\auth()->user()->email)
-                    ->notify((new AddParticipantMail(
+                if (\auth()->user()->send_email)
+                {
+                    Notification::route('mail',\auth()->user()->email)
+                        ->notify((new AddParticipantMail(
+                            [
+                                'mailParams' => $modMailParams,
+                                'meeting' => $room
+                            ]
+                        ))
+                            ->delay($when));
+                }
+
+
+                Notification::route('mail',$userEmail)
+                    ->notify((new InviteParticipantMail(
                         [
-                            'mailParams' => $modMailParams,
-                            'meeting' => $room
+                            'toEmail'    => encrypt($userEmail),
+                            'mailParams' => $mailParams,
+                            'meeting_id' => encrypt($room->id),
+                            'meeting' => $room,
                         ]
-                    ))
-                        ->delay($when));
-            }
-
-
-            Notification::route('mail',$userEmail)
-                ->notify((new InviteParticipantMail(
-                   [
-                        'toEmail'    => encrypt($userEmail),
-                        'mailParams' => $mailParams,
-                        'meeting_id' => encrypt($room->id),
-                       'meeting' => $room,
-                   ]
 //
-                ))->delay($when));
+                    ))->delay($when));
             }
 
 
 
             return response()->json(['result'=>['success'=>200]]);
+        }catch (\Exception $exception)
+        {
+            return redirect()->json(['danger'=>$exception->getMessage()]);
+        }
+
+
 
     }
 
-    public function destroy (Room $room)
+    public function destroy ($room)
     {
+        try{
+            $room = Room::findOrFail($room);
+            $room->delete();
+            return redirect()->back()->with(['success'=>'Meeting Deleted Successfully !!']);
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
 
-        $room->delete();
-        return redirect()->back()->with(['success'=>'Room Deleted Successfully !!']);
+
     }
 
     /**
@@ -567,11 +689,17 @@ class RoomsController extends Controller
 
     public function deleteAttendee($id)
     {
-        $attendee = Attendee::findOrFail($id);
+        try{
+            $attendee = Attendee::findOrFail($id);
 
-        $attendee->delete();
+            $attendee->delete();
 
-        return redirect()->back()->with(['success'=>'Participant deleted from this meeting']);
+            return redirect()->back()->with(['success'=>'Participant deleted from this meeting']);
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
 
     }
 

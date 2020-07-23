@@ -12,75 +12,65 @@
         </div>
         <nav class="menu">
             <ul class="sidebar-menu metismenu" id="sidebar-menu">
-                <li>
-                    <a href="{{ route('admin::dashboard') }}">
-                        <i class="fa fa-home"></i> Dashboard </a>
-                </li>
-                @can('master_manage')
-                <li>
-                    <a href="">
-                        <i class="fa fa-th-large"></i> Master
-                        <i class="fa arrow"></i>
-                    </a>
-                    <ul class="sidebar-nav">
-                        <li>
-                            <a href="#"> Items List </a>
-                        </li>
-                        <li>
-                            <a href="#"> Item Editor </a>
-                        </li>
-                    </ul>
-                </li>
+{{--                <li>--}}
+{{--                    <a href="{{ route('admin::dashboard') }}">--}}
+{{--                        <i class="fa fa-home"></i> Dashboard </a>--}}
+{{--                </li>--}}
+{{--                @can('master_manage')--}}
+{{--                <li>--}}
+{{--                    <a href="">--}}
+{{--                        <i class="fa fa-th-large"></i> Master--}}
+{{--                        <i class="fa arrow"></i>--}}
+{{--                    </a>--}}
+{{--                    <ul class="sidebar-nav">--}}
+{{--                        <li>--}}
+{{--                            <a href="#"> Items List </a>--}}
+{{--                        </li>--}}
+{{--                        <li>--}}
+{{--                            <a href="#"> Item Editor </a>--}}
+{{--                        </li>--}}
+{{--                    </ul>--}}
+{{--                </li>--}}
 
-                @endcan
-                @can('users_manage')
-                <li class="{{ (Request::is('admin/users*') || Request::is('admin/roles*')) ? 'active open' : '' }}">
-                    <a href="">
-                        <i class="fa fa-users"></i> User Management
-                        <i class="fa arrow"></i>
-                    </a>
-                    <ul class="sidebar-nav">
-                        <li class="{{ (Request::is('admin/users*')) ? 'active' : '' }}">
-                            <a href="{{ route('admin::users.index') }}"> Users </a>
-                        </li>
-                        <li class="{{ (Request::is('admin/roles*')) ? 'active' : '' }}">
-                            <a href="{{ route('admin::roles.index') }}"> Roles </a>
-                        </li>
-                    </ul>
-                </li>
-
-
-                @endcan
+{{--                @endcan--}}
 
                 <li>
                     <a href="">
-                        <i class="fa fa-handshake-o"></i> Rooms
-                        <i class="fa arrow"></i>
-                    </a>
-                    <ul class="sidebar-nav">
-                        <li>
-                            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-                                <a href="{{ route('rooms.index') }}"> Create Rooms </a>
-                            @endif
-                            <a href="{{route('invitedMeetings')}}">Invited Rooms</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="">
-
                         <i class="fa fa-meetup"></i> Meetings
                         <i class="fa arrow"></i>
                     </a>
                     <ul class="sidebar-nav">
                         <li>
-                            <a href="{{ route('meetings.index') }}"> Meetings List </a>
+                            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+                                <a href="{{ route('meetings.index') }}"> Create Meetings </a>
+                            @endif
+                            <a href="{{route('invitedMeetings')}}">Invited Meetings</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="">
+
+                        <i class="fa fa-handshake-o"></i> Rooms
+                        <i class="fa arrow"></i>
+                    </a>
+                    <ul class="sidebar-nav">
+                        <li>
+                            <a href="{{ route('rooms.index') }}"> Rooms List </a>
                         </li>
 
                     </ul>
                 </li>
 
+                <li>
+                    <a href="{{ route('files.index') }}">
 
+                        <i class="fa fa-files-o"></i> Files
+                        <i class="fa arrow"></i>
+                    </a>
+                    {{--                    <a href="{{ route('files.index') }}">--}}
+                    {{--                        <i class="fa fa-files-o"></i> Files </a>--}}
+                </li>
                 <li>
                     <a href="">
 
@@ -92,22 +82,33 @@
                             <a href="{{ route('admin::recordings.index') }}"> Recordings List </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin::invitedRoomsRecordings') }}"> Invited Rooms Recordings </a>
+                            <a href="{{ route('admin::invitedRoomsRecordings') }}"> Invited Meeting Recordings </a>
                         </li>
 
                     </ul>
                 </li>
+                @can('users_manage')
+                    <li class="{{ (Request::is('admin/users*') || Request::is('admin/roles*')) ? 'active open' : '' }}">
+                        <a href="">
+                            <i class="fa fa-users"></i> User Management
+                            <i class="fa arrow"></i>
+                        </a>
+                        <ul class="sidebar-nav">
+                            <li class="{{ (Request::is('admin/users*')) ? 'active' : '' }}">
+                                <a href="{{ route('admin::users.index') }}"> Users </a>
+                            </li>
+                            <li class="{{ (Request::is('admin/roles*')) ? 'active' : '' }}">
+                                <a href="{{ route('admin::roles.index') }}"> Roles </a>
+                            </li>
+                        </ul>
+                    </li>
 
 
-                <li>
-                    <a href="{{ route('files.index') }}">
+                @endcan
 
-                        <i class="fa fa-files-o"></i> Files
-                        <i class="fa arrow"></i>
-                    </a>
-{{--                    <a href="{{ route('files.index') }}">--}}
-{{--                        <i class="fa fa-files-o"></i> Files </a>--}}
-                </li>
+
+
+
 
                 <li>
                     <a href="{{ route('admin::change_password') }}">

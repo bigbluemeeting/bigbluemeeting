@@ -1,21 +1,21 @@
 
 <div id="myModal" class="modal fade" role="dialog">
-    <div class="modal-dialog  modal-dialog-centered">
+    <div class="modal-dialog  modal-dialog-centered modal-lg">
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-body">
                 <div class="card-body p-sm-6">
                     <div class="card-title">
-                        <h3 class="text-center">Create New Room</h3>
+                        <h3 class="text-center">Create New Meeting</h3>
                         <h3 class="update-only" style="display:none !important">Room Settings</h3>
                     </div>
-                    {!! Form::open(['method' => 'POST', 'route' => ['rooms.store'], 'class'=>'form-horizontal addForm']) !!}
+                    {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal addForm']) !!}
 
                     <div class="input-icon mb-2">
                             <span class="input-icons">
                                 <i class="fa fa-desktop icon mt-1 ml-2"></i>
                             </span>
-                        <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Room name..." autocomplete="off" type="text" name="name">
+                        <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Meeting name..." autocomplete="off" type="text" name="name">
 
 
                     </div>
@@ -28,7 +28,7 @@
                             <input id="create-room-name" class="form-control text-center" value="" placeholder="Enter a Maximum People..." autocomplete="off" type="text" name="maximum_people">
                         </div>
                     </div>
-                    <label for="start_date" class="mt-2" >Room Start on</label>
+                    <label for="start_date" class="mt-2" >Meeting Start on</label>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
@@ -40,20 +40,30 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="mt-2 col-md-1">at</p>
-                        <div class="col-sm-5 clockpicker1">
-                            <div class="input-group">
-                                <input type="text" name="startTime" class="form-control" id="startTime">
-                                <div class="input-group-append">
-                                            <span type="button" id="toggle3" class="input-group-text">
-                                                <i class="fa fa-clock-o"></i>
-                                            </span>
+                        <p class="mt-2 ml-3">at</p>
+{{--                        <div class="col-sm-5 clockpicker1">--}}
+{{--                            <div class="input-group">--}}
+{{--                                <input type="text" name="startTime" class="form-control" id="startTime">--}}
+{{--                                <div class="input-group-append">--}}
+{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
+{{--                                                <i class="fa fa-clock-o"></i>--}}
+{{--                                            </span>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                    <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1" id="startTime"/>
+                                    <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
-                    <label for="end_date">Room End on</label>
+                    <label for="end_date">Meeting End on</label>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
@@ -65,14 +75,24 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="mt-2  col-md-1">at</p>
-                        <div class="col-sm-5 clockpicker2">
-                            <div class="input-group">
-                                <input type="text" name="endTime" class="form-control" id="endTime" >
-                                <div class="input-group-append">
-                                            <span type="button" id="toggle3" class="input-group-text">
-                                                <i class="fa fa-clock-o"></i>
-                                            </span>
+                        <p class="mt-2 ml-3">at</p>
+{{--                        <div class="col-sm-5 clockpicker2">--}}
+{{--                            <div class="input-group">--}}
+{{--                                <input type="text" name="endTime" class="form-control" id="endTime" >--}}
+{{--                                <div class="input-group-append">--}}
+{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
+{{--                                                <i class="fa fa-clock-o"></i>--}}
+{{--                                            </span>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                    <input type="text" name="endTime"  class="form-control datetimepicker-input" data-target="#datetimepicker2" id="endTime"/>
+                                    <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                        <div class="input-group-text"><i class="fa fa-clock-o"></i></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -93,7 +113,7 @@
 
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <label>Record This Room</label>
+                            <label>Record This Meeting</label>
                             <select name="meeting_record"  class="form-control">
                                 <option value="0">No,don't record it.</option>
                                 <option value="1">Record it.</option>
@@ -126,22 +146,12 @@
                         </div>
 
 
-{{--                        <div class="row mt-2">--}}
-{{--                            <div class="col-sm-8">--}}
-{{--                                <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">--}}
-{{--                                    Require moderator approval before joining--}}
-{{--                                </label>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-sm-3  mt-4">--}}
-{{--                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="room_require_moderator_approval" autocomplete="off" >--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
                     </div>
 
 
                     <div class="row">
                         <div class="mt-3 ml-3">
-                            <input type="submit" value="Schedule Room" class="create-only btn btn-info btn-block" data-disable-with="Create Room">
+                            <input type="submit" value="Schedule Meeting" class="create-only btn btn-info btn-block" data-disable-with="Create Room">
                             <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
                         </div>
                     </div>

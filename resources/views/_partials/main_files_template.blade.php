@@ -78,15 +78,13 @@
         <td width="100px">
             <span class="size">{%=file.size%}</span>
         </td>
-        <td>
-           <span href="" data-toggle="modal"
-                 data-target="#DeleteModal" class="btn  btn-sm btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Meeting
-           </span>
-        </td>
+{{--        <td>--}}
+{{--           <span  data-toggle="modal" data-task ="{%=file.name%}" data-item ="{%=file.id%}"  class="btn btn-sm btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Room--}}
+{{--           </span>--}}
+{{--        </td>--}}
 
         <td>
-           <span href="" data-toggle="modal"
-                 data-target="#DeleteModal" class="btn  btn-sm btn-primary-outline btnAddMeeting"><i class="fa fa-plus"></i> Add to Room
+           <span href="" data-toggle="modal" data-task ="{%=file.name%}" data-item ="{%=file.id%}" class="btn btn-sm btn-info-outline btnAddRoom"><i class="fa fa-plus"></i> Add to Meeting
            </span>
         </td>
           <td>

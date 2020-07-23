@@ -118,7 +118,7 @@
                                 @if(count($files)>0)
                                     <tr>
                                         <th>File</th>
-                                        <th >Date</th>
+                                        <th>Date</th>
                                         <th >Mime</th>
                                         <th>Size</th>
 
@@ -131,18 +131,18 @@
                                         <td width="200px">{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
                                         <td>{{$file->type}}</td>
                                         <td  width="100px">{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
-                                        <td>
+{{--                                        <td>--}}
 
-                                            <span href=""   class="btn btn-sm btn-primary-outline btnAddMeeting"
-                                                  data-task="{{$file->name}}"
-                                                  data-item = {{encrypt($file->id)}}>
-                                                <i class="fa fa-plus"></i> Add to Meeting
-                                            </span>
-                                        </td>
+{{--                                            <span href=""   class="btn btn-sm btn-primary-outline btnAddMeeting"--}}
+{{--                                                  data-task="{{$file->name}}"--}}
+{{--                                                  data-item = {{encrypt($file->id)}}>--}}
+{{--                                                <i class="fa fa-plus"></i> Add to Room--}}
+{{--                                            </span>--}}
+{{--                                        </td>--}}
                                         <td>
 
                                             <span href=""  class="btn btn-sm btn-info-outline btnAddRoom" data-task="{{$file->name}}" data-item = {{encrypt($file->id)}} >
-                                                <i class="fa fa-plus"></i> Add to Room
+                                                <i class="fa fa-plus"></i> Add to Meeting
                                             </span>
                                         </td>
                                         <td>
@@ -207,10 +207,10 @@
 
                     <div class="form-group">
                         <input type="hidden" class="room-file-name" value="" name="file">
-                        <lable for="rooms">Rooms</lable>
+                        <lable for="rooms">Meetings</lable>
 {{--                        {!!Form::select('rooms',[''=>'Choose Option']+$rooms,null, ['class'=>'form-control'])!!}--}}
                         <select name="rooms" id="" class="form-control mt-2">
-                            <option value="">Choose Room</option>
+                            <option value="">Choose Meeting</option>
                             @foreach($rooms as $room)
                                 <option value="{{encrypt($room->id)}}">{{$room->name}}</option>
                             @endforeach
@@ -250,9 +250,9 @@
 
                     <div class="form-group">
                         <input type="hidden" class="meeting-file-name" value="" name="file">
-                        <lable for="rooms">Meetings</lable>
+                        <lable for="rooms">Rooms</lable>
                         <select name="meetings" id="" class="form-control mt-2">
-                            <option value="">Choose Meeting</option>
+                            <option value="">Choose Room</option>
                             @foreach($meetings as $meeting)
                                 <option value="{{encrypt($meeting->id)}}">{{$meeting->name}}</option>
                             @endforeach
@@ -316,14 +316,14 @@
                 </script>
                 <script src="{{asset('js/bbb-delete.js')}}"></script>
                     <script>
-                        $('.btnAddMeeting').on('click',function () {
+                        $('.main-container').on('click','.btnAddMeeting',function () {
 
                             $('.meeting-file-name').val($(this).data('item'))
                             $('.meetingHeader').html($(this).data('task'))
                             $('#meetingFilesAddModal').modal('show')
 
                         });
-                        $('.btnAddRoom').on('click',function () {
+                        $('.main-container').on('click','.btnAddRoom',function () {
 
                             $('.room-file-name').val($(this).data('item'))
                             $('.roomHeader').html($(this).data('task'))

@@ -10,7 +10,7 @@
 
         <div class="container-fluid">
 
-            <h5>My Rooms Recordings</h5>
+            <h5>My Meeting Recordings</h5>
             <div class="row" id="error">
                 <div class="col-md-12">
                     @include('includes.form-errors')

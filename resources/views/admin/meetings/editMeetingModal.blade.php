@@ -7,10 +7,10 @@
             <div class="modal-body">
                 <div class="card-body p-sm-6">
                     <div class="card-title">
-                        <h3 class="text-center">Update Meeting</h3>
+                        <h3 class="text-center">Update Room</h3>
 
                     </div>
-                    {!! Form::open(['method' => 'PATCH', 'route' => ['meetings.update',$meeting->id], 'class'=>'form-horizontal']) !!}
+                    {!! Form::open(['method' => 'PATCH', 'route' => ['rooms.update',$meeting->id], 'class'=>'form-horizontal']) !!}
 
                     <div class="input-icon mb-2">
                             <span class="input-icons">
@@ -41,17 +41,17 @@
                         </div>
                     </div>
 
-                    <div class="row mt-2">
-                        <div class="col-sm-8">
-                            <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                                <span class="custom-switch-description">Require moderator approval before joining</span>
-                            </label>
+{{--                    <div class="row mt-2">--}}
+{{--                        <div class="col-sm-8">--}}
+{{--                            <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">--}}
+{{--                                <span class="custom-switch-description">Require moderator approval before joining</span>--}}
+{{--                            </label>--}}
 
-                        </div>
-                        <div class="col-sm-3 ml-4 mt-4">
-                            <input  class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" {{$meeting->require_moderator_approval ? 'checked':''}} id="room_require_moderator_approval">
-                        </div>
-                    </div>
+{{--                        </div>--}}
+{{--                        <div class="col-sm-3 ml-4 mt-4">--}}
+{{--                            <input  class="custom-switch-input" data-default="false" type="checkbox" value="1" name="require_moderator_approval" {{$meeting->require_moderator_approval ? 'checked':''}} id="room_require_moderator_approval">--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
                     <div class="row  mt-2">
                         <div class="col-sm-8">
                             <label for="room_anyone_can_start" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="mt-4">
-                        <input type="submit" value="Create Meeting" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
+                        <input type="submit" value="Update Room" class="create-only btn btn-primary btn-block" data-disable-with="Create Room">
                         <input type="submit" name="commit" value="Update Room" class="update-only btn btn-primary btn-block" data-disable-with="Update Room" style="display:none !important">
                     </div>
                     {!! Form::close() !!}

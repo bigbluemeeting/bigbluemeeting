@@ -166,6 +166,7 @@ return [
     'submit_btn_text' => 'Save Settings',
     'submit_success_message' => 'Settings has been saved.',
 
+
     // Remove any setting which declaration removed later from sections
     'remove_abandoned_settings' => false,
 

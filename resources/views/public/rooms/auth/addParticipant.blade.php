@@ -20,7 +20,7 @@
 
     <div class="container-fluid">
 
-        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Room Information</h5>
+        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Meeting Information</h5>
     </div>
 
     <div class="col-lg-12">
