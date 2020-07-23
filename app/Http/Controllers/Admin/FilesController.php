@@ -11,7 +11,9 @@ use Carbon\Carbon;
 use Croppa;
 
 //use FileUpload;
-use FileUpload\Validator\Simple;
+use FileUpload\FileNameGenerator\Slug;
+use FileUpload\FileUpload;
+//use FileUpload\Validator\Simple;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -95,7 +97,7 @@ class FilesController extends Controller
                 File::makeDirectory($path);
             };
 
-            $validator = new Simple('100M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword',
+            $validator = new \FileUpload\Validator\Simple('100M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword',
                 'application/vnd.oasis.opendocument.text','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.oasis.opendocument.presentation','application/vnd.ms-powerpoint','application/pdf','image/jpeg','image/png','image/gif','image/jpg','text/plain']);
 
 
@@ -105,9 +107,11 @@ class FilesController extends Controller
 
             $filesystem = new \FileUpload\FileSystem\Simple();
 
+
             // FileUploader itself
-            $fileupload = new \FileUpload\FileUpload($_FILES['files'], $_SERVER);
-            $slugGenerator = new \FileUpload\FileNameGenerator\Slug();
+            $fileupload = new FileUpload($_FILES['files'], $_SERVER);
+            $slugGenerator = new Slug();
+
 
             // Adding it all together. Note that you can use multiple validators or none at all
             $fileupload->setPathResolver($pathresolver);
@@ -115,7 +119,6 @@ class FilesController extends Controller
             $fileupload->addValidator($validator);
             $fileupload->setFileNameGenerator($slugGenerator);
 
-            // Doing the deed
             list($files, $headers) = $fileupload->processAll();
 
             // Outputting it, for example like this
