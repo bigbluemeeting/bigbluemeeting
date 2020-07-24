@@ -85,91 +85,80 @@ class FilesController extends Controller
             {
                 $room = Room::findorFail($request->input('rooms'));
             }
-//            if ($request->has('meeting'))
-//            {
-//                $meeting = Meeting::findOrFail($request->input('meeting'));
-//            }
 
-
+            $file = $request->file('files');
 
             $path = public_path(Files::Folder);
             if(!File::exists($path)) {
                 File::makeDirectory($path);
             };
 
-            $validator = new \FileUpload\Validator\Simple('100M', ['application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/msword',
-                'application/vnd.oasis.opendocument.text','application/vnd.openxmlformats-officedocument.presentationml.presentation','application/vnd.oasis.opendocument.presentation','application/vnd.ms-powerpoint','application/pdf','image/jpeg','image/png','image/gif','image/jpg','text/plain']);
-
-
-            $pathresolver = new \FileUpload\PathResolver\Simple($path);
-
-            // The machine's filesystem
-
-            $filesystem = new \FileUpload\FileSystem\Simple();
-
-
-            // FileUploader itself
-            $fileupload = new FileUpload($_FILES['files'], $_SERVER);
-            $slugGenerator = new Slug();
-
-
-            // Adding it all together. Note that you can use multiple validators or none at all
-            $fileupload->setPathResolver($pathresolver);
-            $fileupload->setFileSystem($filesystem);
-            $fileupload->addValidator($validator);
-            $fileupload->setFileNameGenerator($slugGenerator);
-
-            list($files, $headers) = $fileupload->processAll();
-
-            // Outputting it, for example like this
-            foreach($headers as $header => $value) {
-                header($header . ': ' . $value);
+            $size =$file[0]->getSize();
+            $filename = $file[0]->getClientOriginalName();
+            if (preg_match('/^.*?(?=\.)/',$filename,$match))
+            {
+                $actual_name = $match[0];
+                $name = $match[0];
+            }
+            if (preg_match('/[^.]*$/',$filename,$match))
+            {
+                $extension =  '.'.$match[0];
             }
 
-            foreach($files as $file){
-                //Remember to check if the upload was completed
+            $type = $file[0]->getClientMimeType();
+            if (File::exists(public_path('uploads/'.$actual_name.$extension))) {
+                $i = 1;
+                while(file_exists('uploads/'.$actual_name.$extension))
+                {
 
+                    $actual_name = (string)$actual_name.'-'.$i;
+                    $filename = $name.'-'.$i.$extension;
+                    $i++;
 
-                if (preg_match('/^.*?(?=\/)/',$file->getMimeType(),$match)) {
-
-                    $type = $match[0].'/'.$file->getExtension();
 
                 }
+            }
 
 
-                if ($file->completed) {
+            $url = Files::Folder . $filename;
+            $validator = [
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'application/vnd.oasis.opendocument.text',
+                'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                'application/vnd.oasis.opendocument.presentation',
+                'application/vnd.ms-powerpoint',
+                'application/pdf',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/jpg',
+                'text/plain'
+            ];
 
-                    // set some data
-
-                    $filename = $file->getFilename();
-                    $url = Files::Folder . $filename;
 
 
+            if(in_array($file[0]->getMimeType(),$validator)){
+
+                if ($file[0]->getSize() <= 100000000)
+                {
+                    $file[0]->move($path,$filename);
                     $dataArray = [
                         'name' => $filename,
                         'type' => $type,
-                        'size' => $file->size,
+                        'size' => $size,
                         'user_id' => Auth::id(),
                         'upload_date' => Carbon::now(),
 
                     ];
-                    // save data
                     $fileUploaded = Files::create($dataArray);
-
                     if ($request->has('rooms'))
                     {
                         $fileUploaded->rooms()->attach($room->id);
                     }
-//                    if ($request->has('meeting'))
-//                    {
-//                        $fileUploaded->meetings()->attach($meeting->id);
-//                    }
-
-
-
-                    // prepare response
                     $data[] = [
-                        'size' => Helper::formatBytes($file->size),
+
+                        'size' => Helper::formatBytes($size),
                         'id' => encrypt($fileUploaded->id),
                         'name' => $filename,
                         'url' => $url,
@@ -179,13 +168,25 @@ class FilesController extends Controller
                         'setDefaultUrl' =>route('setDefault',$fileUploaded->id),
                         'deleteUrl' => route('files.destroy', $fileUploaded->id),
                     ];
-
-
-
-                    // output uploaded file response
-
                     return response()->json(['files' => $data]);
+                }else{
+
+                    $files[] = [
+                        'name' => $file[0]->getClientOriginalName(),
+                        'size' => '',
+                        'error' =>'Your File Size is greater than 100MB'
+                    ];
+
                 }
+
+
+            }else{
+
+                $files[] = [
+                    'name' => $file[0]->getClientOriginalName(),
+                    'size' => '',
+                    'error' =>'This File Type Not Allowed'
+                ];
             }
 
             return response()->json(['files' => $files]);
@@ -273,6 +274,7 @@ class FilesController extends Controller
 
     public function addFileToRoom(Request $request)
     {
+
 
         try{
             $request->validate([

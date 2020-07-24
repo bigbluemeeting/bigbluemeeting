@@ -57,7 +57,7 @@
             <div class="col-md-12">
                 <div class="card bg-white">
                     <div class="card-body">
-                        <form id="fileupload" action="{{ route('files.store') }}" method="post" enctype="multipart/form-data">
+                        <form id="fileupload" action="{{ route('files.store') }}" method="post" enctype="multipart/form-data" file="true">
                             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                             <div class="row fileupload-buttonbar">
                                 <div class="col-lg-7">
@@ -354,6 +354,7 @@
             <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-image.min.js"></script>
             <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-validate.min.js"></script>
             <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-ui.min.js"></script>
+{{--           --}}
             <script src="{{asset('js/fileUpload.js')}}"></script>
 
 

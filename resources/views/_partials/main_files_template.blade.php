@@ -83,16 +83,20 @@
 {{--           </span>--}}
 {{--        </td>--}}
 
+        {%if (!file.error) { %}
         <td>
            <span href="" data-toggle="modal" data-task ="{%=file.name%}" data-item ="{%=file.id%}" class="btn btn-sm btn-info-outline btnAddRoom"><i class="fa fa-plus"></i> Add to Meeting
            </span>
         </td>
+        {% } %}
+        {% if (!file.error) { %}
           <td>
               <a href="{%=file.setDefaultUrl%}" class="btn btn-sm btn-secondary boxes">
                  <i class="fa fa-square" ></i>
                  Set as Default
               </a>
         </td>
+        {% } %}
 
         <td>
         {% if (file.deleteUrl) { %}
