@@ -88,10 +88,7 @@ class FilesController extends Controller
 
             $file = $request->file('files');
 
-            $path = public_path(Files::Folder);
-            if(!File::exists($path)) {
-                File::makeDirectory($path);
-            };
+
 
             $size =$file[0]->getSize();
             $filename = $file[0]->getClientOriginalName();
@@ -106,9 +103,9 @@ class FilesController extends Controller
             }
 
             $type = $file[0]->getClientMimeType();
-            if (File::exists(public_path('uploads/'.$actual_name.$extension))) {
+            if (File::exists(public_path(Files::Folder.$actual_name.$extension))) {
                 $i = 1;
-                while(file_exists('uploads/'.$actual_name.$extension))
+                while(file_exists(Files::Folder.$actual_name.$extension))
                 {
 
                     $actual_name = (string)$actual_name.'-'.$i;
@@ -118,6 +115,7 @@ class FilesController extends Controller
 
                 }
             }
+
 
 
             $url = Files::Folder . $filename;
@@ -142,6 +140,10 @@ class FilesController extends Controller
 
                 if ($file[0]->getSize() <= 100000000)
                 {
+                    $path = public_path(Files::Folder);
+                    if(!File::exists($path)) {
+                        File::makeDirectory($path);
+                    };
                     $file[0]->move($path,$filename);
                     $dataArray = [
                         'name' => $filename,
