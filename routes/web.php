@@ -97,19 +97,24 @@ Route::get('/mail/subscribe/{mail}','Admin\EmailTemplateController@subscribe')->
  *  Room <=> MeetingController
  *  Meeting <=> RoomController
  */
-Route::resource('/meetings','PublicControllers\Rooms\RoomsController');
+Route::get('/meetings/upComingMeetings','PublicControllers\Rooms\RoomsController@upComingMeetings')->name('upComingMeetings');
+Route::get('/meetings/pastMeetings','PublicControllers\Rooms\RoomsController@pastMeetings')->name('pastMeetings');
+
+Route::resource('/meetings','PublicControllers\Rooms\RoomsController')->except('destroy');
 Route::resource('/rooms','Admin\MeetingController');
+
 Route::get('/rooms/{url}',  'PublicControllers\Rooms\RoomsController@show');
 Route::post('/meetings/attendee-start-room','PublicControllers\Meetings\AttendeesMeetingController@attendeeStartRoom')->name('attendeeStartRoom');
 Route::post('/meetings/attendee-join-moderator','PublicControllers\Meetings\AttendeesMeetingController@attendeeJoinAsModerator')->name('attendeeJoinAsModerator');
-
-
+Route::get('roomList','Admin\MeetingController@getRoomLists')->name('roomList');
 /**
  * Routes For Ajax Call
  */
 
 Route::middleware('ajax.check')->group(function ()
 {
+
+    Route::Post('meetingsDelete','PublicControllers\Rooms\RoomsController@destroy')->name('deleteMeetings');
     Route::post('/rooms/AuthAttendeeJoin','PublicControllers\Rooms\AttendeesRoomController@authAttendeeJoin')->name('AuthAttendeeJoin');
     Route::post('/rooms/attendeeJoin','PublicControllers\Rooms\AttendeesRoomController@Join')->name('attendeeJoin');
     Route::post('/attendee/joins','Admin\AttendeeController@joinAttendee')->name('JoinAuthAttendee')->middleware('auth');

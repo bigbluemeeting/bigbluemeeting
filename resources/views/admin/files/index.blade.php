@@ -131,14 +131,7 @@
                                         <td width="200px">{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
                                         <td>{{$file->type}}</td>
                                         <td  width="100px">{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
-{{--                                        <td>--}}
 
-{{--                                            <span href=""   class="btn btn-sm btn-primary-outline btnAddMeeting"--}}
-{{--                                                  data-task="{{$file->name}}"--}}
-{{--                                                  data-item = {{encrypt($file->id)}}>--}}
-{{--                                                <i class="fa fa-plus"></i> Add to Room--}}
-{{--                                            </span>--}}
-{{--                                        </td>--}}
                                         <td>
 
                                             <span href=""  class="btn btn-sm btn-info-outline btnAddRoom" data-task="{{$file->name}}" data-item = {{encrypt($file->id)}} >

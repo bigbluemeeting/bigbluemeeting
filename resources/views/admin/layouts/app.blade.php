@@ -54,7 +54,7 @@
 
                             @if( Gate::check('users_manage') || Gate::check('master_manage'))
 
-                            <a class="dropdown-item" href="{{ \Illuminate\Support\Facades\URL::to('settings') }}"">
+                            <a class="dropdown-item" href="{{ \Illuminate\Support\Facades\URL::to('settings') }}">
                                 <i class="fa fa-gear icon"></i>  Settings
 
                             </a>
@@ -104,13 +104,11 @@
         <div class="color-secondary"></div>
     </div>
 </div>
+
+
 @yield('script')
 <script src="{{ asset('js/vendor.js') }}"></script>
-
-<script src="{{ asset('js/app.js') }}"></script>
-{{--@yield('script')--}}
+<script src="{{ asset('js/custom.js') }}"></script>
 @yield('js')
-
-
 </body>
 </html>

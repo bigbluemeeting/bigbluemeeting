@@ -9,6 +9,7 @@
                         <h3 class="text-center">Create New Meeting</h3>
                         <h3 class="update-only" style="display:none !important">Room Settings</h3>
                     </div>
+
                     {!! Form::open(['method' => 'POST', 'route' => ['meetings.store'], 'class'=>'form-horizontal addForm']) !!}
 
                     <div class="input-icon mb-2">

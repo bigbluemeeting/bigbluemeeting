@@ -1,9 +1,7 @@
 @extends('admin.layouts.app')
-
 @section('pagename', $pageName)
 @section('css')
     <style>
-
         .input-icons i {
             position: absolute;
         }
@@ -63,7 +61,6 @@
 @stop
 @section('content')
 
-
     <div class="container-fluid">
         <div class="row" id="error">
             <div class="col-md-12">
@@ -97,144 +94,44 @@
                     <div class="input-group">
                         <div class="input-group-prepend" >
                             <div class="col-md-12">
-                                <div class="title-block"  data-toggle="modal" id="createRoom" data-target="#myModal">
+                                <div class="title-block" id="createRoom" >
                                     <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i> Rooms</button></a>
                                 </div>
-{{--                                         <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" id="createRoom"  >--}}
-{{--                                             <i class="fa fa-plus-circle text-center text-white pr-3"> &nbsp;Meeting--}}
-{{--                                             </i>--}}
-{{--                                         </span>--}}
                             </div>
 
                         </div>
 
                     </div>
-                    @if(count($roomList)>0)
-                        <section class="example">
+                    <section class="example">
+                        <room-list delete-route="{{route('rooms.destroy',':id')}}" create-room-route="{{route('rooms.store')}}" update-room-route="{{route('rooms.update',':id')}}" single-room-route="{{route('rooms.edit',':id')}}" room-route="{{route('roomList')}}" room-details="{{route('showMeetingDetails',':id')}}" join-url="{{ route('JoinMeetings',':id') }}"></room-list>
+                    </section>
 
-
-                            <div class="row">
-                                <div class="col-sm-6 col-sm-offset-5">
-                                    {{$roomList->links()}}
-                                </div>
-                            </div>
-                            <div class="table-responsive ">
-                                <table class="table table-bordered table-hover">
-                                    <thead>
-                                    <tr>
-                                        <th>Room Name</th>
-                                        <th>Create Date</th>
-                                        <th>Created By</th>
-                                        <th>Invite Participants</th>
-                                        <th>Details</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach($roomList as $list)
-                                        <tr>
-                                            <td>{{$list->name}}</td>
-                                            <td>{{$list->created_at->diffForHumans()}}</td>
-                                            <td>{{$list->user->name}}</td>
-                                            <td contenteditable="true">{{url()->current().'/'.$list->url}}</td>
-                                            <td><a href="{{route('showMeetingDetails',$list->url)}}" class="btn btn-sm btn-info">Show Details</a></td>
-                                            <td>
-                                                <a href="{{ route('JoinMeetings',[$list->url]) }}" class="btn btn-sm  btn-primary-outline ">Start</a>
-                                                |
-                                                <span data-task="{{$list->id}}"  class="btn btn-sm btn-info-outline btn-manage">
-                                                    <i class="fa fa-edit"></i> Edit
-                                                </span>
-                                                |
-                                                <span href="javascript:;" data-toggle="modal"  data-item = {{$list->id}} data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm">
-                                                    <i class="fa fa-trash"></i> Delete
-                                                </span>
-                                            </td>
-
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6 col-sm-offset-5">
-                                    {{$roomList->links()}}
-                                </div>
-                            </div>
-                        </section>
-                    @else
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <div class="card">
-                                    <div class="card-body" style="background: #fff8a0;">
-                                        <div class="col-md-7">
-                                            <p class="text-danger m-0">We're sorry,you don have any rooms.</p>
-                                        </div>
-                                        <div class="col-md-5">
-                                            <p class="text-danger pt-1">To Create a new room,press the "Room" button</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
 
         </div>
     </div>
 
-
-    <div id="dataModal">
-
-        @include('admin.meetings.addMeetingModal')
-        <div id="editModal" class="modal fade" role="dialog">
-        </div>
-        @include('public.rooms.deleteRoomModal')
-    </div>
-
-
     <br>
-
-
-
 
 @endsection
 
 
 @section('script')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         url = '{{URL::to('rooms/:id/edit')}}';
-
         action =  "{{URL::to('rooms')}}/:deleteId";
     </script>
     <script>
         $(document).ready(function () {
 
             $('#createRoom').on('click',function () {
-                $('#dataModal').find('.room_access_code').val('');
-                $('#dataModal').find('.create-room-access-code').text('Generate an optional room access code')
-
+              $('#myModal').modal('show')
             });
-            $('#dataModal').on('click','.generate_access_code',function () {
 
-                var arr = [];
-                while(arr.length < 6){
-                    var r = Math.floor(Math.random() * 9) + 1;
-                    if(arr.indexOf(r) === -1) arr.push(r);
-                }
-                $('#dataModal').find('.room_access_code').val(arr.join(''));
-                $('#dataModal').find('.create-room-access-code').text('Access Code: '+arr.join(''))
-
-            });
-            $('#dataModal').on('click','.delete-icon',function () {
-
-
-                $('#dataModal').find('.room_access_code').val('');
-                $('#dataModal').find('.create-room-access-code').text('Generate an optional room access code')
-
-            });
             $('.attendeeJoin').on('click',function () {
                 let meeting = $(this).data('id');
                 setInterval(function () {
@@ -262,32 +159,7 @@
                 },2000);
 
             });
-            $('.btn-manage').on('click', function () {
 
-                var id = $(this).data('task');
-                url = url.replace(':id', id);
-
-                $.get(url, function (data) {
-                    $('#editModal').empty().append(data);
-                   $('#editModal').modal('show');
-                });
-                url = url.replace(id,':id');
-            });
-
-            $('.btnDeleteConfirm').on('click',function () {
-
-
-                id = $(this).data('item');
-                deleteData(id)
-            });
-            function deleteData(id)
-            {
-                action = action.replace(':deleteId', id);
-                $("#deleteForm").prop('action', action);
-            }
-            $('.btnDelete').on('click',function () {
-                $("#deleteForm").submit();
-            });
         });
 
 

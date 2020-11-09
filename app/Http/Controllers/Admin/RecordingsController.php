@@ -341,6 +341,7 @@ class RecordingsController extends Controller
 
 
 
+
             $pageName = 'Meeting Recordings';
             return view('admin.recording.invited-rooms',with([
 

@@ -15,7 +15,33 @@ window.Vue = require('vue');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+
+Vue.component('upcoming-meetings', require('./components/Meetings/UpcomingMeetings.vue'));
+Vue.component('past-meetings', require('./components/Meetings/PastMeetings.vue'));
+Vue.component('delete-modal',require('./components/Meetings/deleteModal.vue'));
+Vue.component('room-list',require('./components/Rooms/roomList.vue'));
+
+export const eventBus = new Vue({
+    methods: {
+        deleteID (data) {
+            this.$emit('deleteId', data);
+
+            },
+        upcomingMeetings(data)
+        {
+            this.$emit('upcomingMeeting', data);
+
+        },
+        pastMeetings(data)
+        {
+            this.$emit('pastMeetings', data);
+
+        },
+
+
+
+    },
+});
 
 const app = new Vue({
     el: '#app'

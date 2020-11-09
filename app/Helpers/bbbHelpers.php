@@ -40,6 +40,7 @@ class bbbHelpers
             {
 
 
+
                 self::$createMeetingParams->setMuteOnStart($params['muteAllUser']);
                 self::$createMeetingParams->setLockSettingsDisableMic($params['muteAllUser']);
 

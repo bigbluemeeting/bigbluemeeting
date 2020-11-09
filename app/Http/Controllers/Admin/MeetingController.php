@@ -7,6 +7,7 @@ use App\bigbluebutton\tests\TestCase;
 use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RoomRequest;
 use App\Meeting;
 use App\Room;
 use App\User;
@@ -48,6 +49,7 @@ class MeetingController extends Controller
     {
 
         try{
+
             $pageName ='Rooms List';
 
             $user = User::FindOrFail(Auth::id());
@@ -55,6 +57,7 @@ class MeetingController extends Controller
             $roomList =$user->meetings()
                 ->orderBy('id','DESC')
                 ->paginate(10);
+
 
 
 
@@ -68,6 +71,22 @@ class MeetingController extends Controller
 
 
 
+    }
+
+
+    public function getRoomLists()
+    {
+        try{
+
+            $user = User::FindOrFail(Auth::id());
+            $roomList =$user->meetings()
+                ->orderBy('id','DESC')
+                ->paginate(10);
+            return \request()->json(200,$roomList);
+        }catch (\Exception $exception)
+        {
+            return \request()->json(['error'=>$exception]);
+        }
     }
 
 
@@ -87,18 +106,12 @@ class MeetingController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RoomRequest $request)
     {
         //
 
 
         try{
-            $this->middleware('auth');
-            $request->validate([
-                'name' => 'required|max:50',
-
-
-            ]);
 
             $credentials = bbbHelpers::setCredentials();
             if (!$credentials)
@@ -119,23 +132,25 @@ class MeetingController extends Controller
             $meeting->url =strtolower($user->name).'-'.Str::random(4).'-'.$meeting->id.Str::random(2);
             $meeting->save();
 
-            $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+            return $this->getRoomLists();
 
-            $this->meetingsParams = [
-                'meetingUrl' => $meeting->url,
-                'meetingName' =>  $request->input('name'),
-                'attendeePassword' => decrypt($this->data['attendee_password']),
-                'moderatorPassword' => $user->password,
-                'muteAllUser' => $this->data['mute_on_join'] ? true :false,
-                'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
-                'logoutUrl' => $this->logoutUrl,
-                'setRecord' =>true,
-                'username' => $user->username,
-
-            ];
-
-            $this->autoJoin = $this->data['auto_join'];
-            return $this->createMeeting('create');
+//            $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+//
+//            $this->meetingsParams = [
+//                'meetingUrl' => $meeting->url,
+//                'meetingName' =>  $request->input('name'),
+//                'attendeePassword' => decrypt($this->data['attendee_password']),
+//                'moderatorPassword' => $user->password,
+//                'muteAllUser' => $this->data['mute_on_join'] ? true :false,
+//                'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
+//                'logoutUrl' => $this->logoutUrl,
+//                'setRecord' =>true,
+//                'username' => $user->username,
+//
+//            ];
+//
+//            $this->autoJoin = $this->data['auto_join'];
+//            return $this->createMeeting('create');
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
@@ -160,7 +175,7 @@ class MeetingController extends Controller
 
         try
         {
-              bbbHelpers::setMeetingParams($this->meetingsParams);
+            bbbHelpers::setMeetingParams($this->meetingsParams);
             $response = bbbHelpers::createMeeting();
             if ($response->getReturnCode() == 'FAILED') {
                 return 'Can\'t create room! please contact our administrator.';
@@ -267,7 +282,9 @@ class MeetingController extends Controller
 
         try{
             $meeting = Meeting::findOrFail($meeting);
-            return view('admin.meetings.editMeetingModal',compact('meeting'));
+            return response()->json(['result' =>$meeting]);
+
+
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
@@ -282,31 +299,14 @@ class MeetingController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $meeting)
+    public function update(RoomRequest $request, $meeting)
     {
-        //
-
         try{
-            $request->validate([
-            'name' => 'required|max:50',
-                ]);
-
-            $credentials = bbbHelpers::setCredentials();
-            if (!$credentials)
-            {
-                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
-            }
-
-            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
-
-            $response = $bbb->getMeetings();
-
             $meeting = Meeting::findOrFail($meeting);
             $this->data = $request->all();
             $this->setDefaultData($request);
-            $this->updateMeeting($meeting);
+           return $this->updateMeeting($meeting);
 
-            return redirect()->back()->with(['success'=>'Rooms Updated Successfully']);
 
         }catch (\Exception $exception)
         {
@@ -322,42 +322,8 @@ class MeetingController extends Controller
     {
         try{
             $meeting->update($this->data);
-            $user = Auth::user();
-            $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
-            $this->meetingsParams = [
-                'meetingUrl' => $meeting->url,
-                'meetingName' =>  $this->data['name'],
-                'attendeePassword' => decrypt($meeting['attendee_password']),
-                'moderatorPassword' => $user->password,
-//            $this->data['mute_on_join'] ? true :false,
-                'muteAllUser' => true,
-                'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
-                'logoutUrl' => $this->logoutUrl,
-                'setRecord' =>true,
-                'username' => $user->username,
+            return $this->getRoomLists();
 
-            ];
-            return $this->createMeeting('create');
-//            $credentials = bbbHelpers::setCredentials();
-//            if (!$credentials)
-//            {
-//                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
-//            }
-//            $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
-
-//            $getMeetingInfoParams = new GetMeetingInfoParameters($meeting->url,$user->password);
-//            $response = $bbb->getMeetingInfo($getMeetingInfoParams);
-//
-//            if ($response->getReturnCode() == 'FAILED')
-//            {
-//
-//                return $this->createMeeting('create');
-//            }else{
-//
-//                $endMeetingParams = new EndMeetingParameters($meeting->url,$user->password);
-//                $response = $bbb->endMeeting($endMeetingParams);
-//                return $this->createMeeting('create');
-//            }
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
@@ -377,9 +343,13 @@ class MeetingController extends Controller
     {
 
         try{
+
+
+//            dd($meeting);
             $meeting = Meeting::findOrFail($meeting);
             $meeting->delete();
-            return redirect()->back()->with(['success'=>'Rooms Deleted Successfully !!']);
+            return $this->getRoomLists();
+//            return redirect()->back()->with(['success'=>'Rooms Deleted Successfully !!']);
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);

@@ -26,7 +26,7 @@
                             <input id="edit-max-people" class="form-control text-center" value="" placeholder="Enter a Maximum People..." autocomplete="off" type="text" name="maximum_people">
                         </div>
                     </div>
-                    <label for="start_date" class="mt-2" >Room Start on</label>
+                    <label for="start_date" class="mt-2" >Meeting Start on</label>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
@@ -39,17 +39,6 @@
                             </div>
                         </div>
                         <p class="mt-2 ml-3">at</p>
-{{--                        <div class="col-sm-5 clockpicker1">--}}
-{{--                            <div class="input-group">--}}
-{{--                                <input type="text" name="startTime" class="form-control startTime" id="">--}}
-{{--                                <div class="input-group-append">--}}
-{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
-{{--                                                <i class="fa fa-clock-o"></i>--}}
-{{--                                            </span>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
                         <div class="col-sm-5">
                             <div class="form-group">
                                 <div class="input-group date" id="datetimepicker4" data-target-input="nearest">
@@ -62,7 +51,7 @@
                         </div>
 
                     </div>
-                    <label for="end_date">Room End on</label>
+                    <label for="end_date">Meeting End on</label>
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="input-group">
@@ -75,17 +64,6 @@
                             </div>
                         </div>
                         <p class="mt-2 ml-3">at</p>
-{{--                        <div class="col-sm-5 clockpicker2">--}}
-{{--                            <div class="input-group">--}}
-{{--                                <input type="text" name="endTime" class="form-control endTime" id="" >--}}
-{{--                                <div class="input-group-append">--}}
-{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
-{{--                                                <i class="fa fa-clock-o"></i>--}}
-{{--                                            </span>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-
 
                         <div class="col-sm-5">
                             <div class="form-group">
@@ -114,7 +92,7 @@
 
                     <div class="row mt-2">
                         <div class="col-md-6">
-                            <label>Record This Room</label>
+                            <label>Record This Meeting</label>
                             <select name="meeting_record"  class="form-control meeting_record">
                                 <option value="0">No,don't record it.</option>
                                 <option value="1">Record it.</option>
@@ -146,16 +124,6 @@
                             </div>
                         </div>
 
-                        <div class="row mt-2">
-                            <div class="col-sm-8">
-                                <label for="room_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">
-                                    Require moderator approval before joining
-                                </label>
-                            </div>
-                            <div class="col-sm-3  mt-4">
-                                <input class="custom-switch-input require_moderator_approval" data-default="false" type="checkbox" value="1" name="require_moderator_approval" autocomplete="off">
-                            </div>
-                        </div>
                     </div>
 
 
@@ -169,10 +137,7 @@
                     {!! Form::close() !!}
                 </div>
             </div>
-            <div class="modal-footer">
-                <h6 style="margin-right: 60px;">You will be free to delete this room at any time.</h6>
-                <p class="update-only" style="display:none !important">Adjustment to your room can be done at anytime.</p>
-            </div>
+
         </div>
 
     </div>

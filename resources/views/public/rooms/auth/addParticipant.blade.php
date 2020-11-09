@@ -207,7 +207,7 @@
                                     <tbody>
                                     @foreach($files as $file)
                                         <tr class="row-data-{{$file->id}}">
-                                            <td><a href="{{\App\Files::Folder.$file->name}}">{{$file->name}}</a></td>
+                                            <td><a href="{{asset(\App\Files::Folder).'/'.$file->name}}">{{$file->name}}</a></td>
                                             <td>{{\Carbon\Carbon::parse($file->upload_date)->format('Y-m-d h:m A')}}</td>
                                             <td>{{$file->type}}</td>
                                             <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
