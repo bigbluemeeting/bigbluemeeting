@@ -50,18 +50,16 @@ class MeetingController extends Controller
 
         try{
 
+//            https://5df16.bigbluemeeting.com/bigbluebutton/
+
             $pageName ='Rooms List';
+            $credentials = bbbHelpers::setCredentials();
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
 
-            $user = User::FindOrFail(Auth::id());
-
-            $roomList =$user->meetings()
-                ->orderBy('id','DESC')
-                ->paginate(10);
-
-
-
-
-            return view('admin.meetings.index',['roomList'=>$roomList,'pageName'=>$pageName]);
+            return view('admin.meetings.index',['pageName'=>$pageName]);
 
 
         }catch (\Exception $exception)
@@ -74,7 +72,7 @@ class MeetingController extends Controller
     }
 
 
-    public function getRoomLists()
+    public function getRoomLists($autoJoin=null)
     {
         try{
 
@@ -82,7 +80,21 @@ class MeetingController extends Controller
             $roomList =$user->meetings()
                 ->orderBy('id','DESC')
                 ->paginate(10);
-            return \request()->json(200,$roomList);
+
+
+            $url='';
+            if ($autoJoin)
+            {
+                $joinMeetingParams = [
+
+                    'meetingId'  => $this->meetingsParams['meetingUrl'],
+                    'username'   => $this->meetingsParams['username'],
+                    'password'   => $this->meetingsParams['moderatorPassword']
+                ];
+                $url = bbbHelpers::joinMeeting($joinMeetingParams);
+            }
+
+            return \request()->json(200,['rooms'=>$roomList,'autoJoin'=>$autoJoin,'url'=>$url]);
         }catch (\Exception $exception)
         {
             return \request()->json(['error'=>$exception]);
@@ -112,13 +124,7 @@ class MeetingController extends Controller
 
 
         try{
-
             $credentials = bbbHelpers::setCredentials();
-            if (!$credentials)
-            {
-                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
-            }
-
             $bbb = new BigBlueButton($credentials['base_url'],$credentials['secret']);
 
             $response = $bbb->getMeetings();
@@ -132,25 +138,28 @@ class MeetingController extends Controller
             $meeting->url =strtolower($user->name).'-'.Str::random(4).'-'.$meeting->id.Str::random(2);
             $meeting->save();
 
-            return $this->getRoomLists();
+            $autoJoin=0;
+            if ($request->has('auto_join'))
+            {
+                $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+                $this->meetingsParams = [
+                    'meetingUrl' => $meeting->url,
+                    'meetingName' =>  $request->input('name'),
+                    'attendeePassword' => decrypt($this->data['attendee_password']),
+                    'moderatorPassword' => $user->password,
+                    'muteAllUser' => $this->data['mute_on_join'] ? true :false,
+                    'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
+                    'logoutUrl' => $this->logoutUrl,
+                    'setRecord' =>true,
+                    'username' => $user->username,
 
-//            $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
-//
-//            $this->meetingsParams = [
-//                'meetingUrl' => $meeting->url,
-//                'meetingName' =>  $request->input('name'),
-//                'attendeePassword' => decrypt($this->data['attendee_password']),
-//                'moderatorPassword' => $user->password,
-//                'muteAllUser' => $this->data['mute_on_join'] ? true :false,
-//                'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
-//                'logoutUrl' => $this->logoutUrl,
-//                'setRecord' =>true,
-//                'username' => $user->username,
-//
-//            ];
-//
-//            $this->autoJoin = $this->data['auto_join'];
-//            return $this->createMeeting('create');
+                ];
+                bbbHelpers::setMeetingParams($this->meetingsParams);
+                $meetingResponse = bbbHelpers::createMeeting();
+                $autoJoin=1;
+            }
+            return $this->getRoomLists($autoJoin);
+
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
@@ -303,6 +312,7 @@ class MeetingController extends Controller
     {
         try{
             $meeting = Meeting::findOrFail($meeting);
+
             $this->data = $request->all();
             $this->setDefaultData($request);
            return $this->updateMeeting($meeting);
@@ -322,7 +332,28 @@ class MeetingController extends Controller
     {
         try{
             $meeting->update($this->data);
-            return $this->getRoomLists();
+            $autoJoin=0;
+            $user = User::findOrFail(Auth::id());
+            if ($this->data['auto_join'])
+            {
+                $this->logoutUrl = url($this->logoutUrl.'/'.$meeting->url);
+                $this->meetingsParams = [
+                    'meetingUrl' => $meeting->url,
+                    'meetingName' =>  $this->data['name'],
+                    'attendeePassword' => decrypt($this->data['attendee_password']),
+                    'moderatorPassword' => $user->password,
+                    'muteAllUser' => $this->data['mute_on_join'] ? true :false,
+                    'moderator_approval' =>$this->data['require_moderator_approval'] ? true :false,
+                    'logoutUrl' => $this->logoutUrl,
+                    'setRecord' =>true,
+                    'username' => $user->username,
+
+                ];
+                bbbHelpers::setMeetingParams($this->meetingsParams);
+                $meetingResponse = bbbHelpers::createMeeting();
+                $autoJoin=1;
+            }
+            return $this->getRoomLists($autoJoin);
 
         }catch (\Exception $exception)
         {

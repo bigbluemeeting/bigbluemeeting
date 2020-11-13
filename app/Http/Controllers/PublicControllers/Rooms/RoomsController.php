@@ -52,6 +52,11 @@ class RoomsController extends Controller
 
 
         try {
+            $credentials = bbbHelpers::setCredentials();
+            if (!$credentials)
+            {
+                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+            }
             $pageName = 'Meetings List';
 
 
@@ -117,7 +122,6 @@ class RoomsController extends Controller
 
     public function store(MeetingsRequest $request)
     {
-
 
         try{
 

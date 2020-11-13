@@ -99,7 +99,10 @@
 
         created(){
             axios.get(this.roomRoute)
-                .then((response) => {this.rooms = response.data})
+                .then((response) => {
+                    this.rooms = response.data.rooms;
+
+                })
                 .catch((error) =>console.log(error));
 
         },
@@ -121,11 +124,18 @@
             },
             getResults(page = 1) {
                 axios.get(this.roomRoute+'?page=' + page)
-                    .then(response => this.rooms = response.data).catch(error=>console.log(error));
+
+                    .then(response => this.rooms = response.data.rooms ).catch(error=>console.log(error));
             },
             upgradeRoomList(rooms)
             {
-                this.rooms = rooms.data
+                this.rooms = rooms.data.rooms;
+
+                if(rooms.data.autoJoin)
+                {
+                    window.location = rooms.data.url;
+                }
+
             },
             getSingleRoomRecord(id)
             {

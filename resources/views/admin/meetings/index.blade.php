@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
+
 @section('pagename', $pageName)
+
 @section('css')
     <style>
         .input-icons i {
@@ -59,8 +61,11 @@
 
     </style>
 @stop
-@section('content')
 
+@section('content')
+    <div class="title-block">
+        <h3 class="title"> {{ $pageName }} </h3>
+    </div>
     <div class="container-fluid">
         <div class="row" id="error">
             <div class="col-md-12">
@@ -69,8 +74,6 @@
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         There was an error creating the room
                     </div>
-
-
                 @endif
             </div>
         </div>
@@ -116,10 +119,8 @@
 
 @endsection
 
-
 @section('script')
     <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
-
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
         url = '{{URL::to('rooms/:id/edit')}}';

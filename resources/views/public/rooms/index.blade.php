@@ -87,7 +87,6 @@
 
 @section('script')
     <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
-
     <script src="{{ asset('js/app.js') }}"></script>
     <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="application/javascript"  src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
