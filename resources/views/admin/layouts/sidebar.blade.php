@@ -8,7 +8,7 @@
                     <span class="l l3"></span>
                     <span class="l l4"></span>
                     <span class="l l5"></span>
-                </div> {{ env('APP_NAME') }} </div>
+                </div> {{config('global.app_name') }} </div>
         </div>
         <nav class="menu">
             <ul class="sidebar-menu metismenu" id="sidebar-menu">
@@ -66,7 +66,7 @@
                     <a href="{{ route('files.index') }}">
 
                         <i class="fa fa-files-o"></i> Files
-                        <i class="fa arrow"></i>
+{{--                        <i class="fa arrow"></i>--}}
                     </a>
                     {{--                    <a href="{{ route('files.index') }}">--}}
                     {{--                        <i class="fa fa-files-o"></i> Files </a>--}}
@@ -87,6 +87,17 @@
 
                     </ul>
                 </li>
+{{--                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))--}}
+                @can('users_manage')
+                <li>
+                    <a href="{{ route('mail.index') }}">
+
+                        <i class="fa fa-envelope"></i> E-mail Preferences
+                        {{--                        <i class="fa arrow"></i>--}}
+                    </a>
+
+                </li>
+                @endcan
                 @can('users_manage')
                     <li class="{{ (Request::is('admin/users*') || Request::is('admin/roles*')) ? 'active open' : '' }}">
                         <a href="">
@@ -105,6 +116,7 @@
 
 
                 @endcan
+
 
 
 

@@ -74,10 +74,11 @@
                             </tbody>
                         </table>
                         <hr >
-                        <div class="container-fluid">
+                        <div class="container-fluid" >
                             <h5><i class="fa fa-user"></i>&nbsp;&nbsp;Meeting Participants</h5>
                         </div>
-                        <div class="input-group">
+                        @if(!$pastMeeting)
+                        <div class="input-group" >
                             <div class="input-group-prepend">
                                 <div class="col-md-11 mt-2">
                                     <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" data-target="#myModal"id="createRoom">
@@ -86,6 +87,7 @@
                                 </div>
                             </div>
                             </div>
+                            @endif
                         </div>
 
 
@@ -127,8 +129,13 @@
                                         <div class="card">
                                             <div class="card-body" style="background: #fff8a0;">
                                                 <div class="col-md-7" >
-                                                    <p class="text-danger m-0">There are currently no participants invited to your meeting.</p>
-                                                    <p class="text-danger pt-1">To participants to this meeting,click the blue button on the top left.</p>
+                                                    <p class="text-danger m-0">There are no participants invited to this meeting.</p>
+
+                                                    @if(!$pastMeeting)
+                                                        <p class="text-danger pt-1">To participants to this meeting,click the blue button on the top left.</p>
+                                                    @else
+
+                                                    @endif
                                                 </div>
 
                                             </div>
@@ -148,10 +155,11 @@
                             </div>
 
 
-                        <div class="table-responsive">
+                        <div class="table-responsive" >
                             <div class="col-md-12">
                                 <table class="table table-hover table-bordered">
                                     <thead>
+                                    @if(!$pastMeeting)
                                     <tr>
                                         <th class="bg-light  form-header" colspan="5">
                                             <form id="fileupload" action="{{ route('files.store') }}" method="post" enctype="multipart/form-data">
@@ -195,6 +203,7 @@
 
                                         </th>
                                     </tr>
+                                    @endif
                                     @if(count($files)>0)
                                         <tr>
                                             <th>File</th>
@@ -219,9 +228,26 @@
                                         </tr>
                                     @endforeach
                                     </tbody>
-
                                     @endif
                                 </table>
+                                @if(count($files)==0)
+
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <div class="card">
+                                                <div class="card-body" style="background: #fff8a0;">
+                                                    <div class="col-md-7" >
+                                                        <p class="text-danger m-0">There are no files added to this meeting.</p>
+                                                        @if(!$pastMeeting)
+                                                            <p class="text-danger pt-1">To add files to this meeting,click the "Add Files" on the top left.</p>
+                                                        @endif
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
                             </div>
                         </div>
 

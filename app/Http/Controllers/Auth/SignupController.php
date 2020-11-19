@@ -133,7 +133,7 @@ class SignupController extends Controller
             }
 
             Auth::login($user);
-            return redirect()->to('admin/dashboard');
+            return redirect()->to(route('invitedMeetings'));
 
         }catch (\Exception $exception)
         {

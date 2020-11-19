@@ -33,7 +33,7 @@
                 </tbody>
             </table>
         </div>
-        <div v-else class="card bg-light">
+        <div v-if="meetings.total === 0" class="card bg-light">
             <div class="card-body">
                 <div class="card">
                     <div class="card-body" id="warning-dev">

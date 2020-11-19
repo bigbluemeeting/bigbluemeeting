@@ -186,7 +186,7 @@
                         </form>
                     </div>
 
-                    <a href="{{route('subscribe',1)}}">{{route('subscribe',2)}}</a>
+{{--                    <a href="{{route('subscribe',1)}}">{{route('subscribe',2)}}</a>--}}
 
                 </div>
 

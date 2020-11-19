@@ -396,9 +396,22 @@ class RoomsController extends Controller
     public function showDetails($url)
     {
         try{
+//            $user = User::findOrFail(Auth::id());
+            $currentDate = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+//
+//            $pastMeetings = $user->rooms()
+//                ->where('end_date', '<', $currentDate)
+//                ->orderBy('id', 'DESC')
+//                ->paginate(10);
+//            dd($pastMeetings);
             $pageName = "Invite Participants";
             $meeting = Room::where('url',$url)
                 ->firstOrFail();
+            $pastMeeting = false;
+            if ($meeting->end_date < $currentDate)
+            {
+                $pastMeeting = true;
+            }
 
 
             $attendees = $meeting->attendees()
@@ -406,11 +419,10 @@ class RoomsController extends Controller
                 ->paginate(10);
 
 
-//        dd($meeting->files);
-//        $files = [];
+
             $files = $meeting->files()->paginate(10);
 
-            return view('public.rooms.auth.addParticipant',compact('pageName','meeting','attendees','files'));
+            return view('public.rooms.auth.addParticipant',compact('pageName','pastMeeting','meeting','attendees','files'));
 
         }catch (\Exception $exception)
         {
@@ -425,6 +437,7 @@ class RoomsController extends Controller
 
 
         try{
+
             if(empty($request->emails))
             {
                 return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
@@ -444,11 +457,19 @@ class RoomsController extends Controller
             foreach ($validEmails as $email)
             {
                 $user = User::where('email',$email)->first();
-                $attendeeCount = Attendee::where('email',$email)->count();
+
+                $attendeeCount=Attendee::with('rooms')
+                    ->where('email',$email)
+                    ->get()
+                    ->pluck('rooms')->collapse()
+                    ->where('url',$request->room)
+                    ->count();
+                $sendEmails[] = $email;
+
+
                 if (!$attendeeCount > 0)
                 {
 
-                    $sendEmails[] = $email;
                     $attendee = Attendee::create(['email'=>!empty($user) ? $user->email : $email,'user_id'=>!empty($user) ? $user->id :'0']);
                     $attendee->rooms()->attach($room->id);
 
@@ -471,7 +492,7 @@ class RoomsController extends Controller
 
 
 
-            $url =url('/').'/rooms/'.$room->url;
+            $url =url('/').'/meetings/'.$room->url;
             $user = \auth()->user();
             $header = nl2br(str_replace([
                 '[meeting:name]',

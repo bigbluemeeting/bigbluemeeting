@@ -36,17 +36,17 @@
                         <span class="l l3"></span>
                         <span class="l l4"></span>
                         <span class="l l5"></span>
-                    </div> {{ env('APP_NAME') }} </h1>
+                    </div>  {{!empty(config('global.app_name'))? config('global.app_name'):''}} </h1>
             </header>
             <div class="auth-content">
                 <p class="text-center">LOGIN TO CONTINUE</p>
                 <form id="login-form" action="{{ route('login') }}" method="POST">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="form-group {{ $errors->has('email') ? 'has-error':'' }}">
-                        <label for="username">E-Mail Address</label>
-                        <input type="text" class="form-control underlined" name="email" id="email" placeholder="Your email address">
-                        @if ($errors->has('email'))
-                            <span class="has-error">{{ $errors->first('email') }}</span>
+                        <label for="username">E-Mail Address or Username</label>
+                        <input type="text" class="form-control underlined" name="email" id="email" placeholder="Your email address"  value="{{old('email')}}">
+                        @if ($errors->has('email')||$errors->has('username'))
+                            <span class="text-danger">{{ $errors->first('email') }} {{ $errors->first('username')}}</span>
                         @endif
                     </div>
                     <div class="form-group {{ $errors->has('password') ? 'has-error':'' }}">

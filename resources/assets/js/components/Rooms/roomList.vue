@@ -38,7 +38,7 @@
                 </tbody>
             </table>
         </div>
-        <div v-else class="card bg-light">
+        <div v-if="rooms.total === 0" class="card bg-light">
             <div class="card-body">
                 <div class="card">
                     <div class="card-body" style="background: #fff8a0;">
@@ -53,7 +53,6 @@
             </div>
         </div>
         <div class="row">
-
             <div class="col-sm-6 col-sm-offset-5">
                 <pagination :data="rooms" @pagination-change-page="getResults"></pagination>
             </div>

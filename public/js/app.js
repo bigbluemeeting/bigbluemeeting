@@ -48120,7 +48120,11 @@ var render = function() {
               )
             ])
           ])
-        : _c("div", { staticClass: "card bg-light" }, [_vm._m(1)]),
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.meetings.total === 0
+        ? _c("div", { staticClass: "card bg-light" }, [_vm._m(1)])
+        : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c(
@@ -48500,7 +48504,11 @@ var render = function() {
             )
           ])
         ])
-      : _c("div", { staticClass: "card bg-light" }, [_vm._m(1)]),
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.meetings.total === 0
+      ? _c("div", { staticClass: "card bg-light" }, [_vm._m(1)])
+      : _vm._e(),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
       _c(
@@ -48907,7 +48915,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -48918,7 +48926,6 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
 //
 //
 //
@@ -51016,7 +51023,11 @@ var render = function() {
               )
             ])
           ])
-        : _c("div", { staticClass: "card bg-light" }, [_vm._m(1)]),
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.rooms.total === 0
+        ? _c("div", { staticClass: "card bg-light" }, [_vm._m(1)])
+        : _vm._e(),
       _vm._v(" "),
       _c("div", { staticClass: "row" }, [
         _c(

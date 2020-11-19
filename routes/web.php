@@ -75,7 +75,7 @@ Route::get('/', function () {
  */
 Route::group(['middleware'=>'auth'],function(){
 
-    Route::get('meetings/invited-rooms','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
+    Route::get('meetings/invited-meetings','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
     Route::get('meetings/details/{url}','PublicControllers\Rooms\RoomsController@showDetails')->name('showDetails');
     Route::get('meetings/attendee/{url}','PublicControllers\Rooms\RoomsController@deleteAttendee')->name('deleteAttendee');
     Route::post('/meetings/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
