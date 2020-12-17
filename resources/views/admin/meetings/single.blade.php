@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload-ui.min.css">
 
     <style>
-        .inner-table td {
-            border: none !important;
-            border-bottom: 1px solid #dee2e6 !important;
+        /*.inner-table td {*/
+        /*    border: none !important;*/
+        /*    border-bottom: 1px solid #dee2e6 !important;*/
 
-        }
+        /*}*/
     </style>
 @stop
 @section('content')
@@ -150,12 +150,9 @@
         var csrf = '{{csrf_token()}}';
         action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
         currentUrl ="{{url()->current()}}";
-
-
-
     </script>
-
-    <script src="{{asset('js/bbb-delete.js')}}"></script>
+    <script src="{{asset('js/bbb-custom.js')}}"></script>
+{{--    <script src="{{asset('js/bbb-delete.js')}}"></script>--}}
 
 
 @stop

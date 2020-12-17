@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="{{asset('css/front.css?var=time()')}}">
 @stop
 @section('content')
+    <div id="data">
+
+
     <div class="container-fluid mt-4">
         <div class="row bg-light pt-5 pl-4">
             <div class="col-md-12" style="padding-left: 12%;">
@@ -54,7 +57,7 @@
                 <div class="col-md-12">
                     @if (count($roomsRecordingList) > 0)
 
-                        <table class="table table-bordered table-hover" id="table" >
+                        <table class="table table-bordered table-hover" id="InvitedMeetingTable" >
                             <thead>
                             <tr>
                                 <th>Name</th>
@@ -99,6 +102,7 @@
             </div>
         </div>
     </div>
+    </div>
 @endsection
 @section('script')
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
@@ -106,81 +110,74 @@
 
     <!-- Data Bootstarp -->
     <script type="text/javascript" src={{asset('js/dataTables.bootstrap4.min.js')}}></script>
-
     <script>
-        $(document).ready(function () {
-            var time;
-            var frmData;
-            var table =  $('#table').DataTable({
-                pagingType: 'full_numbers',
-                lengthMenu :[[5,10,25,50,-1],[5,10,25,50,'All']],
-                "initComplete": function () {
-                    var api = this.api();
-                    api.$('td').click( function () {
-                        api.search( this.innerHTML ).draw();
-                    });
-                }
-            });
-
-            $('#frm').on('submit',function (e) {
-                e.preventDefault();
-                frmData =$(this).serialize();
-                time = setTimeout(function () {
-                    jsonResult()
-                },1000);
-
-            });
-            function jsonResult() {
-                $.post('{{route("attendeeJoin")}}',frmData,
-                    function (data,xhrStatus,xhr) {
-                        if (data.error)
-                        {
-                            $('#error').html(data.error[0]);
-                            clearInterval(time);
-                        }
-                        if (data.notStart)
-                        {
-                            $('.input-group').html(`
-                                                <div>
-                                                <h4>This meeting hasn't started yet.</h4>
-                                                <p>You will automatically  join when the meeting starts.</p>
-                                                </div>
-                                            <span class="input-group-append ml-5 mb-1">
-                                            <div id="overlay">
-                                                <div class="cv-spinner">
-                                                    <span class="newspinner"></span>
-                                                </div>
-                                            </div>
-                                            </span>`);
-                            $('#errorDiv').empty();
-                            setTimeout(jsonResult,15000)
-                        }
-                        if (data.full)
-                        {
-                            $('.input-group').html(`
-                                                <div>
-                                                <h4>This meeting room full.</h4>
-                                                <p>You will automatically  join when any slot available.</p>
-                                                </div>
-                                            <span class="input-group-append ml-5 mb-1">
-                                            <div id="overlay">
-                                                <div class="cv-spinner">
-                                                    <span class="newspinner"></span>
-                                                </div>
-                                            </div>
-                                            </span>`);
-                            $('#errorDiv').empty();
-                            setTimeout(jsonResult,15000)
-                        }
-                        if (data.url)
-                        {
-                            window.location =data.url;
-                        }
-                    });
-            }
-
-        });
-
-
+        var join ='{{route("attendeeJoin")}}';
     </script>
+    <script src="{{asset('js/front/meetings/bbb-front.js')}}"></script>
+
+{{--    <script>--}}
+{{--        $(document).ready(function () {--}}
+{{--          --}}
+
+{{--            // $('#frm').on('submit',function (e) {--}}
+{{--            //     e.preventDefault();--}}
+{{--            //     frmData =$(this).serialize();--}}
+{{--            //     time = setTimeout(function () {--}}
+{{--            //         jsonResult()--}}
+{{--            //     },1000);--}}
+{{--            //--}}
+{{--            // });--}}
+{{--            // function jsonResult() {--}}
+{{--            //     $.post(join,frmData,--}}
+{{--            //         function (data,xhrStatus,xhr) {--}}
+{{--            //             if (data.error)--}}
+{{--            //             {--}}
+{{--            //                 $('#error').html(data.error[0]);--}}
+{{--            //                 clearInterval(time);--}}
+{{--            //             }--}}
+{{--            //             if (data.notStart)--}}
+{{--            //             {--}}
+{{--            //                 $('.input-group').html(`--}}
+{{--            //                                     <div>--}}
+{{--            //                                     <h4>This meeting hasn't started yet.</h4>--}}
+{{--            //                                     <p>You will automatically  join when the meeting starts.</p>--}}
+{{--            //                                     </div>--}}
+{{--            //                                 <span class="input-group-append ml-5 mb-1">--}}
+{{--            //                                 <div id="overlay">--}}
+{{--            //                                     <div class="cv-spinner">--}}
+{{--            //                                         <span class="newspinner"></span>--}}
+{{--            //                                     </div>--}}
+{{--            //                                 </div>--}}
+{{--            //                                 </span>`);--}}
+{{--            //                 $('#errorDiv').empty();--}}
+{{--            //                 setTimeout(jsonResult,15000)--}}
+{{--            //             }--}}
+{{--            //             if (data.full)--}}
+{{--            //             {--}}
+{{--            //                 $('.input-group').html(`--}}
+{{--            //                                     <div>--}}
+{{--            //                                     <h4>This meeting room full.</h4>--}}
+{{--            //                                     <p>You will automatically  join when any slot available.</p>--}}
+{{--            //                                     </div>--}}
+{{--            //                                 <span class="input-group-append ml-5 mb-1">--}}
+{{--            //                                 <div id="overlay">--}}
+{{--            //                                     <div class="cv-spinner">--}}
+{{--            //                                         <span class="newspinner"></span>--}}
+{{--            //                                     </div>--}}
+{{--            //                                 </div>--}}
+{{--            //                                 </span>`);--}}
+{{--            //                 $('#errorDiv').empty();--}}
+{{--            //                 setTimeout(jsonResult,15000)--}}
+{{--            //             }--}}
+{{--            //             if (data.url)--}}
+{{--            //             {--}}
+{{--            //                 window.location =data.url;--}}
+{{--            //             }--}}
+{{--            //         });--}}
+{{--            // }--}}
+
+{{--        });--}}
+
+
+{{--    </script>--}}
 @stop

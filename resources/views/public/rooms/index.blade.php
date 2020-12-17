@@ -44,7 +44,7 @@
                     <div class="input-group">
                         <div class="input-group-prepend" >
                             <div class="col-md-12">
-                                <div class="title-block"  data-toggle="modal" id="createRoom">
+                                <div class="title-block"  data-toggle="modal" id="createMeeting">
                                     <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i>Meeting</button></a>
                                 </div>
                             </div>
@@ -93,23 +93,7 @@
 
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
 
-    <script type="application/javascript">
-        $('#datetimepicker1').datetimepicker({
-            format: 'LT',
-        });
-        $('#datetimepicker2').datetimepicker({
-            format: 'LT',
-
-        });
-        $('#datetimepicker3').datetimepicker({
-            format: 'LT',
-        });
-        $('#datetimepicker4').datetimepicker({
-            format: 'LT',
-
-        });
-
-    </script>
+    <script src="{{asset('js/bbb-custom-meetings.js')}}"></script>
 @stop
 
 @section('js')
@@ -120,8 +104,8 @@
         url = '{{URL::to('meetings/:id/edit')}}';
         action =  "{{\Illuminate\Support\Facades\URL::to('meetings')}}/:id";
     </script>
-    <script type="application/javascript" src="{{asset('js/rooms.js?version=')}}{{time()}} "></script>
-
+{{--    <script type="application/javascript" src="{{asset('js/rooms.js?version=')}}{{time()}} "></script>--}}
+<script src="{{asset('js/bbb-meetings.js')}}"></script>
 @stop
 
 

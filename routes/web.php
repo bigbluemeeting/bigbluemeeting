@@ -38,6 +38,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin::'], function () {
             'edit'      => 'users.edit',
         ]
     ]);
+    Route::get('list/users','Admin\UsersController@userList')->name('userList');
+    Route::get('user/roles/{id}','Admin\UsersController@userRoles')->name('userRoles');
     Route::post('users_mass_destroy', ['uses' => 'Admin\UsersController@massDestroy', 'as' => 'users.mass_destroy']);
     //Spatie End
 
@@ -99,6 +101,7 @@ Route::get('/mail/subscribe/{mail}','Admin\EmailTemplateController@subscribe')->
  */
 Route::get('/meetings/upComingMeetings','PublicControllers\Rooms\RoomsController@upComingMeetings')->name('upComingMeetings');
 Route::get('/meetings/pastMeetings','PublicControllers\Rooms\RoomsController@pastMeetings')->name('pastMeetings');
+Route::get('/meetings/getInvitedMeetings','PublicControllers\Rooms\RoomsController@getInvitedMeetings')->name('getInvitedMeetings');
 
 Route::resource('/meetings','PublicControllers\Rooms\RoomsController')->except('destroy');
 Route::resource('/rooms','Admin\MeetingController');

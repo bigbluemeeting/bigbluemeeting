@@ -9,11 +9,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload-ui.min.css">
 
     <style>
-        .inner-table td {
-            border: none !important;
-            border-bottom: 1px solid #dee2e6 !important;
 
-        }
     </style>
 @stop
 @section('content')
@@ -346,16 +342,13 @@
 
 
     </script>
-
-    <script src="{{asset('js/ip.js')}}"></script>
-    <script src="{{asset('js/bbb-delete.js')}}"></script>
-
+    <script src="{{asset('js/bbb-custom.js')}}"></script>
 
 @stop
 
 @section('js')
 
-    @include('_partials.x-template')1
+    @include('_partials.x-template')
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.11.0/js/tmpl.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.17.0/load-image.all.min.js"></script>

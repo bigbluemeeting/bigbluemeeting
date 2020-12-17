@@ -24,38 +24,43 @@
 
         <div class="card card-block sameheight-item">
 
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-5">
-                    {{$roomList->links()}}
-                </div>
-            </div>
+{{--            <div class="row">--}}
+{{--                <div class="col-sm-6 col-sm-offset-5">--}}
+{{--                    {{$roomList->links()}}--}}
+{{--                </div>--}}
+{{--            </div>--}}
             <section class="example">
 
-                @if (count($roomList) > 0)
-                <table class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
-                        <th>Room Name</th>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                @if ($roomList > 0)
+                    <invited-meetings-list room-route="{{route('getInvitedMeetings')}}"></invited-meetings-list>
+{{--                    <invited-meeting-list room-route="{{route('getInvitedMeetings')}}"></invited-meeting-list>--}}
+{{--                    <div class="table-responsive">--}}
+
+{{--                        <table class="table table-bordered table-hover">--}}
+{{--                            <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>Room Name</th>--}}
+{{--                                <th>Start</th>--}}
+{{--                                <th>End</th>--}}
+{{--                                <th>Action</th>--}}
+{{--                            </tr>--}}
+{{--                            </thead>--}}
+{{--                            <tbody>--}}
 
 
-                        @foreach($roomList as $list)
-                            <tr>
-                                <td>{{ $list->name }}</td>
-                                <td>{{\Carbon\Carbon::parse($list->start_date)->format('M d,yy g:i A')}}</td>
-                                <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>
-                                <td><a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-sm btn-primary attendeeJoin form-control"  id="">Join</a></td>
+{{--                            @foreach($roomList as $list)--}}
+{{--                                <tr>--}}
+{{--                                    <td>{{ $list->name }}</td>--}}
+{{--                                    <td>{{\Carbon\Carbon::parse($list->start_date)->format('M d,yy g:i A')}}</td>--}}
+{{--                                    <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>--}}
+{{--                                    <td><a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-sm btn-primary InvitedMeetingAttendeeJoin form-control"  id="">Join</a></td>--}}
 
 
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+{{--                                </tr>--}}
+{{--                            @endforeach--}}
+{{--                            </tbody>--}}
+{{--                        </table>--}}
+{{--                    </div>--}}
                 @else
                     <div class="card bg-light">
                         <div class="card-body">
@@ -68,14 +73,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endif
+                 @endif
                     {{--   Paginaation--}}
-                    <div class="row">
-                        <div class="col-sm-6 col-sm-offset-5">
-                            {{$roomList->links()}}
-                        </div>
-                    </div>
+{{--                    <div class="row">--}}
+{{--                        <div class="col-sm-6 col-sm-offset-5">--}}
+{{--                            {{$roomList->links()}}--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
             </section>
 
         </div>
@@ -87,50 +91,14 @@
 @endsection
 
 @section('script')
+    <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
     <script>
-        $(document).ready(function () {
-            $('.attendeeJoin').on('click',function () {
-                // e.preventDefault();
-                let meeting = $(this).data('id');
-                $.ajax({
-                    type:'POST',
-                    url:'{{route("AuthAttendeeJoin")}}',
-                    datatype:'json',
-                    data:{
-                        meeting:meeting,
-                        "_token":"{{csrf_token()}}"
-                    },success:function (data) {
-
-                        let button ='<button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times; </span></button>';
-
-                        if (data.notStart)
-                        {
-                            $('.errorClass').append(button+'This room not started please contact meeting Owner or try later.');
-
-                            $('.errorClass').show();
-                        }
-                        if (data.full)
-                        {
-                            $('.errorClass').empty().append(button+'This room is full  try later.');
-
-                            $('.errorClass').show();
-                        }
-                        if (data.url)
-                        {
-                            window.location =data.url;
-                        }
-
-                    },
-
-                });
-
-
-            });
-
-        });
-
+         var attendeeJoinUrl = '{{route("AuthAttendeeJoin")}}';
+         var csrf = '{{csrf_token()}}';
 
     </script>
+    <script src="{{asset('js/bbb-custom.js')}}"></script>
+
 @stop

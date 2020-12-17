@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\UserRequest;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -29,10 +30,10 @@ class UsersController extends Controller
             }
 
             $users = User::paginate(10);
-
             $pageName = 'Users';
+            $roles = Role::get()->pluck('name', 'name');
 
-            return view('admin.users.index', compact('users','pageName'));
+            return view('admin.users.index', compact('users','pageName','roles'));
         }catch (\Exception $exception)
         {
             return view('errors.500')->with(['danger'=>$exception->getMessage()]);
@@ -67,19 +68,14 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         try{
             if (! Gate::allows('users_manage')) {
                 return abort(401);
             }
-            $request->validate([
-                'name' => 'required|max:50',
-                'username' => 'required|max:20|unique:users,username',
-                'email' => 'required|email|max:50',
-                'password' => 'required|min:6',
-                'roles' => 'required|exists:roles,name',
-            ]);
+
+
 
             $user = new User;
             $user->name = $request->input('name');
@@ -88,7 +84,7 @@ class UsersController extends Controller
             $user->password = Hash::make($request->input('password'));
             $user->admin_unique_key = $this->_random_str(60);
 
-//        dd($user);
+
             $user->save();
 
             $roles = $request->input('roles') ? $request->input('roles') : ['attendee'];
@@ -190,6 +186,24 @@ class UsersController extends Controller
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
 
+    }
+
+    /**
+     * Return All User
+     */
+    public function userList()
+    {
+
+//        dd('jgfjf');
+        $user= User::paginate(10);
+        return \request()->json(200,['users'=>$user]);
+    }
+
+    public function userRoles($id)
+    {
+        $user=User::findOrFail($id);
+        $roles =$user->roles->pluck('name');
+        return \request()->json(200,['roles'=>$roles]);
     }
 
     /**

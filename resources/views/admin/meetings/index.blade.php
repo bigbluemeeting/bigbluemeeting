@@ -3,63 +3,7 @@
 @section('pagename', $pageName)
 
 @section('css')
-    <style>
-        .input-icons i {
-            position: absolute;
-        }
-
-        .input-icons {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        .input-icon .cursor-pointer
-        {
-            cursor: pointer;
-        }
-
-        .icon {
-            padding: 10px;
-            min-width: 40px;
-        }
-        .delete-icon{
-            margin-top: -45px;
-        }
-        input[type="checkbox"]
-        {
-            position: relative;
-            width: 70px;
-            height: 30px;
-            -webkit-appearance: none;
-            background: #c6c6c6;
-            outline: none;
-            border-radius: 30px;
-            box-shadow: inset 0 0 5px rgba(0,0,0,2);
-            transition: .5s;
-        }
-        input:checked[type="checkbox"]
-        {
-            background: #03a9f4;
-        }
-        input[type="checkbox"]:before
-        {
-            content: '';
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            border-radius: 100px;
-            top: 0;
-            left: 0;
-            background: #fff;
-            transform: scale(1.1);
-            box-shadow: 0 2px 5px rgba(0,0,0,2);
-            transition: .5s;
-        }
-        input:checked[type="checkbox"]:before
-        {
-            left: 40px;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/bbb-custom.css') }}">
 @stop
 
 @section('content')
@@ -126,43 +70,5 @@
         url = '{{URL::to('rooms/:id/edit')}}';
         action =  "{{URL::to('rooms')}}/:deleteId";
     </script>
-    <script>
-        $(document).ready(function () {
-
-            $('#createRoom').on('click',function () {
-              $('#myModal').modal('show')
-            });
-
-            $('.attendeeJoin').on('click',function () {
-                let meeting = $(this).data('id');
-                setInterval(function () {
-                    $.ajax({
-                        type:'POST',
-                        url:'{{route("JoinAuthAttendee")}}',
-                        datatype:'json',
-                        data:{
-                            meeting:meeting,
-                            "_token":"{{csrf_token()}}"
-                        },success:function (data) {
-
-                            if (data.notStart)
-                            {
-                                $("#overlay").fadeIn(300);
-                            }
-                            if (data.url)
-                            {
-                                window.location = data.url;
-                            }
-
-                        },
-
-                    });
-                },2000);
-
-            });
-
-        });
-
-
-    </script>
+    <script src="{{asset('js/bbb-custom.js')}}"></script>
 @stop

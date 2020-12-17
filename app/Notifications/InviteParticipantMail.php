@@ -62,7 +62,7 @@ class InviteParticipantMail extends Notification implements ShouldQueue
         $todaystamp = gmdate('Ymd\THis');
         $description = strip_tags($this->emailParams['meeting']['meeting_description']);
 
-        $location = " Online At: ".url('/').'/rooms/'.$this->emailParams['meeting']['url'];
+        $location = " Online At: ".url('/').'/meetings/'.$this->emailParams['meeting']['url'];
         $organizer = "CN=Organizer name:contact@bigbluemeeting.com";
 
 

@@ -1,3 +1,8 @@
 {
-    "/js/app.js": "/js/app.js"
+    "/js/app.js": "/js/app.js",
+    "/js/bbb-custom.js": "/js/bbb-custom.js",
+    "/js/bbb-meetings.js": "/js/bbb-meetings.js",
+    "/js/bbb-custom-meetings.js": "/js/bbb-custom-meetings.js",
+    "/js/front/meetings/bbb-front.js": "/js/front/meetings/bbb-front.js",
+    "/css/bbb-custom.css": "/css/bbb-custom.css"
 }

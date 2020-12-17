@@ -19,7 +19,7 @@
                     @elseif($room->anyone_can_start)
                         <form action="{{route('attendeeStartRoom')}}" method="post" >
                             @else
-                                <form    action="{{route('meetingAttendeesJoin')}}" method="Post" id="frm">
+                                <form action="{{route('meetingAttendeesJoin')}}" method="Post" id="frm">
                                     @endif
                                     @csrf
                                     <input type="hidden" value="{{encrypt($room->url)}}" name="room">

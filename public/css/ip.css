@@ -31,7 +31,7 @@
     float:left;
 }
 .tags-wrapper li.tag {
-    font-family:verdana;
+    font-family:Verdana;
     font-size:14px;
 
     border-radius:3px;
@@ -52,7 +52,7 @@
     padding:2px;
     display:inline-block;
     margin-left:6px;
-    color: rgb(51, 51, 51);
+    color: rgb(51,51,51);
 }
 .tags-wrapper li a:hover {
     color:#222;
@@ -68,7 +68,7 @@
 }
 .tags-wrapper li input {
     display:block;
-    background:trasparent;
+    background:transparent;
     outline:none;
     border:none;
     font-size:18px;

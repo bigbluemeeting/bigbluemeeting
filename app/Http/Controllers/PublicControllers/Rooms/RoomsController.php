@@ -367,7 +367,37 @@ class RoomsController extends Controller
     public function inviteAttendee()
     {
         try{
-            $pageName ='Invited Rooms';
+            $pageName ='Invited Meetings';
+            $user = User::findOrFail(Auth::id());
+            $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+
+            $roomList = $user->attendees()
+                ->whereHas('rooms')
+                ->with('rooms')
+                ->get()
+                ->pluck('rooms')
+                ->collapse()
+                ->where('end_date' ,'>=',$currentDate)
+                ->count();
+
+
+//            $roomList = Helper::paginate($roomList,10,null,[
+//                'path' =>'invite-meetings'
+//            ]);
+
+            return view('public.rooms.auth.invitedMeetings',compact('pageName','roomList'));
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
+    }
+
+    public function getInvitedMeetings()
+
+    {
+        try{
             $user = User::findOrFail(Auth::id());
             $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 
@@ -379,20 +409,16 @@ class RoomsController extends Controller
                 ->collapse()
                 ->where('end_date' ,'>=',$currentDate)
                 ->sort();
-
-            $roomList = Helper::paginate($roomList,10,null,[
+            $roomList = Helper::paginate($roomList,1,null,[
                 'path' =>'invite-meetings'
             ]);
-
-            return view('public.rooms.auth.invitedMeetings',compact('pageName','roomList'));
-
+            return \request()->json(200,$roomList);
         }catch (\Exception $exception)
         {
-            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+
         }
 
     }
-
     public function showDetails($url)
     {
         try{

@@ -20,7 +20,9 @@ Vue.component('upcoming-meetings', require('./components/Meetings/UpcomingMeetin
 Vue.component('past-meetings', require('./components/Meetings/PastMeetings.vue'));
 Vue.component('delete-modal',require('./components/Meetings/deleteModal.vue'));
 Vue.component('room-list',require('./components/Rooms/roomList.vue'));
-
+Vue.component('invited-meetings-list',require('./components/invitedMeeting/invitedMeetingsList.vue'));
+Vue.component('create-users',require('./components/users/create.vue'));
+Vue.component('users-list',require('./components/users/usersList.vue'));
 export const eventBus = new Vue({
     methods: {
         deleteID (data) {

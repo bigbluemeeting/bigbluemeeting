@@ -307,25 +307,7 @@
                     action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
                     currentUrl ="{{url()->current()}}";
                 </script>
-                <script src="{{asset('js/bbb-delete.js')}}"></script>
-                    <script>
-                        $('.main-container').on('click','.btnAddMeeting',function () {
-
-                            $('.meeting-file-name').val($(this).data('item'))
-                            $('.meetingHeader').html($(this).data('task'))
-                            $('#meetingFilesAddModal').modal('show')
-
-                        });
-                        $('.main-container').on('click','.btnAddRoom',function () {
-
-                            $('.room-file-name').val($(this).data('item'))
-                            $('.roomHeader').html($(this).data('task'))
-                            $('#roomFilesAddModal').modal('show')
-                        });
-                        $('.btnDeleteConfirm').on('click',function () {
-                         $('#DeleteModal').modal('show')
-                        });
-                    </script>
+                <script src="{{asset('js/bbb-custom.js')}}"></script>
 
 
 
