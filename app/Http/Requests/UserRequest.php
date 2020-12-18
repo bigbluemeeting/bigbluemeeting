@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
@@ -23,12 +24,29 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
+        $user = \Request::segments();
+
+
+//        dd($this->getMethod());
+
+//        dd($user);
+
+        if (isset($user[2]))
+        {
+            $id =','.$user[2];
+//            .isset($user[2])?$user[2]:[]
+        }else{
+            $id='';
+        }
+        $rules=  [
             'name' => 'required|max:50',
-            'username' => 'required|max:20|unique:users,username',
-            'email' => 'required|email|max:50|unique:users,email',
+            'username' => 'required|max:20|unique:users,username'.$id,
+            'email' => 'required|email|max:50|unique:users,email'.$id,
             'password' => 'required|min:6',
             'roles' => 'required|exists:roles,name',
         ];
+
+
+        return $rules;
     }
 }

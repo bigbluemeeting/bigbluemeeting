@@ -39,6 +39,16 @@ export const eventBus = new Vue({
             this.$emit('pastMeetings', data);
 
         },
+        newUser(data)
+        {
+            this.$emit('userAdded',data);
+        },
+        editUser(data)
+        {
+            this.$emit('userEdit',data);
+
+        }
+
 
 
 

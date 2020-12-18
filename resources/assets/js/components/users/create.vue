@@ -59,7 +59,8 @@
             <div class="hr-line-dashed"></div>
             <div class="form-group">
                 <div class="col-sm-12 text-center">
-                    <input type="submit" class="btn btn-primary btn-large" value="Save" >
+                    <input v-if="newUser" type="submit" class="btn btn-primary btn-large" value="Save" >
+                    <input v-else type="submit" class="btn btn-primary btn-large" value="Update" >
 
                 </div>
             </div>
@@ -74,11 +75,14 @@
 </template>
 
 <script>
+    import {eventBus} from "../../app.js";
+
     export default {
         name: "create",
         props: {
             formRoute: { type: String},
-            userRoles:{type:String}
+            userRoles:{type:String},
+            updateUser:{type:String}
         },
         data(){
             return {
@@ -87,8 +91,14 @@
                 usersRoles:[],
                 fields:{
                     roles:["administrator"],
+                    name:null,
+                    email:null,
+                    username:null,
+                    password:null
                 },
-                error:[]
+                error:[],
+                newUser:true,
+                userId:null
 
 
             }
@@ -99,24 +109,55 @@
                 e.preventDefault();
 
 
-                axios.post(this.formRoute,
-                    this.fields
-                ).then(data=> {
+                if (this.newUser)
+                {
+                    axios.post(this.formRoute,
+                        this.fields
+                    ).then(response=> {
+                        this.afterSubmit(response)
 
+                    })
+                        .catch(error=> {
 
-                })
-                    .catch(error=> {
-                        this.error =error.response.data.errors
+                            this.error =error.response.data.errors
 
-                    });
+                        });
+                }else{
+
+                    this.fields['_method'] = 'PUT';
+                    var editUrl = this.updateUser.replace(':id',this.userId);
+                    axios.post(editUrl, this.fields).then(response=> {
+                        this.afterSubmit(response)
+
+                    }).catch(error => this.error = error.response.data.errors);
+
+                }
+
 
             },
+            afterSubmit(response){
+                eventBus.newUser(response.data.users);
+                this.fields = {};
+                this.fields.roles=['administrator']
+                this.newUser = true;
+                this.error={}
+
+            }
 
         },
         created() {
 
             this.roles=JSON.parse(this.userRoles)
+            eventBus.$on("userEdit", (userData) => {
 
+                this.fields.name=userData.name
+                this.fields.username=userData.username
+                this.fields.email=userData.email
+                this.fields.roles=userData.roles
+                this.userId=userData.id
+                this.newUser=false
+
+            });
 
 
         }

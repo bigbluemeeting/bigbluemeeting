@@ -90,6 +90,7 @@ class UsersController extends Controller
             $roles = $request->input('roles') ? $request->input('roles') : ['attendee'];
             $user->assignRole($roles);
 
+            return $this->userList();
 
             return redirect()->route('admin::users.index')->with(['success' => 'User created successfully']);
 
@@ -113,12 +114,12 @@ class UsersController extends Controller
             if (! Gate::allows('users_manage')) {
                 return abort(401);
             }
-            $roles = Role::get()->pluck('name', 'name');
 
-            $user = User::findOrFail($id);
-            $pageName = 'Edit Users';
+            $user = User::with('roles')->findOrFail($id);
 
-            return view('admin.users.edit', compact('user', 'roles', 'pageName'));
+
+            return \request()->json(200,['user'=>$user]);
+
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
@@ -132,19 +133,14 @@ class UsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
         try{
+
+
             if (! Gate::allows('users_manage')) {
                 return abort(401);
             }
-            $request->validate([
-                'name' => 'required|max:50',
-                'username' => 'required|max:20|unique:users,username,'.$id,
-                'email' => 'required|email|max:50',
-                'password' => 'required|min:6',
-                'roles' => 'required|exists:roles,name',
-            ]);
 
             $user = User::findOrFail($id);
             $user->name = $request->input('name');
@@ -154,8 +150,9 @@ class UsersController extends Controller
             $user->save();
             $roles = $request->input('roles') ? $request->input('roles') : [];
             $user->syncRoles($roles);
+            return $this->userList();
 
-            return redirect()->route('admin::users.index')->with(['success' => 'User updated successfully']);
+//            return redirect()->route('admin::users.index')->with(['success' => 'User updated successfully']);
 
         }catch (\Exception $exception)
         {
@@ -194,8 +191,10 @@ class UsersController extends Controller
     public function userList()
     {
 
-//        dd('jgfjf');
-        $user= User::paginate(10);
+        $user= User::with('roles')
+            ->orderBy('id','DESC')
+            ->paginate(10);
+
         return \request()->json(200,['users'=>$user]);
     }
 

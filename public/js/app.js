@@ -860,6 +860,12 @@ var eventBus = new Vue({
         },
         pastMeetings: function pastMeetings(data) {
             this.$emit('pastMeetings', data);
+        },
+        newUser: function newUser(data) {
+            this.$emit('userAdded', data);
+        },
+        editUser: function editUser(data) {
+            this.$emit('userEdit', data);
         }
     }
 });
@@ -51482,7 +51488,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -51493,6 +51499,8 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__app_js__ = __webpack_require__(5);
+//
 //
 //
 //
@@ -51569,11 +51577,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "create",
     props: {
         formRoute: { type: String },
-        userRoles: { type: String }
+        userRoles: { type: String },
+        updateUser: { type: String }
     },
     data: function data() {
         return {
@@ -51581,9 +51592,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             roles: [],
             usersRoles: [],
             fields: {
-                roles: ["administrator"]
+                roles: ["administrator"],
+                name: null,
+                email: null,
+                username: null,
+                password: null
             },
-            error: []
+            error: [],
+            newUser: true,
+            userId: null
 
         };
     },
@@ -51594,15 +51611,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             e.preventDefault();
 
-            axios.post(this.formRoute, this.fields).then(function (data) {}).catch(function (error) {
-                _this.error = error.response.data.errors;
-            });
-        }
+            if (this.newUser) {
+                axios.post(this.formRoute, this.fields).then(function (response) {
+                    _this.afterSubmit(response);
+                }).catch(function (error) {
 
+                    _this.error = error.response.data.errors;
+                });
+            } else {
+
+                this.fields['_method'] = 'PUT';
+                var editUrl = this.updateUser.replace(':id', this.userId);
+                axios.post(editUrl, this.fields).then(function (response) {
+                    _this.afterSubmit(response);
+                }).catch(function (error) {
+                    return _this.error = error.response.data.errors;
+                });
+            }
+        },
+        afterSubmit: function afterSubmit(response) {
+            __WEBPACK_IMPORTED_MODULE_0__app_js__["eventBus"].newUser(response.data.users);
+            this.fields = {};
+            this.fields.roles = ['administrator'];
+            this.newUser = true;
+            this.error = {};
+        }
     },
     created: function created() {
+        var _this2 = this;
 
         this.roles = JSON.parse(this.userRoles);
+        __WEBPACK_IMPORTED_MODULE_0__app_js__["eventBus"].$on("userEdit", function (userData) {
+
+            _this2.fields.name = userData.name;
+            _this2.fields.username = userData.username;
+            _this2.fields.email = userData.email;
+            _this2.fields.roles = userData.roles;
+            _this2.userId = userData.id;
+            _this2.newUser = false;
+        });
     }
 });
 
@@ -51892,26 +51939,24 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "hr-line-dashed" }),
         _vm._v(" "),
-        _vm._m(0)
+        _c("div", { staticClass: "form-group" }, [
+          _c("div", { staticClass: "col-sm-12 text-center" }, [
+            _vm.newUser
+              ? _c("input", {
+                  staticClass: "btn btn-primary btn-large",
+                  attrs: { type: "submit", value: "Save" }
+                })
+              : _c("input", {
+                  staticClass: "btn btn-primary btn-large",
+                  attrs: { type: "submit", value: "Update" }
+                })
+          ])
+        ])
       ])
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "form-group" }, [
-      _c("div", { staticClass: "col-sm-12 text-center" }, [
-        _c("input", {
-          staticClass: "btn btn-primary btn-large",
-          attrs: { type: "submit", value: "Save" }
-        })
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -52007,7 +52052,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -52018,6 +52063,9 @@ exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__app_js__ = __webpack_require__(5);
+//
+//
 //
 //
 //
@@ -52064,11 +52112,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 
+
+
+Vue.component('pagination', __webpack_require__(6));
+
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "usersList",
     props: {
         userList: { type: String },
-        userRole: { type: String }
+        userEdit: { type: String }
 
     },
     data: function data() {
@@ -52086,17 +52138,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }).catch(function (error) {
             return console.log(error);
         });
+
+        __WEBPACK_IMPORTED_MODULE_0__app_js__["eventBus"].$on("userAdded", function (userData) {
+            console.log(userData);
+            _this.users = userData;
+        });
+        console.log(this.userEdit);
     },
 
     methods: {
-        getRole: function getRole(id) {
+        getSingleUserRecord: function getSingleUserRecord(id) {
+            var singleUrl = this.userEdit.replace(':id', id);
+            var roles = [];
+            axios.get(singleUrl).then(function (response) {
+                var user = response.data.user;
+
+                $.each(user.roles, function (item, val) {
+                    roles.push(val.name);
+                });
+
+                var userData = {
+                    'id': user.id,
+                    'name': user.name,
+                    'username': user.username,
+                    'email': user.email,
+                    'roles': roles
+
+                };
+                __WEBPACK_IMPORTED_MODULE_0__app_js__["eventBus"].editUser(userData);
+            }).catch(function (error) {
+                return console.log(error);
+            });
+        },
+        getResults: function getResults() {
             var _this2 = this;
 
-            var roleUrl = this.userRole.replace(':id', id);
+            var page = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1;
 
-            return axios.get(roleUrl).then(function (response) {
-                console.log('2. server response:' + response.data.roles);
-                _this2.roles = response.data.roles;
+            axios.get(this.userList + '?page=' + page).then(function (response) {
+                return _this2.users = response.data.users;
+            }).catch(function (error) {
+                return console.log(error);
             });
         }
     }
@@ -52111,6 +52193,20 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { id: "userList" } }, [
+    _c("div", { staticClass: "row" }, [
+      _c(
+        "div",
+        { staticClass: "col-sm-6 col-sm-offset-5" },
+        [
+          _c("pagination", {
+            attrs: { data: _vm.users },
+            on: { "pagination-change-page": _vm.getResults }
+          })
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
     _c("div", { staticClass: "table-responsive" }, [
       _c("table", { staticClass: "table table-bordered table-hover" }, [
         _vm._m(0),
@@ -52125,7 +52221,36 @@ var render = function() {
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(user.email))]),
               _vm._v(" "),
-              _vm._m(1, true)
+              _c(
+                "td",
+                _vm._l(user.roles, function(role) {
+                  return _c(
+                    "span",
+                    { staticClass: "badge badge-danger col-md-12" },
+                    [
+                      _vm._v(
+                        "\n                                " + _vm._s(role.name)
+                      ),
+                      _c("br")
+                    ]
+                  )
+                }),
+                0
+              ),
+              _c("td", [
+                _c(
+                  "span",
+                  {
+                    staticClass: "btn btn-sm btn-info",
+                    on: {
+                      click: function($event) {
+                        return _vm.getSingleUserRecord(user.id)
+                      }
+                    }
+                  },
+                  [_vm._v("Edit")]
+                )
+              ])
             ])
           }),
           0
@@ -52147,17 +52272,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Email")]),
         _vm._v(" "),
+        _c("th", [_vm._v("Roles")]),
+        _vm._v(" "),
         _c("th", [_vm._v("Action")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("a", { staticClass: "btn btn-sm btn-info", attrs: { href: "" } }, [
-        _vm._v("Edit")
       ])
     ])
   }

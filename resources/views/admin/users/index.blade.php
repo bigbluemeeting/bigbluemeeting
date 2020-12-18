@@ -19,7 +19,7 @@
                     </div>
                 @endif
             @endforeach
-            <create-users User-roles="{{$roles}}" form-route="{{route('admin::users.store')}}"></create-users>
+            <create-users update-user="{{route('admin::users.update',':id')}}" User-roles="{{$roles}}" form-route="{{route('admin::users.store')}}"></create-users update-user>
 
         </div>
         <div class="col-lg-7">
@@ -34,22 +34,12 @@
             @endforeach
 
             <div class="card card-block sameheight-item">
-                <div class="title-block">
-                    <a href="{{ route('admin::users.add') }}"><button type="button" class="btn btn-pill-right btn-primary">Add New User</button></a>
-                </div>
-
                 <section class="example">
-                   <users-list user-list="{{route('admin::userList')}}" user-role="{{route('admin::userRoles',':id')}}"></users-list>
+                   <users-list user-list="{{route('admin::userList')}}" user-edit="{{route('admin::users.edit',':id')}}" ></users-list>
                 </section>
 
             </div>
 
-            {{--   Paginaation--}}
-            <div class="row">
-                <div class="col-sm-6 col-sm-offset-5">
-                    {{$users->links()}}
-                </div>
-            </div>
         </div>
 
     </div>
