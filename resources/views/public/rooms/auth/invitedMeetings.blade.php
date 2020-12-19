@@ -24,62 +24,18 @@
 
         <div class="card card-block sameheight-item">
 
-{{--            <div class="row">--}}
-{{--                <div class="col-sm-6 col-sm-offset-5">--}}
-{{--                    {{$roomList->links()}}--}}
-{{--                </div>--}}
-{{--            </div>--}}
-            <section class="example">
+            <section class="invited-meetings">
 
                 @if ($roomList > 0)
                     <invited-meetings-list room-route="{{route('getInvitedMeetings')}}"></invited-meetings-list>
-{{--                    <invited-meeting-list room-route="{{route('getInvitedMeetings')}}"></invited-meeting-list>--}}
-{{--                    <div class="table-responsive">--}}
-
-{{--                        <table class="table table-bordered table-hover">--}}
-{{--                            <thead>--}}
-{{--                            <tr>--}}
-{{--                                <th>Room Name</th>--}}
-{{--                                <th>Start</th>--}}
-{{--                                <th>End</th>--}}
-{{--                                <th>Action</th>--}}
-{{--                            </tr>--}}
-{{--                            </thead>--}}
-{{--                            <tbody>--}}
-
-
-{{--                            @foreach($roomList as $list)--}}
-{{--                                <tr>--}}
-{{--                                    <td>{{ $list->name }}</td>--}}
-{{--                                    <td>{{\Carbon\Carbon::parse($list->start_date)->format('M d,yy g:i A')}}</td>--}}
-{{--                                    <td>{{\Carbon\Carbon::parse($list->end_date)->format('M d,yy g:i A')}}</td>--}}
-{{--                                    <td><a href='javascript:void(0)' data-id ="{{$list->url}}" class="btn btn-sm btn-primary InvitedMeetingAttendeeJoin form-control"  id="">Join</a></td>--}}
-
-
-{{--                                </tr>--}}
-{{--                            @endforeach--}}
-{{--                            </tbody>--}}
-{{--                        </table>--}}
-{{--                    </div>--}}
                 @else
                     <div class="card bg-light">
                         <div class="card-body">
-                            <div class="card">
-                                <div class="card-body" style="background: #fff8a0;">
-                                    <div class="col-md-7">
-                                        <p class="text-danger m-0">We're sorry,you dont have any rooms.</p>
-                                    </div>
-
-                                </div>
+                            <div class="col-md-12">
+                                <p class="text-danger m-0">We're sorry, you don't have any rooms.</p>
                             </div>
                         </div>
                  @endif
-                    {{--   Paginaation--}}
-{{--                    <div class="row">--}}
-{{--                        <div class="col-sm-6 col-sm-offset-5">--}}
-{{--                            {{$roomList->links()}}--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
             </section>
 
         </div>
@@ -93,11 +49,9 @@
 @section('script')
     <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
          var attendeeJoinUrl = '{{route("AuthAttendeeJoin")}}';
          var csrf = '{{csrf_token()}}';
-
     </script>
     <script src="{{asset('js/bbb-custom.js')}}"></script>
 

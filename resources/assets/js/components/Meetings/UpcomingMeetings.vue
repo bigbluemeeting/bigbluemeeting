@@ -1,7 +1,7 @@
 <template>
-    <div id="app">
+    <div id="upcoming-meetings-app">
         <div v-if="meetings.total > 0" class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table  table-hover">
                 <thead>
                 <tr>
                     <th>Meeting Name</th>
@@ -36,17 +36,13 @@
             </table>
 
         </div>
-        <div v-if="meetings.total === 0" class="card bg-light">
+        <div v-if="meetings.total === 0" class="card" style="background: #fff8a0;">
             <div class="card-body">
-                <div class="card">
-                    <div class="card-body" id="warning-dev">
-                        <div class="col-md-7">
-                            <p class="text-danger m-0">We're sorry,you don't have any in-progress meetings or upcoming meetings.</p>
-                        </div>
-                        <div class="col-md-5">
-                            <p class="text-danger pt-1">To Create a new meeting,press the "Meeting" button</p>
-                        </div>
-                    </div>
+                <div class="col-md-12">
+                    <p class="text-danger m-0">We're sorry, you don't have any in-progress meetings or upcoming meetings.</p>
+                </div>
+                <div class="col-md-12">
+                    <p class="text-danger pt-1">To create a new meeting, press the "Meeting" button.</p>
                 </div>
             </div>
         </div>

@@ -25,10 +25,11 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 ml-2">
-                    <div class="alert alert-info text-dark">
+                    <div class="alert alert-info text-light">
                         You can override e-mail messages send out by Big Blue Meeting by defining your values below. A token looks like <strong class="text-danger">[token:name]</strong>. You must include all tokens in the default version of the e-mail messages in your version.
                     </div>
                 </div>
+                <hr/>
                 <div class="row">
 
 

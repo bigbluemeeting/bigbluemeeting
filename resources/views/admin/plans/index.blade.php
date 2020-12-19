@@ -23,9 +23,9 @@
                 <a href="{{ route('plans.create') }}"><button type="button" class="btn btn-pill-right btn-primary">Add New Plan</button></a>
             </div>
 
-            <section class="example">
+            <section class="plans" id="plans">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table  table-hover">
                         <thead>
                         <tr>
                             <th>#</th>
@@ -121,7 +121,6 @@
 
 @endsection
 @section('script')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script>
         action =  "{{\Illuminate\Support\Facades\URL::to('plans')}}/:id";
 

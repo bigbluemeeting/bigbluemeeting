@@ -12,29 +12,8 @@
         </div>
         <nav class="menu">
             <ul class="sidebar-menu metismenu" id="sidebar-menu">
-{{--                <li>--}}
-{{--                    <a href="{{ route('admin::dashboard') }}">--}}
-{{--                        <i class="fa fa-home"></i> Dashboard </a>--}}
-{{--                </li>--}}
-{{--                @can('master_manage')--}}
-{{--                <li>--}}
-{{--                    <a href="">--}}
-{{--                        <i class="fa fa-th-large"></i> Master--}}
-{{--                        <i class="fa arrow"></i>--}}
-{{--                    </a>--}}
-{{--                    <ul class="sidebar-nav">--}}
-{{--                        <li>--}}
-{{--                            <a href="#"> Items List </a>--}}
-{{--                        </li>--}}
-{{--                        <li>--}}
-{{--                            <a href="#"> Item Editor </a>--}}
-{{--                        </li>--}}
-{{--                    </ul>--}}
-{{--                </li>--}}
 
-{{--                @endcan--}}
-
-                <li>
+                <li class="{{ (Request::is('meetings*') || Request::is('meetings')) ? 'active open' : '' }}">
                     <a href="">
                         <i class="fa fa-meetup"></i> Meetings
                         <i class="fa arrow"></i>
@@ -48,7 +27,7 @@
                         </li>
                     </ul>
                 </li>
-                <li>
+                <li class="{{ (Request::is('rooms*') || Request::is('room')) ? 'active open' : '' }}">
                     <a href="">
 
                         <i class="fa fa-handshake-o"></i> Rooms
@@ -62,18 +41,13 @@
                     </ul>
                 </li>
 
-                <li>
+                <li class="{{ (Request::is('files*') || Request::is('files')) ? 'active open' : '' }}">
                     <a href="{{ route('files.index') }}">
-
                         <i class="fa fa-files-o"></i> Files
-{{--                        <i class="fa arrow"></i>--}}
                     </a>
-                    {{--                    <a href="{{ route('files.index') }}">--}}
-                    {{--                        <i class="fa fa-files-o"></i> Files </a>--}}
                 </li>
-                <li>
+                <li class="{{ (Request::is('admin/recordings*') || Request::is('admin/recordings')) ? 'active open' : '' }}">
                     <a href="">
-
                         <i class="fa fa-file-audio-o"></i> Recording
                         <i class="fa arrow"></i>
                     </a>
@@ -87,9 +61,9 @@
 
                     </ul>
                 </li>
-{{--                @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))--}}
+
                 @can('users_manage')
-                <li>
+                <li class="{{ (Request::is('mail*') || Request::is('mail')) ? 'active open' : '' }}">
                     <a href="{{ route('mail.index') }}">
 
                         <i class="fa fa-envelope"></i> E-mail Preferences

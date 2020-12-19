@@ -1,9 +1,9 @@
 <template>
-    <div id="app">
+    <div id="invited-meetings-app">
 
         <div v-if="rooms.total > 0" class="table-responsive">
 
-            <table class="table table-bordered table-hover">
+            <table class="table  table-hover">
                 <thead>
                 <tr>
                     <th>Room Name</th>

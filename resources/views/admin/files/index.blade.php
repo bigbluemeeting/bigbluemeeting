@@ -154,18 +154,16 @@
                                 @endforeach
                                 </tbody>
                                 @else
-                                <div class="card bg-light">
+                                <div class="card" style="background: #fff8a0">
                                     <div class="card-body">
-                                        <div class="card">
-                                            <div class="card-body" style="background: #fff8a0;">
-                                                <div class="col-md-7">
+
+                                                <div class="col-md-12">
                                                     <p class="text-danger m-0">We're sorry, you don't have any files.</p>
                                                 </div>
-                                                <div class="col-md-5">
+                                                <div class="col-md-12">
                                                     <p class="text-danger pt-1">To upload new files, press the "Add Files" button.</p>
                                                 </div>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                                 @endif
@@ -299,8 +297,6 @@
 
 @section('script')
 
-
-                <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
                 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
                 <script>

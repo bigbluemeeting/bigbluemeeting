@@ -40,16 +40,13 @@
                 <div class="card-body">
                     <div class="input-group">
                         <div class="input-group-prepend" >
-                            <div class="col-md-12">
                                 <div class="title-block" id="createRoom" >
-                                    <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i> Rooms</button></a>
+                                    <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i> Create Room</button></a>
                                 </div>
-                            </div>
-
                         </div>
 
                     </div>
-                    <section class="example">
+                    <section id="meeting-rooms">
                         <room-list delete-route="{{route('rooms.destroy',':id')}}" create-room-route="{{route('rooms.store')}}" update-room-route="{{route('rooms.update',':id')}}" single-room-route="{{route('rooms.edit',':id')}}" room-route="{{route('roomList')}}" room-details="{{route('showMeetingDetails',':id')}}" join-url="{{ route('JoinMeetings',':id') }}"></room-list>
                     </section>
 

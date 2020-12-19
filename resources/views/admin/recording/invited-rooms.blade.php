@@ -30,7 +30,7 @@
             @endif
         @endforeach
             <div class="card card-block sameheight-item">
-                <section class="example">
+                <section id="invited-rooms" class="invited-rooms">
                     <div class="row">
                         <div class="col-sm-6 col-sm-offset-5">
                             {{$recordingList->links()}}
@@ -38,7 +38,7 @@
                     </div>
                     @if (count($recordingList) > 0)
                        <div class="table-responsive">
-                           <table class="table table-bordered table-hover">
+                           <table class="table  table-hover">
                                <thead>
                                <tr>
 
@@ -73,17 +73,12 @@
                                @endforeach
 
                                @else
-                                   <div class="card bg-light">
+                                   <div class="card bg-light" style="background: #fff8a0;">
                                        <div class="card-body">
-                                           <div class="card">
-                                               <div class="card-body" style="background: #fff8a0;">
-                                                   <div class="col-md-7">
-                                                       <p class="text-danger m-0">We're sorry,you dont have any recording.</p>
-                                                   </div>
-
-                                               </div>
-                                           </div>
-                                       </div>
+                                            <div class="col-md-12">
+                                                <p class="text-danger m-0">We're sorry, you dont have any recording.</p>
+                                            </div>
+                                        </div>
                                    </div>
                                @endif
 

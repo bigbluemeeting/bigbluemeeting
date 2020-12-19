@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="rooms-list-app">
         <div class="row">
 
             <div class="col-sm-6 col-sm-offset-5">
@@ -7,7 +7,7 @@
             </div>
         </div>
         <div v-if="rooms.total > 0" class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table  table-hover">
                 <thead>
                 <tr>
                     <th>Room Name</th>
@@ -39,16 +39,13 @@
             </table>
         </div>
         <div v-if="rooms.total === 0" class="card bg-light">
-            <div class="card-body">
-                <div class="card">
-                    <div class="card-body" style="background: #fff8a0;">
-                        <div class="col-md-7">
-                            <p class="text-danger m-0">We're sorry,you don have any rooms.</p>
-                        </div>
-                        <div class="col-md-5">
-                            <p class="text-danger pt-1">To Create a new room,press the "Room" button</p>
-                        </div>
-                    </div>
+            <div class="card-body" style="background: rgb(255, 248, 160) none repeat scroll 0% 0%">
+
+                <div class="col-md-12">
+                    <p class="text-danger m-0">We're sorry, you don't have any rooms.</p>
+                </div>
+                <div class="col-md-12">
+                    <p class="text-danger pt-1">To create a new room,press the "Room" button.</p>
                 </div>
             </div>
         </div>

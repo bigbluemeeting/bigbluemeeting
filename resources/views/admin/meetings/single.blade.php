@@ -2,7 +2,6 @@
 
 @section('pagename', $pageName)
 @section('css')
-    {{--    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">--}}
     <link rel="stylesheet" href="{{asset('css/ip.css')}}">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/css/blueimp-gallery.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload.min.css">
@@ -27,7 +26,7 @@
             <div class="card bg-white">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-striped ">
                             <tbody>
                             <tr>
                                 <td>Meeting Name</td>
@@ -142,7 +141,6 @@
 
 @section('script')
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
 

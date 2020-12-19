@@ -2,7 +2,6 @@
 
 @section('pagename', $pageName)
 @section('css')
-{{--    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">--}}
     <link rel="stylesheet" href="{{asset('css/ip.css')}}">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/css/blueimp-gallery.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload.min.css">
@@ -15,8 +14,7 @@
 @section('content')
 
     <div class="container-fluid">
-
-        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Meeting Information</h5>
+        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;<?= __('Meeting Information'); ?></h5>
     </div>
 
     <div class="col-lg-12">
@@ -35,30 +33,30 @@
             <div class="card bg-white">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-striped table-bordered">
+                        <table class="table table-striped ">
                             <tbody>
                             <tr>
-                                <td>Meeting Name</td>
+                                <td><?= __('Meeting Name'); ?></td>
                                 <td>{{$meeting->name}}</td>
 
                             </tr>
                             <tr>
-                                <td>Start Time (Local)</td>
+                                <td><?= __('Start Time (Local)'); ?></td>
                                 <td>{{\Carbon\Carbon::parse($meeting->start_date)->format('M d,yy g:i A')}}</td>
 
                             </tr>
                             <tr>
-                                <td>End Time (Local)</td>
+                                <td><?= __('End Time (Local)'); ?></td>
                                 <td>{{\Carbon\Carbon::parse($meeting->end_date)->format('M d,yy g:i A')}}</td>
                             </tr>
                             <tr>
-                                <td>No. of Participants</td>
+                                <td><?= __('No. of Participants'); ?></td>
                                 <td>{{$meeting->maximum_people}}</td>
 
                             </tr>
 
                             <tr>
-                                <td>Recording</td>
+                                <td><?= __('Recording'); ?></td>
                                 <td>{{$meeting->meeting_record ? 'Yes' : 'No'}}</td>
                             </tr>
                             <tr>
@@ -70,21 +68,21 @@
                             </tbody>
                         </table>
                         <hr >
-                        <div class="container-fluid" >
+                        <div class="container mt-3" >
                             <h5><i class="fa fa-user"></i>&nbsp;&nbsp;Meeting Participants</h5>
                         </div>
                         @if(!$pastMeeting)
                         <div class="input-group" >
                             <div class="input-group-prepend">
                                 <div class="col-md-11 mt-2">
-                                    <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" data-target="#myModal"id="createRoom">
-                                        <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Invite Participant <i class="fa fa-caret-down ml-1"></i></i>
+                                    <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" data-target="#myModal" id="createRoom">
+                                        <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Invite Participant <i class="fa fa-caret-down ml-1"></i>
                                     </span>
                                 </div>
                             </div>
-                            </div>
-                            @endif
                         </div>
+                        @endif
+                    </div>
 
 
                     <div class="row">
@@ -93,7 +91,7 @@
                                 <div class="card bg-white m-0">
                                     <div class="card-body">
                                         <div class="table-responsive">
-                                        <table class="table table-bordered">
+                                        <table class="table ">
                                             <thead >
                                             <tr>
                                                 <th>Email</th>
@@ -114,27 +112,23 @@
                                     </div>
                                 </div>
 
-                                        <div class="col-sm-6 col-sm-offset-5">
-                                            {{$attendees->links()}}
-                                        </div>
+                                <div class="col-sm-6 col-sm-offset-5">
+                                    {{$attendees->links()}}
+                                </div>
 
                             </div>
                             @else
                                 <div class="card bg-light">
-                                    <div class="card-body">
-                                        <div class="card">
-                                            <div class="card-body" style="background: #fff8a0;">
-                                                <div class="col-md-7" >
-                                                    <p class="text-danger m-0">There are no participants invited to this meeting.</p>
+                                    <div class="card-body" style="background: #fff8a0;">
 
-                                                    @if(!$pastMeeting)
-                                                        <p class="text-danger pt-1">To participants to this meeting,click the blue button on the top left.</p>
-                                                    @else
+                                        <div class="col-md-12" >
+                                            <p class="text-danger m-0">There are no participants invited to this meeting.</p>
 
-                                                    @endif
-                                                </div>
+                                            @if(!$pastMeeting)
+                                                <p class="text-danger pt-1">To participants to this meeting,click the blue button on the top left.</p>
+                                            @else
 
-                                            </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -145,15 +139,14 @@
                         <div class="container-fluid {{count($attendees) > 0 ? '' :'mt-3' }}">
                             <hr class="m-0">
                         </div>
-                            <div class="container mt-3">
-
-                                <h5><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Files</h5>
-                            </div>
+                        <div class="container mt-3">
+                            <h5><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Files</h5>
+                        </div>
 
 
                         <div class="table-responsive" >
                             <div class="col-md-12">
-                                <table class="table table-hover table-bordered">
+                                <table class="table table-hover ">
                                     <thead>
                                     @if(!$pastMeeting)
                                     <tr>
@@ -217,8 +210,7 @@
                                             <td>{{$file->type}}</td>
                                             <td>{{ \App\Helpers\Helper::formatBytes($file->size)}}</td>
                                             <td>
-                                             <span href="" data-toggle="modal"  data-item = {{$file->id}}
-                                                     data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
+                                             <span href="" data-toggle="modal"  data-item = {{$file->id}} data-target="#DeleteModal" class="btn btn-sm btn-danger-outline btnDeleteConfirm"><i class="fa fa-trash"></i> Delete</span>
 
                                             </td>
                                         </tr>
@@ -229,18 +221,14 @@
                                 @if(count($files)==0)
 
                                     <div class="card bg-light">
-                                        <div class="card-body">
-                                            <div class="card">
-                                                <div class="card-body" style="background: #fff8a0;">
+                                        <div class="card-body" style="background: #fff8a0;">
+
                                                     <div class="col-md-7" >
                                                         <p class="text-danger m-0">There are no files added to this meeting.</p>
                                                         @if(!$pastMeeting)
                                                             <p class="text-danger pt-1">To add files to this meeting,click the "Add Files" on the top left.</p>
                                                         @endif
                                                     </div>
-
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     @endif
@@ -249,9 +237,7 @@
 
                         <div class="col-sm-6 col-sm-offset-5 ml-3 paginate">
                             {{$files->links()}}
-
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -329,13 +315,12 @@
 
 @section('script')
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
 
         var slug = $('#room').val();
         var postUrl = '{{route("roomAttendees")}}';
-        var  url =  "{{ route('showDetails',":slug")}}";
+        var  url =  "{{ route('showDetails', ':slug' )}}";
         var csrf = '{{csrf_token()}}';
         action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
         currentUrl ="{{url()->current()}}";

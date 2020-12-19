@@ -25,8 +25,8 @@
             </div>
             @endif
             @if (count($attendees) > 0)
-            <section class="example">
-                <table class="table table-bordered table-hover">
+            <section class="attendees">
+                <table class="table  table-hover">
                     <thead>
                     <tr>
 

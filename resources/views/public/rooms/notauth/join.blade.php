@@ -57,7 +57,7 @@
                 <div class="col-md-12">
                     @if (count($roomsRecordingList) > 0)
 
-                        <table class="table table-bordered table-hover" id="InvitedMeetingTable" >
+                        <table class="table  table-hover" id="InvitedMeetingTable" >
                             <thead>
                             <tr>
                                 <th>Name</th>

@@ -43,15 +43,14 @@
                 <div class="card-body">
                     <div class="input-group">
                         <div class="input-group-prepend" >
-                            <div class="col-md-12">
+
                                 <div class="title-block"  data-toggle="modal" id="createMeeting">
-                                    <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i>Meeting</button></a>
+                                    <a><button type="button" class="btn btn-pill-right btn-primary"><i class="fa fa-plus-circle text-center text-white pr-1">&nbsp;</i>Create Meeting</button></a>
                                 </div>
-                            </div>
 
                         </div>
                     </div>
-                    <section class="example">
+                    <section class="upcoming-meetings" id="upcoming-meetings">
                         <upcoming-meetings meeting-route="{{ route('meetings.store') }}" get-meeting-route="{{route('upComingMeetings')}}" single-meeting-route="{{ route('meetings.edit',':id') }}" update-meeting-route="{{route('meetings.update',':id')}}" ></upcoming-meetings>
                     </section>
 
@@ -73,7 +72,7 @@
 
 
             <div class="card card-block sameheight-item">
-                <section class="example">
+                <section class="past-meetings" id="past-meetings">
                     <past-meetings></past-meetings>
                 </section>
             </div>
@@ -88,8 +87,6 @@
 @section('script')
     <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
-    <script type="application/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="application/javascript"  src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"></script>
 

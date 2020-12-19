@@ -57,7 +57,7 @@
     <div class="row">
         <div class="table-responsive">
             <div class="col-md-12">
-                <table class="table table-bordered table-hover" id="table" >
+                <table class="table  table-hover" id="table" >
                     <thead>
                     <tr>
                         <th>Name</th>

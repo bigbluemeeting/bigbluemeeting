@@ -34,7 +34,7 @@
             @endforeach
 
             <div class="card card-block sameheight-item">
-                <section class="example">
+                <section class="users">
                    <users-list user-list="{{route('admin::userList')}}" user-edit="{{route('admin::users.edit',':id')}}" ></users-list>
                 </section>
 

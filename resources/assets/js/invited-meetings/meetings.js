@@ -1,4 +1,4 @@
-$('.example').on('click','.InvitedMeetingAttendeeJoin',function () {
+$('.meeting-rooms').on('click','.InvitedMeetingAttendeeJoin',function () {
 
 
     var button=null;
@@ -21,7 +21,7 @@ $('.example').on('click','.InvitedMeetingAttendeeJoin',function () {
                 }
                 if (data.full)
                 {
-                    $('.errorClass').empty().append(button+'This room is full  try later.');
+                    $('.errorClass').empty().append(button+'This room is full try later.');
 
                     $('.errorClass').show();
                 }

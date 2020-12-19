@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-8 offset-2">
+        <div class="col-md-12">
             @includeIf(config('app_settings.flash_partial'))
             <form method="post" action="{{ config('app_settings.url') }}" class="form-horizontal mb-3" enctype="multipart/form-data" role="form">
                 {!! csrf_field() !!}

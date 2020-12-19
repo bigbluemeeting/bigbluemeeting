@@ -34,7 +34,7 @@
 
         <div class="card card-block sameheight-item mt-2">
 
-            <section class="example">
+            <section class="recordings" id="recordings">
                 <div class="row">
                     <div class="col-sm-6 col-sm-offset-5">
                         {{$recordingList->links()}}
@@ -42,7 +42,7 @@
                 </div>
                 @if (count($recordingList) > 0)
                     <div class="table-responsive">
-                        <table class="table table-bordered table-hover">
+                        <table class="table  table-hover">
                             <thead>
                             <tr>
 
@@ -94,15 +94,10 @@
                                 </tr>
                             @endforeach
                             @else
-                                <div class="card bg-light">
-                                    <div class="card-body">
-                                        <div class="card">
-                                            <div class="card-body" style="background: #fff8a0;">
-                                                <div class="col-md-7">
-                                                    <p class="text-danger m-0">We're sorry,you don have any recording.</p>
-                                                </div>
-
-                                            </div>
+                                <div class="card bg-light" style="background: #fff8a0;">
+                                    <div class="card-body" >
+                                        <div class="col-md-12">
+                                            <p class="text-danger m-0">We're sorry, you don't have any recording.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -124,11 +119,11 @@
             </div>
             <div class="col-lg-12">
                     <div class="card card-block sameheight-item mt-3">
-                        <section class="example">
+                        <section class="room-recordings" id="room-recordings">
                             @if (count($meetingRecordings) > 0)
 
                                 <div class="table-responsive">
-                                    <table class="table table-bordered table-hover">
+                                    <table class="table  table-hover">
                                         <thead>
                                         <th>Name</th>
                                         <th>Playback</th>
@@ -169,14 +164,9 @@
                                         @endforeach
                                         @else
                                             <div class="card bg-light">
-                                                <div class="card-body">
-                                                    <div class="card">
-                                                        <div class="card-body" style="background: #fff8a0;">
-                                                            <div class="col-md-7">
-                                                                <p class="text-danger m-0">We're sorry,you don have any recording.</p>
-                                                            </div>
-
-                                                        </div>
+                                                <div class="card-body" style="background: #fff8a0;">
+                                                    <div class="col-md-12">
+                                                        <p class="text-danger m-0">We're sorry, you don have any recording.</p>
                                                     </div>
                                                 </div>
                                             </div>

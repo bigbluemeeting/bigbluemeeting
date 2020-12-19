@@ -1,7 +1,7 @@
 <template>
-    <div id="app">
+    <div id="past-meetings-app">
         <div v-if="meetings.total > 0" class="table-responsive">
-            <table class="table table-bordered table-hover">
+            <table class="table  table-hover">
                 <thead>
                 <tr>
                     <th>Meeting Name</th>
@@ -35,19 +35,15 @@
         </div>
         <div v-if="meetings.total === 0" class="card bg-light">
             <div class="card-body">
-                <div class="card">
-                    <div class="card-body" id="warning-dev">
-                        <div class="col-md-7">
-                            <p class="text-danger m-0">We're sorry,you don't have any past meetings.</p>
-                        </div>
 
-                    </div>
+                <div class="col-md-12">
+                    <p class="text-danger m-0">We're sorry, you don't have any past meetings.</p>
                 </div>
             </div>
         </div>
         <div class="row">
 
-            <div class="col-sm-6 col-sm-offset-5">
+            <div class="col-sm-12">
                 <pagination :data="meetings" @pagination-change-page="getResults"></pagination>
             </div>
         </div>

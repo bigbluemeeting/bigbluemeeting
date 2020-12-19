@@ -1,0 +1,16 @@
+.header{
+  height: 50px;
+  background-color: #3498db;
+}
+
+.app .content {
+  padding-top: 80px;
+}
+
+.sidebar{
+  background-color: #3498db;
+}
+
+.sidebar .sidebar-menu li a{
+  color: rgba(255, 255, 255, 0.9);
+}

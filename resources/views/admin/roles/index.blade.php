@@ -23,9 +23,9 @@
                 <a href="{{ route('admin::roles.add') }}"><button type="button" class="btn btn-pill-right btn-primary">Add New Role</button></a>
             </div>
 
-            <section class="example">
+            <section class="roles" id="roles">
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover">
+                    <table class="table  table-hover">
                         <thead>
                         <tr>
                             <th>#</th>
