@@ -82,7 +82,7 @@ class UsersController extends Controller
             $user->username = $request->input('username');
             $user->email = $request->input('email');
             $user->password = Hash::make($request->input('password'));
-            $user->admin_unique_key = $this->_random_str(60);
+            $user->admin_unique_key = $this->random_str(60);
 
 
             $user->save();
@@ -231,7 +231,7 @@ class UsersController extends Controller
 
     }
 
-    protected function _random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    private function random_str($length, $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
     {
 
         $str = '';

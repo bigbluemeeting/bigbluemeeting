@@ -12,11 +12,6 @@
 */
 
 
-use App\bigbluebutton\tests;
-use App\Http\Middleware\AjaxCheck;
-
-use BigBlueButton\TestCase;
-use Fomvasss\LaravelStrTokens\Facades\StrToken;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -130,22 +125,3 @@ Route::middleware('ajax.check')->group(function ()
 
 
 
-//Route::post('/tem','Admin\EmailTemplate@store')->name('emailStore');
-//Route::get('/tem',function (){
-//
-//    $str = StrToken::setText('
-//            Example str with tokens for article: "[user:name]([user:id])",
-//            Article created at date: [user:created_at],
-//            Generated token at: [config:global.app_name], [date:raw]
-//            Length: [var:length];
-//            Width: [var:width];
-
-//            Price: [var:price]
-//        ')
-//        ->setDate(\Carbon\Carbon::tomorrow())
-//        ->setEntity(\App\User::findorFail(1))
-//        ->setVars(['length' => '2.2 m.', 'width' => '3.35 m.'])
-//        ->setVar('price', '$13')
-//        ->replace();
-//    print_r($str);
-//});

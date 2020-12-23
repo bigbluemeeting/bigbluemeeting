@@ -75,9 +75,9 @@
                         <div class="input-group" >
                             <div class="input-group-prepend">
                                 <div class="col-md-11 mt-2">
-                                    <span class="create-only btn btn-info btn-block input-group-text" data-toggle="modal" data-target="#myModal" id="createRoom">
-                                        <i class="fa fa-plus-circle text-center text-white pr-3">&nbsp; Invite Participant <i class="fa fa-caret-down ml-1"></i>
-                                    </span>
+                                    <div class="create-only btn btn-info" data-toggle="modal" data-target="#myModal" id="createRoom">
+                                        <i class="fa fa-plus-circle text-center text-white"></i>&nbsp; Invite Participant
+                                    </div>
                                 </div>
                             </div>
                         </div>

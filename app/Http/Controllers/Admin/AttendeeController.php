@@ -2,21 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Attendee;
-use App\Helpers\Helper;
+use App\Helpers\bbbHelpers;
 use App\Http\Controllers\Controller;
-use App\Mail\AttendeeMail;
 use App\Meeting;
-use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
-use BigBlueButton\Parameters\GetMeetingInfoParameters;
 use BigBlueButton\Parameters\IsMeetingRunningParameters;
-use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 
 class AttendeeController extends Controller
 {
@@ -58,7 +51,7 @@ class AttendeeController extends Controller
                     'password'   => decrypt(decrypt($meeting->attendee_password))
                 ];
 
-                $url = Helper::joinMeeting($joinMeetingParams);
+                $url = bbbHelpers::joinMeeting($joinMeetingParams);
                 return response()->json(['url'=>$url]);
             }
         }catch (\Exception $exception)

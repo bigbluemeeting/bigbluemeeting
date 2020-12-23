@@ -3,17 +3,13 @@
 namespace App\Http\Controllers\PublicControllers\Rooms;
 
 use App\Helpers\bbbHelpers;
-use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Meeting;
 use App\Room;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
-use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Http\Request;
 use BigBlueButton\Parameters\IsMeetingRunningParameters;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class AttendeesRoomController extends Controller

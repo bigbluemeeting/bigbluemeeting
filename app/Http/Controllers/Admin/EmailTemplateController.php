@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\EmailTemplate;
 use App\Http\Controllers\Controller;
-use App\Room;
 use App\User;
 use DateTimeZone;
-use Fomvasss\LaravelStrTokens\Facades\StrToken;
 use Illuminate\Http\Request;
 
 class EmailTemplateController extends Controller

@@ -4,33 +4,23 @@ namespace App\Http\Controllers\PublicControllers\Rooms;
 
 use App\Attendee;
 use App\EmailTemplate;
-use App\Files;
 use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MeetingsRequest;
-use App\Mail\AttendeeMail;
-use App\Meeting;
+
 use App\Notifications\AddParticipantMail;
 use App\Notifications\InviteParticipantMail;
 use App\Room;
 use App\User;
-use BigBlueButton\BigBlueButton;
-use BigBlueButton\Parameters\CreateMeetingParameters;
-use BigBlueButton\Parameters\EndMeetingParameters;
-use BigBlueButton\Parameters\GetMeetingInfoParameters;
-use Dotenv\Validator;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-use QCod\AppSettings\Setting\AppSettings;
+use Illuminate\Support\Facades\URL;
 
 class RoomsController extends Controller
 {
@@ -55,7 +45,7 @@ class RoomsController extends Controller
             $credentials = bbbHelpers::setCredentials();
             if (!$credentials)
             {
-                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+                return redirect(URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
             }
             $pageName = 'Meetings List';
 
@@ -308,7 +298,7 @@ class RoomsController extends Controller
             $credentials = bbbHelpers::setCredentials();
             if (!$credentials)
             {
-                return redirect(\Illuminate\Support\Facades\URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
+                return redirect(URL::to('settings'))->with(['danger'=>'Please Enter Settings']);
             }
 
             $user = User::findOrFail(Auth::id());
@@ -326,7 +316,7 @@ class RoomsController extends Controller
 
             ];
 
-            $files =  Auth::user()
+            $files = $user
                 ->rooms()
                 ->where('url',$room->url)
                 ->whereHas('files')
@@ -367,7 +357,7 @@ class RoomsController extends Controller
     public function inviteAttendee()
     {
         try{
-            $pageName ='Invited Meetings';
+            $pageName = __('Invited Meetings');
             $user = User::findOrFail(Auth::id());
             $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 

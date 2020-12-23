@@ -6,7 +6,7 @@ return [
     'sections' => [
         'generalSettings' => [
           'title' => 'General Settings',
-            'descriptions' => 'Application General Settings.', // (optional)
+            'descriptions' => 'Application general Settings.', // (optional)
             'icon' => 'fa fa-cogs  ml-3', // (optional)
             'id' =>'generalSettings',
             'inputs' => [
@@ -14,20 +14,32 @@ return [
                 [
                     'name' => 'app_name', // unique key for setting
                     'type' => 'text', // type of input can be text, number, textarea, select, boolean, checkbox etc.
-                    'label' => 'App Name', // label for input
+                    'label' => 'Application Name', // label for input
                     // optional properties
                     'placeholder' => 'Enter Your App Name', // placeholder for input
                     'class' => 'form-control', // override global input_class
                     'style' => '', // any inline styles
                     'rules' => 'required', // validation rules for this input
                     'value' => '', // any default value
+                    'hint' => 'You can set your application name here.' // help block text for input
+                ],
+                [
+                    'name' => 'app_logo', // unique key for setting
+                    'type' => 'image', // type of input can be text, number, textarea, select, boolean, checkbox etc.
+                    'label' => 'Application Logo', // label for input
+                    // optional properties
+                    //'placeholder' => 'Upload your a', // placeholder for input
+                    'class' => 'form-control', // override global input_class
+                    'style' => '', // any inline styles
+                    'rules' => '', // validation rules for this input
+                    'value' => '', // any default value
                     'hint' => 'You can set your app name here' // help block text for input
                 ]
-            ]
+            ],
         ],
         'bbbServerSettings' => [
-            'title' => 'BBB Server  Settings',
-            'descriptions' => 'Application BBB Server Settings.', // (optional)
+            'title' => 'BBB Server Settings',
+            'descriptions' => 'You can register for a free trial account on www.bigbluemeeting.com or use any BigBlueButton Server API information.', // (optional)
             'icon' => 'fa fa-server ml-3', // (optional)
             'id' =>'bbbServerSettings',
 
@@ -36,7 +48,7 @@ return [
                 [
                     'name' => 'bbb_url', // unique key for setting
                     'type' => 'text', // type of input can be text, number, textarea, select, boolean, checkbox etc.
-                    'label' => 'BBB Server Url', // label for input
+                    'label' => 'BigBlueButton Server Url', // label for input
                     // optional properties
                     'placeholder' => 'Enter Your BigBlueButton Server Url', // placeholder for input
                     'class' => 'form-control', // override global input_class
@@ -48,7 +60,7 @@ return [
                 [
                     'name' => 'bbb_secret', // unique key for setting
                     'type' => 'text', // type of input can be text, number, textarea, select, boolean, checkbox etc.
-                    'label' => 'BBB Server Secret', // label for input
+                    'label' => 'BigBlueButton Secret', // label for input
                     // optional properties
                     'placeholder' => 'Enter Your BigBlueButton Server Secret', // placeholder for input
                     'class' => 'form-control', // override global input_class
@@ -70,7 +82,8 @@ return [
                     'name'=>'config_type',
                     'type' =>'text',
                     'label' => 'Email Config Type',
-                    'placeholder' => 'Enter Your Email Config Type',
+                    'placeholder' => 'smtp',
+                    'default' => 'stmp',
                     'rules' => 'required',
                     'hint' => 'Copy email config type from your host site & paste here'
 
@@ -114,8 +127,8 @@ return [
                 [
                     'name'=>'from_email',
                     'type' =>'text',
-                    'label' => 'From Email',
-                    'placeholder' => 'Enter Your From Email',
+                    'label' => 'From Email Address',
+                    'placeholder' => 'me@example.com',
                     'rules' => 'required|email',
 
 
@@ -123,8 +136,8 @@ return [
                 [
                     'name'=>'from_name',
                     'type' =>'text',
-                    'label' => 'From Name',
-                    'placeholder' => 'Enter Your From Name',
+                    'label' => 'From E-mail Name',
+                    'placeholder' => 'John Smith',
                     'rules' => 'required',
 
 
