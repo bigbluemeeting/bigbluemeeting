@@ -21,13 +21,13 @@
     var themeName = themeSettings.themeName || '';
     if (themeName)
     {
-    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('') }}css/app-' + themeName + '.css">');
+    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset(\'\') }}css/app-' + themeName + '.css">');
     }
     else
     {
-    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('css/app.css') }}">');
+    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset(\'css/app.css\') }}">');
     }
-    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset('css/custom.css') }}">');
+    document.write('<link rel="stylesheet" id="theme-style" href="{{ asset(\'css/custom.css\') }}">');
     </script>
 </head>
 <body>
@@ -47,11 +47,6 @@
                             <span class="name"> {{ Auth::user()->name }} </span>
                         </a>
                         <div class="dropdown-menu profile-dropdown-menu" aria-labelledby="dropdownMenu1">
-{{--                            <a class="dropdown-item" href="#">--}}
-{{--                                <i class="fa fa-user icon"></i> Profile--}}
-{{--                            </a>--}}
-
-
 
                             @if( Gate::check('users_manage') || Gate::check('master_manage'))
 
@@ -70,9 +65,6 @@
                     </li>
 
                 </ul>
-
-
-
             </div>
         </header>
 

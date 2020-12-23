@@ -67,7 +67,6 @@
                     <a href="{{ route('mail.index') }}">
 
                         <i class="fa fa-envelope"></i> E-mail Preferences
-                        {{--                        <i class="fa arrow"></i>--}}
                     </a>
 
                 </li>

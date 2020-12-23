@@ -129,7 +129,6 @@
 
                     <div class="row">
                         <div class="mt-3 ml-3">
-{{--                            <input type="submit" value="Schedule Room" class="create-only btn btn-info btn-block" data-disable-with="Create Room">--}}
                             <input type="submit" name="commit" value="Update Meeting" class="update-only btn btn-info btn-block" data-disable-with="Update Room" >
                         </div>
                     </div>

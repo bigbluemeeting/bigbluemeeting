@@ -61,7 +61,6 @@
                             <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
                             <div class="row fileupload-buttonbar">
                                 <div class="col-lg-7">
-                                {{--                                <input type="hidden" name="meeting" value="{{$meeting->id}}">--}}
                                 <!-- The fileinput-button span is used to style the file input field as button -->
                                     <span class="btn btn-success fileinput-button text-white ">
                                     <i class="fa fa-plus"></i>
@@ -199,7 +198,6 @@
                     <div class="form-group">
                         <input type="hidden" class="room-file-name" value="" name="file">
                         <lable for="rooms">Meetings</lable>
-{{--                        {!!Form::select('rooms',[''=>'Choose Option']+$rooms,null, ['class'=>'form-control'])!!}--}}
                         <select name="rooms" id="" class="form-control mt-2">
                             <option value="">Choose Meeting</option>
                             @foreach($rooms as $room)
@@ -291,7 +289,6 @@
                 </div>
 
             </div>
-{{--    </div>--}}
 
 @stop
 
@@ -325,7 +322,6 @@
             <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-image.min.js"></script>
             <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-validate.min.js"></script>
             <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-ui.min.js"></script>
-{{--           --}}
             <script src="{{asset('js/fileUpload.js')}}"></script>
 
 

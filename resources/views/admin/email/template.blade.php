@@ -31,9 +31,6 @@
                 </div>
                 <hr/>
                 <div class="row">
-
-
-
                     <div class="col-md-12">
                         <form action="{{route('mail.store')}}" method="Post">
                             @csrf
@@ -108,8 +105,6 @@
                                     <label for="mailSubject">Mail From Name</label><br>
                                     Your version
                                     <input name="mail_subject"  class="form-control" value="{{$userEmailTemplate['mail_subject'] ? $userEmailTemplate['mail_subject'] : $defaultTemplate['mail_subject']}}">
-
-
                                 </div>
                             </div>
 
@@ -181,16 +176,10 @@
                                 <div class="col-md-6">
                                     <input type="submit" value="Update" class="btn btn-info">
                                 </div>
-
                             </div>
-
                         </form>
                     </div>
-
-{{--                    <a href="{{route('subscribe',1)}}">{{route('subscribe',2)}}</a>--}}
-
                 </div>
-
             </div>
         </div>
 

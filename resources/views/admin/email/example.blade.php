@@ -1,84 +1,4 @@
-{{--<!DOCTYPE html>--}}
-{{--<html>--}}
-{{--<head>--}}
-{{--    <title>Invitation For Meeting</title>--}}
-{{--</head>--}}
-
-{{--<body>--}}
-
-{{--<div>--}}
-{{--    <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="body">--}}
-{{--        <tr>--}}
-{{--            <td>&nbsp;</td>--}}
-{{--            <td class="container">--}}
-{{--                <div class="content">--}}
-{{--                    <!-- START CENTERED WHITE CONTAINER -->--}}
-{{--                    <table role="presentation" class="main">--}}
-{{--                        <!-- START MAIN CONTENT AREA -->--}}
-{{--                        <tr>--}}
-{{--                            <td class="wrapper">--}}
-{{--                                <table role="presentation" border="0" cellpadding="0" cellspacing="0">--}}
-{{--                                    <tr>--}}
-{{--                                        <td>--}}
-{{--                                            <p>{!!  $meetingParams['mailParams']['header']!!}</p>--}}
-{{--                                            <p>Sometimes you just want to send a simple HTML email with a simple design and clear call to action. This is it.</p>--}}
-{{--                                            <hr>--}}
-{{--                                            <table role="presentation" border="0" cellpadding="0" cellspacing="0" class="btn btn-primary">--}}
-{{--                                                <tbody>--}}
-{{--                                                <tr>--}}
-{{--                                                    <td align="left">--}}
-{{--                                                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">--}}
-{{--                                                            <tbody>--}}
-{{--                                                            <tr>--}}
-{{--                                                                <td>  </td>--}}
-{{--                                                            </tr>--}}
-{{--                                                            </tbody>--}}
-{{--                                                        </table>--}}
-{{--                                                    </td>--}}
-{{--                                                </tr>--}}
-{{--                                                </tbody>--}}
-{{--                                            </table>--}}
-{{--                                            <p>{!!  $meetingParams['mailParams']['footer']!!}</p>--}}
-
-{{--                                        </td>--}}
-{{--                                    </tr>--}}
-{{--                                </table>--}}
-{{--                            </td>--}}
-{{--                        </tr>--}}
-
-{{--                        <!-- END MAIN CONTENT AREA -->--}}
-{{--                    </table>--}}
-{{--                    <!-- END CENTERED WHITE CONTAINER -->--}}
-
-{{--                    <!-- START FOOTER -->--}}
-{{--                    <div class="footer">--}}
-{{--                        <table role="presentation" border="0" cellpadding="0" cellspacing="0">--}}
-{{--                            <tr>--}}
-{{--                                <td class="content-block">--}}
-{{--                                    <span class="apple-link"></span>--}}
-{{--                                    <br>  <a href="http://i.imgur.com/CScmqnj.gif">Unsubscribe</a>.--}}
-{{--                                </td>--}}
-{{--                            </tr>--}}
-{{--                            <tr>--}}
-{{--                                <td class="content-block powered-by">--}}
-{{--                                    Powered by <a href="http://htmlemail.io">HTMLemail</a>.--}}
-{{--                                </td>--}}
-{{--                            </tr>--}}
-{{--                        </table>--}}
-{{--                    </div>--}}
-{{--                    <!-- END FOOTER -->--}}
-
-{{--                </div>--}}
-{{--            </td>--}}
-{{--            <td>&nbsp;</td>--}}
-{{--        </tr>--}}
-{{--    </table>--}}
-
-{{--</div>--}}
-{{--</body>--}}
-
-{{--</html>--}}
-        <!doctype html>
+<!doctype html>
 <html>
 
 <head>
@@ -114,15 +34,14 @@
              transition: all 0.2s;
         }
         a.button1:hover{
-
              color:#000000;
              background-color:#FFFFFF;
         }
         @media all and (max-width:30em){
-             a.button1{
+            a.button1{
                   display:block;
                   margin:0.4em auto;
-                 }
+            }
         }
 
     </style>
@@ -156,13 +75,7 @@
 
                                     If you have asked us to stopped sending you mail but now have changed your mind click here: [subscribe:link]</b>
                             </div>
-
-
                     </tr>
-
-
-
-
                 </table>
             </div>
 

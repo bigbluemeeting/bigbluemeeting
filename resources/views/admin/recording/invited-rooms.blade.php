@@ -42,14 +42,14 @@
                                <thead>
                                <tr>
 
-                                   <th>Name</th>
-                                   <th>Playback</th>
-                                   <th>State</th>
-                                   <th>Length</th>
-                                   <th>Users</th>
-                                   <th>Format</th>
-                                   <th>Started</th>
-                                   <th>Ended</th>
+                                   <th>{{ __('Name') }}</th>
+                                   <th>{{ __('Playback')}}</th>
+                                   <th>{{__('State')}}</th>
+                                   <th>{{__('Length')}}</th>
+                                   <th>{{__('Users')}}</th>
+                                   <th>{{__('Format')}}</th>
+                                   <th>{{__('Started')}}</th>
+                                   <th>{{__('Ended')}}</th>
 
                                </tr>
                                </thead>
@@ -76,7 +76,7 @@
                                    <div class="card bg-light" style="background: #fff8a0;">
                                        <div class="card-body">
                                             <div class="col-md-12">
-                                                <p class="text-danger m-0">We're sorry, you dont have any recording.</p>
+                                                <p class="text-danger m-0">{{__('We're sorry, you don't have any recording(s).')}}</p>
                                             </div>
                                         </div>
                                    </div>
@@ -101,6 +101,6 @@
 
 @section('javascript')
     <script>
-        window.route_mass_crud_entries_destroy = '{{ route('admin::users.mass_destroy') }}';
+        window.route_mass_crud_entries_destroy = "{{ route('admin::users.mass_destroy') }}";
     </script>
 @endsection

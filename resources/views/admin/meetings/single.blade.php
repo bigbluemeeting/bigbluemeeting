@@ -6,20 +6,12 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/css/blueimp-gallery.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload-ui.min.css">
-
-    <style>
-        /*.inner-table td {*/
-        /*    border: none !important;*/
-        /*    border-bottom: 1px solid #dee2e6 !important;*/
-
-        /*}*/
-    </style>
 @stop
 @section('content')
 
     <div class="container-fluid">
 
-        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;Meeting Details</h5>
+        <h5><i class="fa fa-users"></i>&nbsp;&nbsp;{{ __('Meeting Details') }}</h5>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -29,32 +21,32 @@
                         <table class="table table-striped ">
                             <tbody>
                             <tr>
-                                <td>Meeting Name</td>
+                                <td>{{ __('Meeting Name') }}</td>
                                 <td>{{$meeting->name}}</td>
 
                             </tr>
                             <tr>
-                                <td>Access Code</td>
-                                <td>{{$meeting->access_code ? $meeting->access_code :'Null'}}</td>
+                                <td>{{ __('Access Code') }}</td>
+                                <td>{{$meeting->access_code ? $meeting->access_code : __('None')}}</td>
 
                             </tr>
                             <tr>
-                                <td>Mute On Join</td>
-                                <td>{{$meeting->mute_on_join ? 'Yes':'No' }}</td>
+                                <td>{{ __('Mute On Join') }}</td>
+                                <td>{{$meeting->mute_on_join ? __('Yes'):__('No') }}</td>
                             </tr>
                             <tr>
-                                <td>Anyone Start Room</td>
-                                <td>{{$meeting->anyone_can_start ? 'Yes':'No'}}</td>
+                                <td>{{ __('Anyone Start Room') }}</td>
+                                <td>{{$meeting->anyone_can_start ? __('Yes'):__('No')}}</td>
 
                             </tr>
 
                             <tr>
-                                <td>All User Join As Moderate</td>
-                                <td>{{$meeting->all_join_moderate ? 'Yes' : 'No'}}</td>
+                                <td>{{ __('All User Join As Moderate') }}</td>
+                                <td>{{$meeting->all_join_moderate ? __('Yes'):__('No')}}</td>
                             </tr>
                             <tr>
-                                <td>Auto Join</td>
-                                <td>{{$meeting->auto_join ? 'Yes':'No'}}</td>
+                                <td>{{ __('Auto Join') }}</td>
+                                <td>{{$meeting->auto_join ? __('Yes'):__('No')}}</td>
                             </tr>
 
 
@@ -84,8 +76,8 @@
                 <div class="modal-body">
                     <div class="card-body p-sm-6">
                         <div class="card-title">
-                            <h3 class="text-center">Invite Participants</h3>
-                            <h3 class="update-only" style="display:none !important">Room Settings</h3>
+                            <h3 class="text-center">{{ __('Invite Participants') }}</h3>
+                            <h3 class="update-only" style="display:none !important">{{ __('Room Settings') }}</h3>
                         </div>
                         <div class="alert alert-danger errorClass" style="display: none">
                         </div>
@@ -102,7 +94,7 @@
                 </div>
                 <input type="hidden" id="room" value="{{$meeting->url}}">
                 <div class="modal-footer bg-light">
-                    <p class="text-primary"><strong> Info ! </strong> Participants need to singup if he's not member of this site. Invitational mail will be sent to his email </p>
+                    <p class="text-primary"><strong> Info ! </strong> {{ __('Participants need to sing-up if they are not members of this site. An invitational mail will be sent to their email.' }}</p>
 
                 </div>
             </div>
@@ -140,24 +132,18 @@
 @stop
 
 @section('script')
-
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-
-
         var csrf = '{{csrf_token()}}';
         action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
         currentUrl ="{{url()->current()}}";
     </script>
     <script src="{{asset('js/bbb-custom.js')}}"></script>
-{{--    <script src="{{asset('js/bbb-delete.js')}}"></script>--}}
-
-
 @stop
 
 @section('js')
 
-    @include('_partials.x-template')1
+    @include('_partials.x-template')
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/vendor/jquery.ui.widget.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-JavaScript-Templates/3.11.0/js/tmpl.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-load-image/2.17.0/load-image.all.min.js"></script>

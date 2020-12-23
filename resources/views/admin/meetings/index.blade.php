@@ -16,7 +16,7 @@
                 @if($errors->has('name'))
                     <div class="alert alert-danger">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        There was an error creating the room
+                        {{ __('There was an error creating the room'); }}
                     </div>
                 @endif
             </div>
@@ -64,7 +64,7 @@
     <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script>
-        url = '{{URL::to('rooms/:id/edit')}}';
+        url = "{{URL::to('rooms/:id/edit')}}";
         action =  "{{URL::to('rooms')}}/:deleteId";
     </script>
     <script src="{{asset('js/bbb-custom.js')}}"></script>

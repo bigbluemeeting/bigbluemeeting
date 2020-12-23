@@ -38,22 +38,6 @@
                         @foreach($attendees as $attendee)
                             <tr>
                                 <td>{{ $attendee->email }}</td>
-
-{{--                                <td>--}}
-{{--                                    @foreach ($user->roles()->pluck('name') as $permission)--}}
-{{--                                        <span class="badge badge-danger">{{ $permission }}</span>--}}
-{{--                                    @endforeach--}}
-{{--                                </td>--}}
-{{--                                <td>--}}
-{{--                                    <a href="{{ route('admin::users.edit',[$user->id]) }}" class="btn btn-sm btn-info">Edit</a>--}}
-{{--                                    {!! Form::open(array(--}}
-{{--                                        'style' => 'display: inline-block;',--}}
-{{--                                        'method' => 'DELETE',--}}
-{{--                                        'onsubmit' => "return confirm('Are you sure do you want to delete?');",--}}
-{{--                                        'route' => ['admin::users.destroy', $user->id])) !!}--}}
-{{--                                    {!! Form::submit('Delete', array('class' => 'btn btn-sm btn-danger')) !!}--}}
-{{--                                    {!! Form::close() !!}--}}
-{{--                                </td>--}}
                             </tr>
                         @endforeach
                     @else
@@ -77,6 +61,6 @@
 
 @section('javascript')
     <script>
-        window.route_mass_crud_entries_destroy = '{{ route('admin::users.mass_destroy') }}';
+        window.route_mass_crud_entries_destroy = "{{ route('admin::users.mass_destroy') }}";
     </script>
 @endsection
