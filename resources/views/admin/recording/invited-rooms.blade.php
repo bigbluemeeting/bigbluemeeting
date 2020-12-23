@@ -7,19 +7,9 @@
         <h4 class="title"><i class="fa fa-film"></i> {{ $pageName }} </h4>
     </div>
     @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-
-        <div class="container-fluid">
-
-            <h5>My Meeting Recordings</h5>
-            <div class="row" id="error">
-                <div class="col-md-12">
-                    @include('includes.form-errors')
-                </div>
-            </div>
-        </div>
+        <h5>My Meeting Recordings</h5>
     @endif
 
-    <div class="col-lg-12">
 
         @foreach (['danger', 'warning', 'success', 'info'] as $msg)
             @if(Session::has($msg))
@@ -73,10 +63,10 @@
                                @endforeach
 
                                @else
-                                   <div class="card bg-light" style="background: #fff8a0;">
-                                       <div class="card-body">
+                                   <div class="card bg-light" >
+                                       <div class="card-body" style="background: #fff8a0;">
                                             <div class="col-md-12">
-                                                <p class="text-danger m-0">{{__('We're sorry, you don't have any recording(s).')}}</p>
+                                                <p class="text-danger m-0">{{__('We\'re sorry, you don\'t have any recording(s).')}}</p>
                                             </div>
                                         </div>
                                    </div>
@@ -94,7 +84,6 @@
                 </section>
             </div>
 
-    </div>
 
 @endsection
 
