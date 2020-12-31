@@ -83,41 +83,44 @@ $('.btnDeleteConfirm').on('click', function () {
         });
     });
     $('#addPar').on('click', function () {
-        var emails = [];
-        $('#ul .tag span').each(function (i) {
-            emails.push($(this).text());
-        });
 
-        $.ajax({
-            type: 'POST',
-            url: postUrl,
-            datatype: 'json',
-            data: {
-                emails: emails,
-                room: $('#room').val(),
-                "_token": csrf
-            }, success: function success(data) {
-                if (data.result.error) {
-                    var button = '<button type="button" class="close"  aria-label="Close"> <span aria-hidden="true">&times; </span></button>';
-                    $('.errorClass').empty().append(button + data.result.error);
-                    $('.errorClass').show();
-                }
-                if (data.result.success) {
-
-                    url = url.replace(':slug', slug);
-
-                    window.location = url;
-                }
-            }
-
-        });
+        // var emails = [];
+        // $('#ul .tag span').each(function (i) {
+        //     emails.push($(this).text());
+        // });
+        //
+        // $.ajax({
+        //     type: 'POST',
+        //     url: postUrl,
+        //     datatype: 'json',
+        //     data: {
+        //         emails: emails,
+        //         room: $('#room').val(),
+        //         "_token": csrf
+        //     }, success: function success(data) {
+        //         if (data.result.error) {
+        //             var button = '<button type="button" class="close"  aria-label="Close"> <span aria-hidden="true">&times; </span></button>';
+        //             $('.errorClass').empty().append(button + data.result.error);
+        //             $('.errorClass').show();
+        //         }
+        //         if (data.result.success) {
+        //
+        //             url = url.replace(':slug', slug);
+        //
+        //             window.location = url;
+        //         }
+        //     }
+        //
+        // });
     });
 
     $('#myModal').on('click', '.close', function () {
         $('.errorClass').hide();
     });
     $.fn.tags = function (opts) {
+
         var selector = this.selector;
+
         function update($original) {
             var all = [];
             var list = $original.closest(".tags-wrapper").find("li.tag span").each(function () {

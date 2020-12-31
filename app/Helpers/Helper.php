@@ -3,10 +3,6 @@
 
 namespace App\Helpers;
 
-
-
-
-
 use App\Files;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\CreateMeetingParameters;

@@ -170,11 +170,13 @@ class UsersController extends Controller
     public function destroy($id)
     {
         try{
+
             if (! Gate::allows('users_manage')) {
                 return abort(401);
             }
             $user = User::findOrFail($id);
             $user->delete();
+            return $this->userList();
 
             return redirect()->route('admin::users.index')->with(['success' => 'User deleted successfully']);
 

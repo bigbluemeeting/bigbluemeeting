@@ -35,7 +35,7 @@
 
             <div class="card card-block sameheight-item">
                 <section class="users">
-                   <users-list user-list="{{route('admin::userList')}}" user-edit="{{route('admin::users.edit',':id')}}" ></users-list>
+                   <users-list user-delete="{{route('admin::users.destroy',':id')}}" user-list="{{route('admin::userList')}}" user-edit="{{route('admin::users.edit',':id')}}" ></users-list>
                 </section>
 
             </div>

@@ -25,6 +25,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
@@ -424,12 +425,7 @@ class RoomsController extends Controller
         try{
 //            $user = User::findOrFail(Auth::id());
             $currentDate = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
-//
-//            $pastMeetings = $user->rooms()
-//                ->where('end_date', '<', $currentDate)
-//                ->orderBy('id', 'DESC')
-//                ->paginate(10);
-//            dd($pastMeetings);
+
             $pageName = "Invite Participants";
             $meeting = Room::where('url',$url)
                 ->firstOrFail();
@@ -440,6 +436,7 @@ class RoomsController extends Controller
             }
 
 
+
             $attendees = $meeting->attendees()
                 ->latest()
                 ->paginate(10);
@@ -448,12 +445,86 @@ class RoomsController extends Controller
 
             $files = $meeting->files()->paginate(10);
 
-            return view('public.rooms.auth.addParticipant',compact('pageName','pastMeeting','meeting','attendees','files'));
+            return view('public.rooms.auth.addParticipant',compact('pageName','url','meeting','pastMeeting','attendees','files'));
 
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
+
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @return  Meeting Details And Participants Information
+     */
+    public function addParticipantDetails($url)
+    {
+        try{
+
+            $currentDate = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+
+            $meeting = Room::where('url',$url)
+                ->firstOrFail();
+            $pastMeeting = false;
+            if ($meeting->end_date < $currentDate)
+            {
+                $pastMeeting = true;
+            }
+
+
+
+            $attendees = $meeting->attendees()
+                ->latest()
+                ->paginate(10);
+
+
+
+
+
+            return \request()->json(200,[
+                'meeting'=>$meeting,
+                'pastMeeting'=>$pastMeeting,
+                'attendees'=>$attendees,
+            ]);
+//            return r
+//            return view('public.rooms.auth.addParticipant',compact('pageName','url','pastMeeting','meeting','attendees','files'));
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
+
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @return  meetings files
+     */
+    public function meetingFiles($url)
+    {
+        try{
+
+
+            $meeting = Room::where('url',$url)
+                ->firstOrFail();
+
+
+            $files = $meeting->files()->paginate(10);
+
+            return \request()->json(200,[
+
+                'files'=>$files
+            ]);
+
+        }catch (\Exception $exception)
+        {
+            return redirect()->back()->with(['danger'=>$exception->getMessage()]);
+        }
+
 
     }
 
@@ -466,8 +537,9 @@ class RoomsController extends Controller
 
             if(empty($request->emails))
             {
-                return response()->json(['result' => ['error'=>'Please Enter Atleast One Email']]);
+                return response()->json(['error' => 'Please Enter Atleast One Email'], 401);
             }
+
             $validEmails=[];
             $sendEmails=[];
             $room = Room::where('url',$request->room)->firstOrFail();
@@ -612,9 +684,8 @@ class RoomsController extends Controller
                     ))->delay($when));
             }
 
+            return $this->addParticipantDetails($request->room);
 
-
-            return response()->json(['result'=>['success'=>200]]);
         }catch (\Exception $exception)
         {
             return redirect()->json(['danger'=>$exception->getMessage()]);
@@ -624,6 +695,23 @@ class RoomsController extends Controller
 
     }
 
+
+    public  function deleteFile(Request $request)
+    {
+        try{
+
+            $file= Files::findOrFail($request->id);
+
+            $filename  = public_path().Files::Folder.$file->name;
+            File::delete($filename);
+            $file->delete(); // delete db record
+            return $this->meetingFiles($request->url);
+
+        }catch (\Exception $exception)
+        {
+            return response()->json(['error'=>$exception->getMessage()]);
+        }
+    }
     public function destroy (Request $request)
     {
         try{
@@ -653,12 +741,14 @@ class RoomsController extends Controller
      * Delete attendees From Meetings
      */
 
-    public function deleteAttendee($id)
+    public function deleteAttendee(Request $request)
     {
         try{
-            $attendee = Attendee::findOrFail($id);
+
+            $attendee = Attendee::findOrFail($request->id);
 
             $attendee->delete();
+            return $this->addParticipantDetails($request->url);
 
             return redirect()->back()->with(['success'=>'Participant deleted from this meeting']);
         }catch (\Exception $exception)

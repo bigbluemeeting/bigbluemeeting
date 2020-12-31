@@ -77,9 +77,13 @@ Route::get('/', function () {
  */
 Route::group(['middleware'=>'auth'],function(){
 
+
     Route::get('meetings/invited-meetings','PublicControllers\Rooms\RoomsController@inviteAttendee')->name('invitedMeetings');
     Route::get('meetings/details/{url}','PublicControllers\Rooms\RoomsController@showDetails')->name('showDetails');
-    Route::get('meetings/attendee/{url}','PublicControllers\Rooms\RoomsController@deleteAttendee')->name('deleteAttendee');
+    Route::get('addParticipant/details/{url}','PublicControllers\Rooms\RoomsController@addParticipantDetails')->name('addParticipantDetails');
+    Route::get('meeting/files/{url}','PublicControllers\Rooms\RoomsController@meetingFiles')->name('meetingFiles');
+
+    Route::post('meetings/attendee','PublicControllers\Rooms\RoomsController@deleteAttendee')->name('deleteAttendee');
     Route::post('/meetings/joins','PublicControllers\Rooms\RoomsController@join')->name('join');
     Route::get('/attendee/joins/{url}','Admin\AttendeeController@joinAttendee')->name('JoinAttendee');
     Route::get('/rooms/joins/{url}','Admin\MeetingController@joinMeeting')->name('JoinMeetings');
@@ -90,6 +94,7 @@ Route::group(['middleware'=>'auth'],function(){
     Route::get('/rooms/details/{url}','Admin\MeetingController@showDetails')->name('showMeetingDetails');
     Route::resource('/mail','Admin\EmailTemplateController');
     Route::resource('/plans','Admin\PlansController');
+    Route::post('deleteFile/','PublicControllers\Rooms\RoomsController@deleteFile')->name('deleteFile');
 });
 
 Route::get('/mail/unsubscribe/{mail}','Admin\EmailTemplateController@unSubscribe')->name('unsubscribe');
