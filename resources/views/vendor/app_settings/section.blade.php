@@ -3,11 +3,10 @@
         <div class="card-header" id="{{Arr::get($fields, 'title')}}">
 
             <a class="btn btn-link text-info" data-toggle="collapse" href="#{{Arr::get($fields, 'id')}}" role="button" aria-expanded="false" aria-controls="{{Arr::get($fields, 'id')}}">
-{{--            <a class="btn btn-primary" data-toggle="collapse" href="#{{Arr::get($fields, 'id')}}" role="button" aria-expanded="false" aria-controls="{{Arr::get($fields, 'id')}}">--}}
                 <i class="{{ Arr::get($fields, 'icon', 'glyphicon glyphicon-flash') }}"></i>
                 {{ $fields['title'] }}
             </a>
-        
+
         </div>
         <div id="{{Arr::get($fields, 'id')}}" class="collapse" >
             <div class="card-body bg-light">

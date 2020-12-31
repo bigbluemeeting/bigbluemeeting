@@ -8,18 +8,12 @@ use App\Http\Controllers\Controller;
 use App\Meeting;
 use App\Room;
 use Carbon\Carbon;
-use Croppa;
+use App\User;
 
-//use FileUpload;
-use FileUpload\FileNameGenerator\Slug;
-use FileUpload\FileUpload;
-//use FileUpload\Validator\Simple;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class FilesController extends Controller
 {
@@ -38,10 +32,10 @@ class FilesController extends Controller
         // get all files
 
         try{
-            $user = Auth::user();
+            $user = User::FindOrFail(Auth::id());
 
             $files = $user->files()->orderBy('id','DESC')->paginate(10);
-            $currentDate  = \Illuminate\Support\Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+            $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
 
             $rooms =  $user->rooms()
                 ->where('end_date','>=',$currentDate)
@@ -259,7 +253,7 @@ class FilesController extends Controller
     public function setDefault($id)
     {
         try{
-            $user= Auth::user();
+            $user = User::FindOrFail(Auth::id());
             $user->files()->where('setDefault',1)->update(['setDefault'=>0]);
 
             $files = Files::findOrFail($id);

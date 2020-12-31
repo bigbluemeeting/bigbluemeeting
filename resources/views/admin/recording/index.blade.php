@@ -29,7 +29,7 @@
                 </div>
             @endif
         @endforeach
-            @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
+        @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
 
 
         <div class="card card-block sameheight-item mt-2">
@@ -94,10 +94,10 @@
                                 </tr>
                             @endforeach
                             @else
-                                <div class="card bg-light" style="background: #fff8a0;">
-                                    <div class="card-body" >
+                                <div class="card bg-light" >
+                                    <div class="card-body"  style="background: #fff8a0;">
                                         <div class="col-md-12">
-                                            <p class="text-danger m-0">We're sorry, you don't have any recording.</p>
+                                            <p class="text-danger m-0">We're sorry, you don't have any recording(s).</p>
                                         </div>
                                     </div>
                                 </div>
@@ -110,7 +110,7 @@
 
             </section>
         </div>
-            @endif
+        @endif
 
     {{-- Rooms Recordings List --}}
 
@@ -166,7 +166,7 @@
                                             <div class="card bg-light">
                                                 <div class="card-body" style="background: #fff8a0;">
                                                     <div class="col-md-12">
-                                                        <p class="text-danger m-0">We're sorry, you don have any recording.</p>
+                                                        <p class="text-danger m-0">We're sorry, you don't have any recording(s).</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -184,12 +184,6 @@
                     </div>
 
                 </div>
-
-
-
-
-
-
     </div>
 
 @endsection
@@ -197,6 +191,6 @@
 
 @section('javascript')
     <script>
-        window.route_mass_crud_entries_destroy = '{{ route('admin::users.mass_destroy') }}';
+        window.route_mass_crud_entries_destroy = "{{ route('admin::users.mass_destroy') }}";
     </script>
 @endsection

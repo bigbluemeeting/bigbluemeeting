@@ -82,25 +82,6 @@
                 </div>
             </div>
 
-{{--            <div class="form-group">--}}
-{{--                {!! Form::label('billing_frequency_interval', 'Billing Frequency Interval *', ['class' => 'col-sm-5 control-label']) !!}--}}
-{{--                <div class="col-sm-12">--}}
-{{--                    <select name="billing_frequency_interval" id="" class="form-control">--}}
-
-{{--                        <option value=""></option>--}}
-{{--                        <option value="week" {{ old('billing_frequency_interval') == 'week' ? 'selected' : '' }}>Week</option>--}}
-{{--                        <option value="month" {{ old('billing_frequency_interval') == 'month' ? 'selected' : '' }}>Month</option>--}}
-{{--                        <option value="year" {{ old('billing_frequency_interval') == 'year' ? 'selected' : '' }}>Year</option>--}}
-{{--                    </select>--}}
-
-{{--                    @if($errors->has('billing_frequency_interval'))--}}
-{{--                        <span class="text-danger">--}}
-{{--                            {{ $errors->first('billing_frequency_interval') }}--}}
-{{--                        </span>--}}
-{{--                    @endif--}}
-{{--                </div>--}}
-{{--            </div>--}}
-
             <div class="form-group">
                 {!! Form::label('billing_frequency_interval', 'Billing Frequency Interval *', ['class' => 'col-sm-5 control-label']) !!}
                 <div class="col-sm-12">

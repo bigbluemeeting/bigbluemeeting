@@ -1,16 +1,3 @@
-{{--<div class="container mt-3">--}}
-{{--    <div class="row">--}}
-{{--        <div class="col-md-4">--}}
-{{--            <h3>Big Blue Button</h3>--}}
-{{--        </div>--}}
-{{--        <div class="col-md-8 position-absolute d-flex flex-row-reverse">--}}
-{{--            <button class="btn btn-primary  ml-4 bg-white text-primary auth" >Sing In</button>--}}
-{{--            <button class="btn btn-primary  bg-white text-primary auth">Sing Up</button>--}}
-{{--        </div>--}}
-{{--    </div>--}}
-
-{{--</div>--}}
-
 <div class="header py-4">
     <div class="container">
         <div class="d-flex">

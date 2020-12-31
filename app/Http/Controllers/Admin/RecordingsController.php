@@ -5,20 +5,14 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\bbbHelpers;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-
-use App\Room;
 use App\User;
+
 use BigBlueButton\Parameters\DeleteRecordingsParameters;
 use BigBlueButton\Parameters\PublishRecordingsParameters;
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use BigBlueButton\BigBlueButton;
 use BigBlueButton\Parameters\GetRecordingsParameters;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use SimpleXMLElement;
-use Spatie\Permission\Models\Role;
 
 class RecordingsController extends Controller
 {
@@ -39,15 +33,17 @@ class RecordingsController extends Controller
     {
         //
         try{
+            $user = User::FindOrFail(Auth::id());
+
             $pageName ="Recordings List";
-            $rooms = Auth::user()
+            $rooms = $user
                 ->rooms()
                 ->where('meeting_record',1)
                 ->get();
 
 
 //        dd($rooms);
-            $meetings = Auth::user()
+            $meetings = $user
                 ->meetings()
                 ->get();
 
@@ -307,7 +303,9 @@ class RecordingsController extends Controller
     public function invitedRoomsRecordings()
     {
         try{
-            $rooms = Auth::user()->attendees()
+            $user = User::FindOrFail(Auth::id());
+
+            $rooms = $user->attendees()
                 ->whereHas('rooms')
                 ->with('rooms')
                 ->get()

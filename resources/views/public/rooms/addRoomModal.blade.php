@@ -42,16 +42,6 @@
                             </div>
                         </div>
                         <p class="mt-2 ml-3">at</p>
-{{--                        <div class="col-sm-5 clockpicker1">--}}
-{{--                            <div class="input-group">--}}
-{{--                                <input type="text" name="startTime" class="form-control" id="startTime">--}}
-{{--                                <div class="input-group-append">--}}
-{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
-{{--                                                <i class="fa fa-clock-o"></i>--}}
-{{--                                            </span>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
 
                         <div class="col-sm-5">
                             <div class="form-group">
@@ -77,16 +67,6 @@
                             </div>
                         </div>
                         <p class="mt-2 ml-3">at</p>
-{{--                        <div class="col-sm-5 clockpicker2">--}}
-{{--                            <div class="input-group">--}}
-{{--                                <input type="text" name="endTime" class="form-control" id="endTime" >--}}
-{{--                                <div class="input-group-append">--}}
-{{--                                            <span type="button" id="toggle3" class="input-group-text">--}}
-{{--                                                <i class="fa fa-clock-o"></i>--}}
-{{--                                            </span>--}}
-{{--                                </div>--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
                         <div class="col-sm-5">
                             <div class="form-group">
                                 <div class="input-group date" id="datetimepicker2" data-target-input="nearest">

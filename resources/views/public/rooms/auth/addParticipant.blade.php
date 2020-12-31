@@ -34,7 +34,8 @@
             <div class="card bg-white">
                 <div class="card-body">
 
-                    <invite-participants meeting-attendee-remove="{{route('deleteAttendee')}}" meeting-attendee={{route("roomAttendees")}} meeting-url="{{$url}}"  file-route="{{route('files.store')}}" participant-route="{{route('addParticipantDetails',':url')}}"></invite-participants>
+
+                 <invite-participants meeting-attendee-remove="{{route('deleteAttendee')}}" meeting-attendee={{route("roomAttendees")}} meeting-url="{{$url}}"  file-route="{{route('files.store')}}" participant-route="{{route('addParticipantDetails',':url')}}"></invite-participants>
 
                     <div class="container-fluid" >
 

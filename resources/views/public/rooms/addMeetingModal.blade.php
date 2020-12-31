@@ -124,18 +124,6 @@
                                 <input class="custom-switch-input" data-default="false" type="checkbox" value="1" name="mute_on_join" id="meeting_mute_on_join" autocomplete="off">
                             </div>
                         </div>
-
-
-{{--                        <div class="row mt-2">--}}
-{{--                            <div class="col-sm-8">--}}
-{{--                                <label for="meeting_require_moderator_approval" class="custom-switch pl-0 mt-3 mb-3 w-100 text-left d-inline-block ">--}}
-{{--                                    Require moderator approval before joining--}}
-{{--                                </label>--}}
-{{--                            </div>--}}
-{{--                            <div class="col-sm-3  mt-4">--}}
-{{--                                <input class="custom-switch-input" data-default="false"  type="checkbox" value="1"  name="require_moderator_approval" id="meeting_require_moderator_approval" autocomplete="off" >--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
                     </div>
 
 

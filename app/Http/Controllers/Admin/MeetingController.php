@@ -2,20 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-
-use App\bigbluebutton\tests\TestCase;
 use App\Helpers\bbbHelpers;
-use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoomRequest;
 use App\Meeting;
-use App\Room;
 use App\User;
 use BigBlueButton\BigBlueButton;
-use BigBlueButton\Parameters\CreateMeetingParameters;
-use BigBlueButton\Parameters\EndMeetingParameters;
 use BigBlueButton\Parameters\GetMeetingInfoParameters;
-use Bkwld\Croppa\URL;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -50,9 +43,7 @@ class MeetingController extends Controller
 
         try{
 
-//            https://5df16.bigbluemeeting.com/bigbluebutton/
-
-            $pageName ='Rooms List';
+            $pageName = __('Rooms List');
             $credentials = bbbHelpers::setCredentials();
             if (!$credentials)
             {
@@ -374,13 +365,9 @@ class MeetingController extends Controller
     {
 
         try{
-
-
-//            dd($meeting);
             $meeting = Meeting::findOrFail($meeting);
             $meeting->delete();
             return $this->getRoomLists();
-//            return redirect()->back()->with(['success'=>'Rooms Deleted Successfully !!']);
         }catch (\Exception $exception)
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
@@ -418,53 +405,10 @@ class MeetingController extends Controller
                 'setRecord' => true,
             ];
             return $this->createMeeting();
-//            $files =  Auth::user()
-//                ->meetings()
-//                ->where('url',$meeting->url)
-//                ->whereHas('files')
-//                ->with('files')
-//                ->get()
-//                ->pluck('files')
-//                ->collapse();
-//
-//            if (count($files) < 1)
-//            {
-//                $files = $user->files()
-//                    ->where('setDefault',1)
-//                    ->get();
-//            }
-//            if (count($files) > 0)
-//            {
-//                foreach ($files as $file)
-//                {
-//                    $this->meetingsParams['files'][] =$file->name;
-//
-//                }
-//            }
-//
-//            else{
-//
-//                $this->meetingsParams['files'] =[];
-//            }
-//
-//            if ($response->getReturnCode() == 'FAILED') {
-//
-//                return $this->createMeeting();
-//
-//            } else {
-//
-//                $endMeetingParams = new EndMeetingParameters($meeting->url,$user->password);
-//                $endMeetingResponse = $bbb->endMeeting($endMeetingParams);
-//
-//                return $this->createMeeting();
-//
-//
-//            }
 
         }catch (\Exception $exception){
 
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
-//           dd($exception);
         }
 
 

@@ -7,19 +7,9 @@
         <h4 class="title"><i class="fa fa-film"></i> {{ $pageName }} </h4>
     </div>
     @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
-
-        <div class="container-fluid">
-
-            <h5>My Meeting Recordings</h5>
-            <div class="row" id="error">
-                <div class="col-md-12">
-                    @include('includes.form-errors')
-                </div>
-            </div>
-        </div>
+        <h5>My Meeting Recordings</h5>
     @endif
 
-    <div class="col-lg-12">
 
         @foreach (['danger', 'warning', 'success', 'info'] as $msg)
             @if(Session::has($msg))
@@ -42,14 +32,14 @@
                                <thead>
                                <tr>
 
-                                   <th>Name</th>
-                                   <th>Playback</th>
-                                   <th>State</th>
-                                   <th>Length</th>
-                                   <th>Users</th>
-                                   <th>Format</th>
-                                   <th>Started</th>
-                                   <th>Ended</th>
+                                   <th>{{ __('Name') }}</th>
+                                   <th>{{ __('Playback')}}</th>
+                                   <th>{{__('State')}}</th>
+                                   <th>{{__('Length')}}</th>
+                                   <th>{{__('Users')}}</th>
+                                   <th>{{__('Format')}}</th>
+                                   <th>{{__('Started')}}</th>
+                                   <th>{{__('Ended')}}</th>
 
                                </tr>
                                </thead>
@@ -73,10 +63,10 @@
                                @endforeach
 
                                @else
-                                   <div class="card bg-light" style="background: #fff8a0;">
-                                       <div class="card-body">
+                                   <div class="card bg-light" >
+                                       <div class="card-body" style="background: #fff8a0;">
                                             <div class="col-md-12">
-                                                <p class="text-danger m-0">We're sorry, you dont have any recording.</p>
+                                                <p class="text-danger m-0">{{__('We\'re sorry, you don\'t have any recording(s).')}}</p>
                                             </div>
                                         </div>
                                    </div>
@@ -94,13 +84,12 @@
                 </section>
             </div>
 
-    </div>
 
 @endsection
 
 
 @section('javascript')
     <script>
-        window.route_mass_crud_entries_destroy = '{{ route('admin::users.mass_destroy') }}';
+        window.route_mass_crud_entries_destroy = "{{ route('admin::users.mass_destroy') }}";
     </script>
 @endsection

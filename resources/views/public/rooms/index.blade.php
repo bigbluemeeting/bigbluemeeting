@@ -98,10 +98,9 @@
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
 
     <script type="application/javascript">
-        url = '{{URL::to('meetings/:id/edit')}}';
+        url = "{{URL::to('meetings/:id/edit')}}";
         action =  "{{\Illuminate\Support\Facades\URL::to('meetings')}}/:id";
     </script>
-{{--    <script type="application/javascript" src="{{asset('js/rooms.js?version=')}}{{time()}} "></script>--}}
 <script src="{{asset('js/bbb-meetings.js')}}"></script>
 @stop
 
