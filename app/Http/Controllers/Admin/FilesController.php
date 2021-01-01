@@ -35,7 +35,7 @@ class FilesController extends Controller
             $user = User::FindOrFail(Auth::id());
 
             $files = $user->files()->orderBy('id','DESC')->paginate(10);
-            $currentDate  = Carbon::now(Helper::get_local_time())->format('yy-m-d H:i');
+            $currentDate  = Carbon::now(Helper::get_user_local_timezone())->toDateTimeString();
 
             $rooms =  $user->rooms()
                 ->where('end_date','>=',$currentDate)

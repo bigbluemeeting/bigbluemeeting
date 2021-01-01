@@ -13,10 +13,7 @@
                 </tr>
                 </thead>
                 <tbody>
-
-
-                <tr v-for="meeting in meetings.data">
-
+                <tr v-for="meeting in meetings.data" v-bind:key="meeting.id">
                     <td><a :href="links()+ '/' + meeting.url">{{ meeting.name }}</a></td>
                     <td>{{ moment(meeting.start_date) }}</td>
                     <td>{{ moment(meeting.end_date) }}</td>
@@ -135,12 +132,7 @@
                     'upcoming' : true
                 };
                 eventBus.deleteID(deleteObject);
-
-
             },
-
         },
-
-
     }
 </script>

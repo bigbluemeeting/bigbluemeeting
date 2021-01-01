@@ -113,32 +113,23 @@
                             @endif
                         </div>
                     </div>
-
-
-
-
-
                 </div>
             </div>
         </div>
     </div>
 
 
-
 @stop
 
 @section('script')
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-
         var slug = $('#room').val();
         var postUrl = '{{route("roomAttendees")}}';
         var  url =  "{{ route('showDetails', ':slug' )}}";
         var csrf = '{{csrf_token()}}';
         action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
         currentUrl ="{{url()->current()}}";
-
 
     </script>
         <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>

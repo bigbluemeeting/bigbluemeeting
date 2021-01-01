@@ -3,15 +3,11 @@
 
 namespace App\Helpers;
 
-use App\Files;
 use BigBlueButton\BigBlueButton;
-use BigBlueButton\Parameters\CreateMeetingParameters;
-use BigBlueButton\Parameters\GetRecordingsParameters;
-use BigBlueButton\Parameters\JoinMeetingParameters;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
-use phpDocumentor\Reflection\Types\Self_;
+
 
 
 class Helper
@@ -31,19 +27,14 @@ class Helper
         {
             return redirect()->back()->with(['danger'=>$exception->getMessage()]);
         }
-
     }
-    public static function get_local_time()
+
+
+    public static function get_user_local_timezone()
     {
-
-            $ip = file_get_contents("http://ipecho.net/plain");
-            $url = 'http://ip-api.com/json/'.$ip;
-            $tz = file_get_contents($url);
-            $tz = json_decode($tz,true)['timezone'];
-            return $tz;
-
-
-
+        // refactor to use
+        // https://5balloons.info/dealing-with-user-timezone-in-laravel/
+        return "Etc/UTC";
     }
 
 

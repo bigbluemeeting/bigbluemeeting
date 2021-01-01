@@ -94,7 +94,7 @@
                 </div>
                 <input type="hidden" id="room" value="{{$meeting->url}}">
                 <div class="modal-footer bg-light">
-                    <p class="text-primary"><strong> Info ! </strong> {{ __('Participants need to sing-up if they are not members of this site. An invitational mail will be sent to their email.' }}</p>
+                    <p class="text-primary"><strong> Info ! </strong> {{ __('Participants need to sing-up if they are not members of this site. An invitational mail will be sent to their email.') }}</p>
 
                 </div>
             </div>

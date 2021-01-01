@@ -4,7 +4,7 @@
             <table class="table table-striped" >
                 <tbody>
                 <tr>
-                    <td> Meeting Name</td>
+                    <td>Meeting Name</td>
                     <td>{{meetingInformation.name}}</td>
 
                 </tr>
@@ -75,7 +75,7 @@
                                 </thead>
                                 <tbody >
 
-                                <tr v-for="attendee in attendees.data">
+                                <tr v-for="attendee in attendees.data" v-bind:key="attendee.id">
                                     <td>{{attendee.email}}</td>
                                     <td>{{moment(attendee.created_at)}}</td>
                                     <td  class="text-center"><span @click="removeAttendee(attendee.id)" class="btn btn-danger-outline"><i class="fa fa-remove"></i> Remove</span></td>
@@ -126,8 +126,8 @@
                                     <i class="fa fa-times float-right" @click="closeError" id="cross-icon"></i>
 <!--                                    <i class></i>-->
                                 </div>
-                                <div class="input-icon mb-2">
-                                    <input id="testInput" >
+                                <div class="input-icon mt-12 ml-12">
+                                    <input v-model="participantEmail">
                                 </div>
                                 <div class="row">
                                     <div class="mt-3 ml-3">
@@ -141,7 +141,7 @@
                     </div>
                     <input type="hidden" id="room" v-model="participant.room">
                     <div class="modal-footer bg-light">
-                        <p class="text-primary"><strong> Info ! </strong> Participants need to singup if he's not member of this site. Invitational mail will be sent to his email </p>
+                        <p class="text-primary"><strong> Info ! </strong> Participants need to singup if they are not members of this site. Invitational mail will be sent to their email.</p>
 
                     </div>
                 </div>
@@ -181,8 +181,8 @@
         data()
         {
           return {
-
               meetingInformation:{},
+              participantEmail: "",
               attendees :{},
               files :{},
               pastMeeting:false,
@@ -229,26 +229,15 @@
             },
             submitParticipant()
             {
-                var emails=[]
-                $('#ul .tag span').each(function (i) {
-                   emails.push($(this).text());
-                });
-                this.participant.emails=emails;
+                this.participant.emails.push(this.participantEmail)
                 axios.post(this.meetingAttendee, this.participant
                 ).then(response=> {
-
-                    $('.tag').each(function (i) {
-                       $(this).remove();
-                    });
+                    this.participantEmail="";
                     this.attendees=response.data.attendees
-                    // $('#myModal').modal('hide')
                 }).catch(error=> {
                     this.error=error.response.data.error
                        // console.log(error.response.data)
-
-
                     });
-
             },
             closeError()
             {
@@ -257,29 +246,17 @@
             },
             removeAttendee(id)
             {
-
-
                 this.attendeeData.id=id;
                 this.attendeeData.url=this.meetingUrl;
                 axios.post(this.meetingAttendeeRemove, this.attendeeData
                 ).then(response=> {
-
                     this.attendees=response.data.attendees
-
-
-
                 })
                     .catch(error=> {
                         console.log( error.response.data.errors);
-
-
                     });
-
             }
-
         }
-
-
     }
 </script>
 

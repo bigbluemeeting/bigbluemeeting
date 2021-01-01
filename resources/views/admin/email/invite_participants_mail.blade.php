@@ -36,13 +36,13 @@
                         </div>
                         <div style="margin-top: 20px">
                             <b>
-                                If You Want to make your meeting please click here
+                                <?= __('If you want join to make your meeting please click here.'); ?>
                                 <a href="{{$url}}" >
-                                    Signup.
+                                    <?= __('Signup'); ?>
                                 </a>
-                                If you already have a account, please click here
+                                <?= __('If you already have a account, please click here.'); ?>
                                 <a href="{{route('login')}}"  >
-                                    Login
+                                    <?= __('Login'); ?>
                                 </a>
 
                             </b>

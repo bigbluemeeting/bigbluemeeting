@@ -20,7 +20,8 @@ mix.js('resources/assets/js/app.js','public/js')
             'resources/assets/js/invited-meetings/meetings.js',
 
         ],
-        'public/js/bbb-custom.js')
+        'public/js/bbb-custom.js'
+    )
     .scripts([
 
             'resources/assets/js/meeting/datepicker.js',
