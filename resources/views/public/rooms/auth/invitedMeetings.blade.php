@@ -26,13 +26,13 @@
 
             <section class="invited-meetings">
 
-                @if ($roomList > 0)
+                @if ($roomsList > 0)
                     <invited-meetings-list room-route="{{route('getInvitedMeetings')}}"></invited-meetings-list>
                 @else
                     <div class="card bg-light">
                         <div class="card-body">
                             <div class="col-md-12">
-                                <p class="text-danger m-0">We're sorry, you don't have any rooms.</p>
+                                <p class="text-danger m-0"><?= __("We're sorry, you have not been invited to any meetings yet."); ?></p>
                             </div>
                         </div>
                  @endif

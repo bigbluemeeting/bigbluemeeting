@@ -46,7 +46,7 @@ class EmailTemplateController extends Controller
                 ]);
             $data['user_id'] = auth()->id();
 
-            $emailTemplate = EmailTemplate::updateOrCreate(['user_id'=>auth()->id()],$data);
+            $emailTemplateplate = EmailTemplate::updateOrCreate(['user_id'=>auth()->id()],$data);
 
             return redirect()->back()->with(['success'=>'Your Emails Settings Saved']);
 

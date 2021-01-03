@@ -19,7 +19,7 @@
                 </thead>
                 <tbody>
 
-                <tr v-for="room in rooms.data" >
+                <tr v-for="room in rooms.data" v-bind:key="room.id">
                     <td>{{room.name}}</td>
                     <td>{{ moment(room.created_at) }}</td>
 

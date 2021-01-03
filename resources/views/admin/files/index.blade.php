@@ -293,17 +293,11 @@
 @stop
 
 @section('script')
-
-
-                <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-                <script>
-                    action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
-                    currentUrl ="{{url()->current()}}";
-                </script>
-                <script src="{{asset('js/bbb-custom.js')}}"></script>
-
-
-
+<script>
+    action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
+    currentUrl ="{{url()->current()}}";
+</script>
+<script src="{{asset('js/bbb-custom.js')}}"></script>
 @stop
 
 @section('js')

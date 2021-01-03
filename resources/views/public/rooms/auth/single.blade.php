@@ -39,7 +39,7 @@
 
             <div class="hr-line-dashed"></div>
             <div class="form-group">
-                <div class="col-sm-6 text-center">
+                <div class="col-sm-12 text-center">
                     {!! Form::submit('Start Meeting', ['class' => 'btn btn-info btn-large']) !!}
                 </div>
             </div>

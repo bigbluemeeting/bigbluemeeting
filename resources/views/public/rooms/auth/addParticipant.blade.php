@@ -6,10 +6,6 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-gallery/2.27.1/css/blueimp-gallery.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload.min.css">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/css/jquery.fileupload-ui.min.css">
-
-    <style>
-
-    </style>
 @stop
 @section('content')
 
@@ -92,9 +88,10 @@
 
                                         </th>
                                     </tr>
+                                    @endif
                                 </thead>
                             </table>
-                            @endif
+
                          <meetings-files delete-file-route="{{route('deleteFile')}}" file-route="{{route('meetingFiles',':url')}}" meeting-url="{{$url}}"></meetings-files>
 
                             @if(count($files)==0)
@@ -122,21 +119,12 @@
 @stop
 
 @section('script')
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script>
-        var slug = $('#room').val();
-        var postUrl = '{{route("roomAttendees")}}';
-        var  url =  "{{ route('showDetails', ':slug' )}}";
         var csrf = '{{csrf_token()}}';
-        action =  "{{\Illuminate\Support\Facades\URL::to('files')}}/:id";
-        currentUrl ="{{url()->current()}}";
-
     </script>
-        <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
-        <script src="{{ asset('js/app.js') }}"></script>
-
+    <script type="application/javascript" src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{asset('js/bbb-custom.js')}}"></script>
-
 @stop
 
 @section('js')
@@ -154,7 +142,5 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-validate.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.19.1/js/jquery.fileupload-ui.min.js"></script>
     <script src="{{asset('js/fileUpload.js')}}"></script>
-
-
 @stop
 

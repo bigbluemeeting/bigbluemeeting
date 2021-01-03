@@ -25,7 +25,6 @@
         </div>
     </div>
 </div>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 @yield('js')
 </body>
 </html>

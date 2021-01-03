@@ -15,7 +15,7 @@
 
                 <li class="{{ (Request::is('meetings*') || Request::is('meetings')) ? 'active open' : '' }}">
                     <a href="">
-                        <i class="fa fa-meetup"></i> Meetings
+                        <i class="fa fa-clock-o"></i> Meetings
                         <i class="fa arrow"></i>
                     </a>
                     <ul class="sidebar-nav">
@@ -23,7 +23,7 @@
                             @if(Gate::check('moderate') || Gate::check('users_manage') || Gate::check('master_manage'))
                                 <a href="{{ route('meetings.index') }}"> Create Meetings </a>
                             @endif
-                            <a href="{{route('invitedMeetings')}}">Invited Meetings</a>
+                            <a href="{{route('invitedMeetings')}}"><?= __('Meeting Invitations'); ?></a>
                         </li>
                     </ul>
                 </li>

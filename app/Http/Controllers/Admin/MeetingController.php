@@ -68,7 +68,7 @@ class MeetingController extends Controller
         try{
 
             $user = User::FindOrFail(Auth::id());
-            $roomList =$user->meetings()
+            $roomsList =$user->meetings()
                 ->orderBy('id','DESC')
                 ->paginate(10);
 
@@ -85,7 +85,7 @@ class MeetingController extends Controller
                 $url = bbbHelpers::joinMeeting($joinMeetingParams);
             }
 
-            return \request()->json(200,['rooms'=>$roomList,'autoJoin'=>$autoJoin,'url'=>$url]);
+            return \request()->json(200,['rooms'=>$roomsList,'autoJoin'=>$autoJoin,'url'=>$url]);
         }catch (\Exception $exception)
         {
             return \request()->json(['error'=>$exception]);
